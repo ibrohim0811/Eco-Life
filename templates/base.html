@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eco Life — Premium Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --bg-card: rgba(22, 27, 34, 0.8);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #22c55e;
+      --gold: #fbbf24;
+      --border: rgba(255, 255, 255, 0.08);
+      --nav-height: 75px;
+    }
+
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.9);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.01em;
+      overflow-x: hidden; /* Gorizontal scrollning oldini oladi */
+    }
+
+    /* Zamonaviy Navbar */
+    .navbar {
+      height: var(--nav-height);
+      background: var(--bg-card) !important;
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1rem; /* Mobilda chekkalar kichikroq */
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.2rem; /* Mobilda biroz kichikroq */
+      letter-spacing: -0.03em;
+      color: var(--text) !important;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Ikonkalar hajmi */
+    .nav-icon {
+      font-size: 1.25rem;
+      color: var(--text-muted) !important;
+      padding: 8px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobilda dropdown menyuning joylashuvi */
+    @media (max-width: 576px) {
+      .dropdown-menu-right {
+        position: absolute !important;
+        right: 0 !important;
+        left: auto !important;
+        width: 280px;
+      }
+      .navbar-brand span {
+        display: none; /* Mobilda faqat logoni qoldirish (ixtiyoriy) */
+      }
+    }
+
+    /* Theme Switcher Button */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      margin-top: 15px !important;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    .dropdown-item {
+      border-radius: 10px;
+      padding: 10px 15px;
+      color: var(--text-muted) !important;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Profile Image */
+    .profile-wrapper {
+      position: relative;
+      padding: 2px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), var(--gold));
+    }
+
+    .profile-img {
+      width: 35px; /* Mobilda ixchamroq */
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      object-fit: cover;
+    }
+
+    /* Bog'lanish Tugmasi */
+    .contact-btn {
+      background: linear-gradient(135deg, var(--primary), #16a34a);
+      border: none;
+      color: white;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 8px 16px !important;
+      transition: all 0.3s ease;
+    }
+
+    .main-content {
+      margin-top: var(--nav-height);
+      padding: 1.5rem 1rem;
+    }
+
+    /* Responsive Utilities */
+    @media (max-width: 768px) {
+      .nav-icon { font-size: 1.15rem; padding: 6px; }
+      .navbar { height: 65px; }
+      :root { --nav-height: 65px; }
+    }
+
+    /* Theme ikonalari logic */
+    .light-icon { display: none; }
+    [data-theme="light"] .light-icon { display: block; }
+    [data-theme="light"] .dark-icon { display: none; }
+    [data-theme="dark"] .dark-icon { display: block; }
+
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand fixed-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      
+      <a class="navbar-brand" href="#">
+        <img src="https://ui-avatars.com/api/?name=Eco+Life&background=22c55e&color=fff" alt="Logo" width="32" height="32" class="rounded shadow-sm">
+        <span class="d-none d-sm-inline">Eco Life</span>
+      </a>
+
+      <div class="d-flex align-items-center">
+        
+        <a class="nav-link nav-icon px-2" href="#" title="Sozlamalar">
+          <i class="bi bi-sliders"></i>
+        </a>
+
+        <a class="nav-link nav-icon px-2 position-relative" href="#">
+          <i class="bi bi-bell-fill"></i>
+          <span class="badge badge-pill badge-danger position-absolute" style="top: 4px; right: 4px; font-size: 0.5rem; border: 1px solid var(--bg-card);">3</span>
+        </a>
+
+        <button class="nav-link nav-icon theme-toggle-btn px-2" onclick="toggleTheme()">
+          <i class="bi bi-moon-stars-fill dark-icon"></i>
+          <i class="bi bi-sun-fill light-icon" style="color: var(--gold);"></i>
+        </button>
+
+        <div class="dropdown ml-2">
+          <a class="nav-link dropdown-toggle p-0 d-flex align-items-center" href="#" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="profile-wrapper">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" alt="Profile" class="profile-img">
+            </div>
+            <div class="ml-2 d-none d-md-block">
+              <span class="font-weight-bold" style="font-size: 0.85rem;">Alexia J.</span>
+            </div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="profileDropdown">
+            <div class="px-3 py-2 border-bottom mb-2 d-md-none">
+                <span class="font-weight-bold small text-muted">Alexia J.</span>
+            </div>
+            <a class="dropdown-item" href="#"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> Hisob</a>
+            <a class="dropdown-item" href="#"><i class="bi bi-gear-fill"></i> Sozlamalar</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right"></i> Chiqish</a>
+          </div>
+        </div>
+
+        <div class="ml-3 d-none d-md-block">
+          <button class="btn contact-btn">Bog‘lanish</button>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content container-fluid">
+    <div class="row">
+        <div class="col-12 text-center py-5">
+            <h1 class="font-weight-bold h3">Eco Life Platformasi</h1>
+            <p class="text-muted small">Barcha qurilmalarda mukammal ko'rinish.</p>
+        </div>
+    </div>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+  </script>
+</body>
+</html>

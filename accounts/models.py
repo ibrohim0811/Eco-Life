@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 
 
 class BaseCreatedModel(models.Model):
@@ -12,13 +13,16 @@ class BaseCreatedModel(models.Model):
         abstract = True
         
     
-class Users(BaseCreatedModel):
+class Users(AbstractUser):
     
     first_name = models.CharField(max_length=70)
     last_name = models.CharField(max_length=70)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     phone = models.CharField(max_length=20, unique=True)
-    about = models.TextField()
+    about = models.TextField(blank=True, null=True)
+    username = models.CharField(max_length=50, unique=True)
+    language = models.CharField(max_length=15)
+    tg_id = models.BigIntegerField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     image = models.ImageField(upload_to='users/', default='users/image.png')
@@ -27,8 +31,35 @@ class Users(BaseCreatedModel):
     def __str__(self):
         return self.first_name
     
+
+
+class BalanceHistory(BaseCreatedModel):
+    class TransactionType(models.TextChoices):
+        INCOME = 'INCOME', 'Tushum'
+        EXPENSE = 'EXPENSE', 'Chiqim'
+
+    user = models.ForeignKey(
+        Users, 
+        on_delete=models.CASCADE, 
+        related_name='balance_history'
+    )
     
+    amount = models.BigIntegerField() 
     
+    transaction_type = models.CharField(
+        max_length=10, 
+        choices=TransactionType.choices
+    )
+    
+    description = models.CharField(max_length=255, blank=True, null=True) 
+   
+    def __str__(self):
+        return f"{self.user.first_name} - {self.amount} ({self.transaction_type})"
+
+    class Meta:
+        ordering = ['-created_at'] 
+        
+            
     
 class UserActivities(BaseCreatedModel):
     STATUS_CHOICES = (
@@ -126,7 +157,7 @@ class Sale(models.Model):
 
     is_active = models.BooleanField(default=True)
 
-    products = models.ManyToManyField("AgroBusiness.Product", blank=True)
+    products = models.ManyToManyField("AgroBusiness.Product", blank=True, related_name="sale_events")
 
     def is_live(self):
         now = timezone.now()

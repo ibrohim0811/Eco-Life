@@ -1,0 +1,80 @@
+import os
+import sys
+import django
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ecolife.settings")
+django.setup()
+
+
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import Command
+from pathlib import Path
+from aiogram import types
+from aiogram_i18n import I18nContext
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.context import FSMContext
+
+
+from accounts.models import Users
+from asgiref.sync import sync_to_async
+from dotenv import load_dotenv
+from middleware.i18n import i18n_middleware
+from aiogram_i18n.context import I18nContext
+from handlers.register import dp as register
+from handlers.account import dp as acc
+from admin.admin import dp_admin
+from UI.default import sorov, main_menu
+
+
+load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
+env_path = BASE_DIR / ".env"
+dp = Dispatcher(storage=MemoryStorage())
+i18n_middleware.setup(dispatcher=dp)
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+
+def check_user_and_get_lang(tg_id):
+    user = Users.objects.filter(tg_id=tg_id).first()
+    if user:
+        return user.language
+    return None
+
+
+@dp.message(Command('start'))
+async def start(msg: types.Message, i18n: I18nContext):
+    
+    user = await sync_to_async(check_user_and_get_lang)(msg.from_user.id)
+    
+    if user:
+        await i18n.set_locale(user)
+        await msg.answer(f"👋{i18n('hello')} {msg.from_user.first_name} {i18n('start_text')}", reply_markup=main_menu(i18n))
+        return
+    
+    await i18n.set_locale(msg.from_user.language_code)
+    await msg.answer(f"👋{i18n('hello')} {msg.from_user.first_name} {i18n('start_text')}", reply_markup=sorov(i18n))
+    
+        
+
+
+async def main():
+    bot = Bot(token=BOT_TOKEN)
+    dp.update.middleware(i18n_middleware)
+    dp.include_router(register)
+    dp.include_router(acc)
+    dp.include_router(dp_admin)
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    
+    logging.basicConfig(level=logging.INFO)
+
+    asyncio.run(main()) 
+        
