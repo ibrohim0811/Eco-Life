@@ -7,6 +7,7 @@ from aiogram.fsm.storage.base import StorageKey
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_i18n.context import I18nContext
 from dotenv import load_dotenv
+from UI.default import main_menu
 
 load_dotenv()
 
@@ -58,7 +59,7 @@ async def user_to_admin(msg: types.Message, bot: Bot):
 # --- ADMIN QISMI ---
 
 @router.callback_query(F.data.startswith("close_chat_"))
-async def admin_close_chat_callback(callback: types.CallbackQuery, bot: Bot):
+async def admin_close_chat_callback(callback: types.CallbackQuery, bot: Bot, i18n: I18nContext):
     """Tugma bosilganda chatni yopish"""
     user_id = int(callback.data.split("_")[2])
     
@@ -70,7 +71,7 @@ async def admin_close_chat_callback(callback: types.CallbackQuery, bot: Bot):
     await dp.storage.set_data(key=user_storage_key, data={})
     
     try:
-        await bot.send_message(user_id, "❌ Admin chatni yakunladi. Asosiy menyuga qaytdingiz.")
+        await bot.send_message(user_id, i18n("chat_ended"), reply_markup=main_menu(i18n))
     except:
         pass 
 
@@ -78,7 +79,7 @@ async def admin_close_chat_callback(callback: types.CallbackQuery, bot: Bot):
     await callback.answer("Chat yopildi!")
 
 @router.message(F.reply_to_message, F.chat.id == ADMIN_ID)
-async def admin_reply_to_user(msg: types.Message, bot: Bot):
+async def admin_reply_to_user(msg: types.Message, bot: Bot, i18n: I18nContext):
     """Admin 'Reply' orqali javob yozganda"""
     reply_text = msg.reply_to_message.text or msg.reply_to_message.caption
     match = re.search(r"ID: (\d+)", reply_text)
@@ -90,11 +91,11 @@ async def admin_reply_to_user(msg: types.Message, bot: Bot):
             from main import dp
             user_storage_key = StorageKey(bot_id=bot.id, chat_id=user_id, user_id=user_id)
             await dp.storage.set_state(key=user_storage_key, state=None)
-            await bot.send_message(user_id, "❌ Admin chatni yakunladi.")
+            await bot.send_message(user_id, i18n("chat_ended"), reply_markup=main_menu(i18n))
             await msg.answer(f"✅ User {user_id} bilan chat yopildi.")
         else:
             try:
-                await bot.send_message(user_id, f"👨‍💻 <b>Admin javobi:</b>\n\n{msg.text}", parse_mode="HTML")
+                await bot.send_message(user_id, f"{msg.text}", parse_mode="HTML")
                 await msg.answer("✅ Xabar yuborildi.")
             except Exception:
                 await msg.answer(f"❌ Foydalanuvchi botni bloklagan.")

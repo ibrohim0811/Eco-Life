@@ -146,6 +146,7 @@ async def accepted(callback: types.CallbackQuery, i18n: I18nContext):
         if activity.video_file_id:
             try:
                 await bot.send_video_note(CHANNEL_ID, activity.video_file_id)
+                await bot.send_location(CHANNEL_ID, longitude=activity.longitude, latitude=activity.latitude)
             except Exception as e:
                 print(f"Video yuborishda xato: {e}")
                 
@@ -168,6 +169,7 @@ async def accepted(callback: types.CallbackQuery, i18n: I18nContext):
 async def status_already(callback: types.CallbackQuery, i18n: I18nContext):
     
     lang = await sync_to_async(get_user_language)(tg_id=callback.message.from_user.id)
+    
     await i18n.set_locale(lang)
     activity_id = callback.data.split("_")[1]
     
@@ -187,27 +189,35 @@ async def status_already(callback: types.CallbackQuery, i18n: I18nContext):
             
     activity = await sync_to_async(activity_status_update)()
     
-    if not activity:
-        await callback.message.answer("Ariza mavjud emas")
-        
-    
-    chat_id = activity.user.tg_id 
-
     try:
+    
+        if not activity:
+            await callback.message.answer("Ariza mavjud emas")
+            
+        
+        chat_id = activity.user.tg_id 
+
+        
+        activity = await sync_to_async(activity_status_update)()
+
+
         await bot.send_message(
             chat_id=chat_id, 
             text=i18n("something_went_wrong"), 
             reply_markup=main_menu(i18n)
         )
-        await callback.answer(i18n("something_went_wrong"), show_alert=False)
         
-        await callback.message.edit_text(f"ID: {activity_id} - {i18n('something_went_wrong')}")
+        await callback.answer(i18n("something_went_wrong"))
+
+        new_text = f"ID: {activity.id} - {i18n('something_went_wrong')}"
+        
+        if callback.message.text != new_text:
+            await callback.message.edit_text(new_text)
 
     except Exception as e:
-        
-        print(f"Telegram yuborishda xato: {e}")
+        print(f"Xatolik yuz berdi: {e}")
         await callback.answer(
-            "Baza yangilandi, lekin foydalanuvchiga xabar bormadi (Chat not found).", 
+            "Xabar yuborishda yoki tahrirlashda xatolik!", 
             show_alert=True
         )
                 
@@ -229,11 +239,14 @@ async def status_already(callback: types.CallbackQuery, i18n: I18nContext):
             
                 act = UserActivities.objects.select_related('user').get(id=activity_id)
                 
+                if act.status == act.ProccesStatus.REJECTED:
+                    return act
                 
                 act.status = act.ProccesStatus.REJECTED
                 
+                
                 BalanceHistory.objects.create(
-                    user=activity.user,
+                    user=act.user,
                     amount=punishment,
                     transaction_type=BalanceHistory.TransactionType.EXPENSE,
                     description=f"#{activity_id} - rad etildi (no'tog'ri ma'lumot yuborilgan !)"

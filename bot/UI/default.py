@@ -33,6 +33,22 @@ def sorov(i18n: I18nContext) -> ReplyKeyboardMarkup:
     )
     
     
+def payment_method() ->ReplyKeyboardMarkup:
+    
+    
+    
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(text=("UZUM bank 🍇, (VISA, Mastercard)")),
+                KeyboardButton(text=("Uzcard, Humo"))
+            ]
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True
+    )
+    
+    
 def main_menu(i18n: I18nContext) ->ReplyKeyboardMarkup:
     
     _ = i18n

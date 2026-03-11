@@ -89,24 +89,17 @@ class UserActivities(BaseCreatedModel):
 
 
 class Subscription(models.Model):
-    FREE = "free"
-    GO = "go"
-    PRO = "pro"
-    ULTIMA = "ultima"
-
-    PLAN_CHOICES = [
-        (FREE, "Free"),
-        (GO, "Go"),
-        (PRO, "Pro"),
-        (ULTIMA, "Ultima"),
-    ]
+    class PlanChoices(models.TextChoices):
+        FREE = "Free", "free"
+        PRO = "Pro", "pro"
+        ULTIMA = "Ultima", "ultima"
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="subscription",
     )
-    plan = models.CharField(max_length=10, choices=PLAN_CHOICES, default=FREE)
+    plan = models.CharField(max_length=10, choices=PlanChoices.choices, default=PlanChoices.FREE)
     expires_at = models.DateTimeField(blank=True, null=True)
     is_lifetime = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)

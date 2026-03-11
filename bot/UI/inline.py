@@ -8,6 +8,32 @@ def settings_lang(i18n: I18nContext) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
+                InlineKeyboardButton(text=_("uzbek"), callback_data="uz"),
+                InlineKeyboardButton(text=_("rus"), callback_data="ru"),
+                InlineKeyboardButton(text=_("en"), callback_data="en")
+            ]
+        ]
+    )
+    
+def payment_version() -> InlineKeyboardMarkup:
+    
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text=("GO 💨"), callback_data="go"),
+                InlineKeyboardButton(text=("Pro ⚡"), callback_data="pro"),
+                InlineKeyboardButton(text=("Ultima 👑"), callback_data="ultima")
+            ]   
+        ]
+    )
+    
+def change_lang(i18n: I18nContext) -> InlineKeyboardMarkup:
+   
+    _ = i18n
+    
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
                 InlineKeyboardButton(text=_("uzbek"), callback_data="uzbek"),
                 InlineKeyboardButton(text=_("rus"), callback_data="rus"),
                 InlineKeyboardButton(text=_("en"), callback_data="en")
@@ -16,7 +42,7 @@ def settings_lang(i18n: I18nContext) -> InlineKeyboardMarkup:
     )
     
 def sorov(activity_id) -> InlineKeyboardMarkup:
-   
+    
     
     
     return InlineKeyboardMarkup(
@@ -30,17 +56,6 @@ def sorov(activity_id) -> InlineKeyboardMarkup:
         ]
     )
     
-def admin(i18n: I18nContext):
-    
-    _ = i18n
-    
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text=_("conn_admin"), url="https://web.telegram.org/a/#6794722763")
-            ]
-        ]
-    )
     
     
     
@@ -52,5 +67,5 @@ def update(i18n: I18nContext) -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(text=i18n("update"), callback_data="refresh"),
             ]
-        ]
+        ],
     )

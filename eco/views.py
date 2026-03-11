@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 
-class MainListView(ListView):
-    template_name = ''
+class MainListView(TemplateView):
+    template_name = 'main.html'
+    
