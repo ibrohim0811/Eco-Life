@@ -15,5 +15,5 @@ def get_user(tg_id):
     return Users.objects.filter(tg_id=tg_id).first()
 
 def get_user_language(tg_id):
-    
-    return Users.objects.filter(tg_id=tg_id).first()
+    user = Users.objects.filter(tg_id=tg_id).first()
+    return user.language

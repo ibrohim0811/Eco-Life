@@ -21,15 +21,28 @@ from UI.inline import payment_version, payment_request
 from accounts.models import BalanceHistory, Users, Subscription
 from aiogram.types import ReplyKeyboardRemove
 from asgiref.sync import sync_to_async
+from django.utils.translation import gettext as _
 
 load_dotenv() 
 
 payment = Router()
 
+PLAN_LEVELS = {
+    "FREE": 0,
+    "GO": 1,
+    "PRO": 2,
+    "ULTIMA": 3
+}
 def get_user(tg_id):
     return Users.objects.filter(tg_id=tg_id).first()
     
-
+    
+def get_user_version(user):
+    subs = Subscription.objects.filter(user=user).first()
+    
+    if not subs:
+        return Subscription(user=user, plan=Subscription.PlanChoices.FREE)
+    return subs
 
 def save_to_user_history(user, transaction_type, amount, description):
     BalanceHistory.objects.create(
@@ -58,14 +71,41 @@ async def payment_start(msg: types.Message, i18n: I18nContext, state: FSMContext
     await msg.answer(i18n("choose_version"), reply_markup=payment_version())
     await state.set_state(Payment.version)
 
+
 @payment.callback_query(Payment.version, F.data.in_(["go", "pro", "ultima"]))
 async def plan_select(callback: types.CallbackQuery, i18n: I18nContext, state: FSMContext):
+    user = await sync_to_async(get_user)(tg_id=callback.from_user.id) 
+    usr_subs = await sync_to_async(get_user_version)(user)
+    
+    current_plan = str(usr_subs.plan).upper() 
+    chosen_plan_data = callback.data.upper()  
+
+    if chosen_plan_data == current_plan:
+        await callback.answer(i18n("your_current_version"), show_alert=True)
+        return
+
+    current_level = PLAN_LEVELS.get(current_plan)
+    chosen_level = PLAN_LEVELS.get(chosen_plan_data)
+
+    if chosen_level < current_level:
+        await callback.message.answer(
+            i18n("buy_upper_subs"), 
+            reply_markup=main_menu(i18n)
+        )
+        await state.clear() 
+        await callback.answer()
+        return
+
     await callback.message.delete()
     await state.update_data(version=callback.data)
     
     await callback.answer(i18n("selected"))
-    await callback.message.answer(i18n("select_payment_method"), reply_markup=payment_method(i18n))
+    await callback.message.answer(
+        i18n("select_payment_method"), 
+        reply_markup=payment_method(i18n)
+    )
     await state.set_state(Payment.payment_method)
+
 
 @payment.message(Payment.payment_method)
 async def payment_method_session(msg: types.Message, i18n: I18nContext, state: FSMContext):
@@ -88,7 +128,7 @@ async def payment_method_session(msg: types.Message, i18n: I18nContext, state: F
     
     if not amount_str:
         await msg.answer(i18n("payment_failed"), reply_markup=main_menu(i18n))
-        await state.clear()
+        state.clear()
         return
 
     method = kb_map[msg.text]
@@ -112,11 +152,11 @@ async def payment_method_session(msg: types.Message, i18n: I18nContext, state: F
             )
 
             await msg.answer(i18n('check_accepted'), reply_markup=main_menu(i18n))
-            await state.clear()
+            state.clear()
             return
         else:
             await msg.answer(i18n('insufficient_funds'), reply_markup=main_menu(i18n))
-            await state.clear()
+            state.clear()
             return
     
     if method == 'VISA':
@@ -124,7 +164,7 @@ async def payment_method_session(msg: types.Message, i18n: I18nContext, state: F
     else:
         holder_name = os.getenv("UZCARD_HOLDER_NAME")
     
-    header_key = 'card_for_payment_visa' if method == 'VISA' else 'card_for_payment_uz'
+    header_key = 'card_for_payment_visa' if method == 'VISA' else 'card_for_payment_uzcard'
 
     try:
         formatted_amount = humanize.intcomma(int(amount_str))
@@ -192,7 +232,7 @@ async def accept_request_payment(call: types.CallbackQuery, i18n: I18nContext, s
     elif version == 'ultima':
         await sync_to_async(change_user_version)(user, Subscription.PlanChoices.ULTIMA, subs_expirement)
         
-    await state.clear()
+    state.clear()
     await bot.send_message(user_id, i18n('check_accepted'), reply_markup=main_menu(i18n), message_effect_id='5046509860389126442')
     
 

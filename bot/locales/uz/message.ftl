@@ -63,7 +63,7 @@ buy_from_balance = Balansimdan
 insufficient_funds = Rejangiz uchun balans yetarli emas ❌
 for_go = GO versiyasi uchun
 card_for_payment_visa = To'lov uchun karta (VISA, UZUM🍇)
-card_for_payment_uz To'lov uchun karta (UZCARD, HUMO)
+card_for_payment_uzcard=To'lov uchun karta (UZCARD, HUMO)
 for_pro = PRO versiyasi uchun
 for_ultima = ULTIMA versiyasi uchun
 payment_failed = To'lov amalga oshmadi ⚠️
@@ -77,6 +77,8 @@ share_location = Joylashuvingizni yuboring 📍
 support_started=Siz administrator bilan bog'langansiz, muammoingizni yozing...
 try_validate=Qolgan urinishlar
 chat_ended = Chat yopildi
+your_current_version = Bu sizning hozirgi obunangiz
+buy_upper_subs = Siz faqat joriy obunangizdan yuqori obunani sotib olishingiz mumkin 🚀
 admin_ans = Admin javo
 sucsess_lang = Til muvaffaqiyatli o'zgartirildi ✅ 
 non_registered = Ro'yxatdan o'tmagan

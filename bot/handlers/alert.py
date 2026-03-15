@@ -76,6 +76,7 @@ async def start_alert(msg: types.Message, i18n: I18nContext, state: FSMContext):
         return
         
     language = await sync_to_async(get_user_language)(tg_id=msg.from_user.id)
+    print(language)
     await i18n.set_locale(language)
     await msg.answer(i18n("info_alert"))
     await msg.answer(i18n("alert_video"), reply_markup=back())
@@ -207,6 +208,7 @@ async def status_already(callback: types.CallbackQuery, i18n: I18nContext):
     lang = await sync_to_async(get_user_language)(tg_id=callback.message.from_user.id)
     
     await i18n.set_locale(lang)
+    print('debug',lang)
     activity_id = callback.data.split("_")[1]
     
     def activity_status_update():

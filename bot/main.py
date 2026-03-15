@@ -57,9 +57,10 @@ def get_and_check_sub(user):
 @dp.message(Command('start'))
 async def start(msg: types.Message, i18n: I18nContext):
     user = await sync_to_async(get_user)(msg.from_user.id)
-    await sync_to_async(get_and_check_sub)(user)
+    
     user_language = await sync_to_async(get_user_language)(tg_id=msg.from_user.id)
     if user:
+        await sync_to_async(get_and_check_sub)(user)
         if user.is_banned:
             await i18n.set_locale(msg.from_user.language_code)
             await msg.answer(i18n("banned"), reply_markup=types.ReplyKeyboardRemove())
