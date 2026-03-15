@@ -1,10 +1,13 @@
 import asyncio
 import psycopg2
 from pathlib import Path
-from celery import Celery
+from celery import Celery, shared_task
 from aiogram import Bot
 import os
 from dotenv import load_dotenv
+from django.utils import timezone
+from datetime import timedelta
+from accounts.models import Subscription
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 env_path = BASE_DIR / '.env'
@@ -94,3 +97,37 @@ def send_sms_task(phone: str, message: str):
     except Exception as e:
         print(f"SMS yuborishda xato: {e}")
         return {"status": "error", "message": str(e)}
+    
+    
+@shared_task
+def send_reminder_sbs():
+    now = timezone.now()
+    tomorrow = timezone.now() + timedelta(days=1)
+    
+    start = tomorrow - timedelta(hours=1)
+    end = tomorrow + timedelta(hours=1)
+    
+    expiring_soon = Subscription.objects.filter(
+        expires_at__range=(start, end),
+        expires_at__gt=now,
+        is_lifetime=False
+    ).exclude(plan="Free")
+    
+    bot = Bot(token=os.getenv("BOT_TOKEN"))
+    
+    async def notify_user():
+        for sub in expiring_soon:
+            try:
+                msg = (
+                    f"⚠️ <b>Hurmatli {sub.user.username}!</b>\n\n"
+                    f"Sizning <b>{sub.plan}</b> tarifingiz ertaga tugaydi.\n"
+                    f"Xizmatlardan uzluksiz foydalanish uchun hisobingizni to'ldirib qo'ying."
+                )
+                
+                await bot.send_message(sub.user.tg_id, msg, parse_mode="HTML")
+                
+            except Exception as e:
+                print(f"Xabar yuborishda xato (User: {sub.user.tg_id}): {e}")
+        await bot.session.close()
+        
+    asyncio.run(notify_user())

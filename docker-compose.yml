@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ecosys_db
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: ecosys_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+    depends_on:
+      - db
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecosys_redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
+  celery:
+    build: .
+    container_name: ecosys_celery
+    command: celery -A Ecolife worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      - REDIS_URL=${CELERY_BROKER_URL}
+    depends_on:
+      - db
+      - redis
+
+  bot:
+    build: .
+    container_name: ecosys_bot
+    command: python bot/main.py  
+    volumes:
+      - .:/app
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      - BOT_TOKEN=${BOT_TOKEN}
+      - REDIS_URL=${CELERY_BROKER_URL}
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  postgres_data:

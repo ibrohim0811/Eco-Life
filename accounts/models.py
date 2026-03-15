@@ -15,6 +15,11 @@ class BaseCreatedModel(models.Model):
     
 class Users(AbstractUser):
     
+    class UserRoleChoices(models.TextChoices):
+        OPERATOR = 'Operator', 'operator'
+        ADMIN = 'Admin', 'admin'
+        USER = 'User', 'user'
+    
     first_name = models.CharField(max_length=70)
     last_name = models.CharField(max_length=70)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -30,6 +35,7 @@ class Users(AbstractUser):
     balance = models.BigIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    user_type = models.CharField(max_length=10, choices=UserRoleChoices.choices, default=UserRoleChoices.USER)
     
     def __str__(self):
         return self.first_name
@@ -102,7 +108,7 @@ class Subscription(models.Model):
         related_name="subscription",
     )
     plan = models.CharField(max_length=10, choices=PlanChoices.choices, default=PlanChoices.FREE)
-    expires_at = models.DateTimeField(blank=True, null=True)
+    expires_at = models.DateTimeField(db_index=True, blank=True, null=True)
     is_lifetime = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -1,0 +1,35 @@
+# Python virtual muhitlari
+venv/
+.venv/
+env/
+
+# Python kesh fayllari
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Ma'lumotlar bazasi (Dockerda alohida volume bo'lishi kerak)
+*.sqlite3
+postgres_data/
+
+# Git fayllari
+.git
+.gitignore
+
+# Docker fayllari (Docker ularni push qilayotganda o'zi o'qishi shart emas)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Muhit o'zgaruvchilari (Xavfsizlik uchun!)
+.env
+
+# Statik va Media fayllar (Agar Docker volume ishlatayotgan bo'lsangiz)
+static/
+media/
+
+# Boshqa kesh va vaqtinchalik fayllar
+.DS_Store
+.idea/
+.vscode/
+*.log

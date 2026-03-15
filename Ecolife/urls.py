@@ -17,9 +17,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from eco.views import MainListView
+from eco.views import EnteranceTemplateView, UserLoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", MainListView.as_view(), name='main'),
+    path("", EnteranceTemplateView.as_view(), name='enterance'),
+    path("login/", UserLoginView.as_view(), name='login'),
 ]

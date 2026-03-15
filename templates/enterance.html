@@ -1,0 +1,761 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Eco Life | Premium Experience</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicons/favico.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-black: #000000;
+            --gold: #FFD700;
+            --gold-gradient: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --telegram-blue: #0088cc;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg-black);
+            color: #fff;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR UPGRADE ===== */
+        .navbar {
+            padding: 18px 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+        }
+
+        .navbar.on-video {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-brand {
+            font-size: 1.7rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-logo-img {
+            width: 35px;
+            height: 35px;
+            filter: drop-shadow(0 0 5px var(--gold));
+            object-fit: contain;
+        }
+
+        .nav-btn-tg {
+            background: var(--telegram-blue);
+            color: white !important;
+            border-radius: 12px;
+            padding: 10px 22px !important;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            transition: 0.3s;
+        }
+
+        .nav-btn-tg:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
+        }
+
+        /* ===== VIDEO HERO SECTION ===== */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.9) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== CENTER LOGO ANIMATION ===== */
+        .anim-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-logo-img {
+            width: 120px;
+            height: 120px;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.4));
+            animation: moveLeft 1.2s forwards cubic-bezier(0.4, 0, 0.2, 1);
+            animation-delay: 0.8s;
+            z-index: 2;
+        }
+
+        .anim-text-box {
+            overflow: hidden;
+            width: 0;
+            opacity: 0;
+            margin-left: 20px;
+            animation: showText 1.5s forwards ease-out;
+            animation-delay: 1.2s;
+        }
+
+        .anim-text-box h1 {
+            font-size: 4.5rem;
+            margin: 0;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .anim-text-box p {
+            font-size: 1.2rem;
+            color: #ffffff;
+            opacity: 0.8;
+            margin-top: 8px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        @keyframes moveLeft {
+            from {
+                transform: translateX(50%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes showText {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+
+            to {
+                width: 500px;
+                opacity: 1;
+            }
+        }
+
+
+
+        /* ===== SERVICES UPGRADE ===== */
+        /* Sarlavha Dizayni va Animatsiyasi */
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            /* Minimal 2.5rem, maksimal 5rem gacha */
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            letter-spacing: 4px;
+            /* Harf orasidagi masofa */
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        .title-line {
+            width: 0;
+            height: 4px;
+            background: linear-gradient(to right, transparent, #fff, transparent);
+            animation: expandLine 1.2s 0.5s forwards ease-in-out;
+        }
+
+        /* Bosqichlar uchun Step Number dizayni */
+        .step-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            margin-bottom: -20px;
+            transition: 0.3s;
+        }
+
+        .service-card:hover .step-number {
+            color: #fff;
+            transform: translateY(-5px);
+        }
+
+        /* Tepadan pastga tushish animatsiyasi */
+        .step-card {
+            animation: slideDown 0.8s forwards ease-out;
+        }
+
+        /* Har bir bosqich har xil vaqtda tushishi uchun delay (kechikish) */
+        .step-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .step-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .step-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .step-card:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+
+        /* Bu qismlarni CSS-ga qo'shib qo'y yoki almashtir */
+        .hero-title.active {
+            animation: fadeInGlow 1.5s forwards ease-out;
+        }
+
+        .step-card.active {
+            animation: slideDown 0.8s forwards ease-out;
+        }
+
+        /* Har bir bosqich kechikib chiqishi uchun (faqat active bo'lganda) */
+        .step-card.active:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .step-card.active:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .step-card.active:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .step-card.active:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+
+        /* Service card dizayni (yo'q bo'lsa qo'shib qo'y) */
+        .service-card {
+            width: 100%;
+            /* Kenglikni to'liq egallash */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Ichidagi matnlarni vertikal markazlash */
+            min-height: 320px;
+            /* Minimal balandlik belgilash (ixtiyoriy) */
+            padding: 40px 25px !important;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-10px);
+        }
+
+        /* Keyframes */
+        @keyframes fadeInGlow {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes expandLine {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 250px;
+            }
+
+            /* 150px dan 250px ga oshirildi */
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== ADVANCED PARALLAX ===== */
+        .parallax-section {
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("https://images.unsplash.com/photo-1470115636492-6d2b56f9146d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80");
+        }
+
+        .parallax-content h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--gold);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 60px 0;
+            background: #000;
+            border-top: 1px solid #111;
+            text-align: center;
+        }
+
+
+        /* ===== RESPONSIVE ===== */
+        /* ===== ADVANCED PREMIUM RESPONSIVE ===== */
+
+        /* 1. Planshetlar uchun (992px gacha) */
+        @media (max-width: 991.98px) {
+            .anim-text-box h1 {
+                font-size: 3.5rem;
+            }
+
+            .center-logo-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .service-card {
+                padding: 30px 20px;
+            }
+        }
+
+        .service-card h4 {
+            min-height: 3rem;
+            /* Sarlavha 1 yoki 2 qator bo'lishiga joy */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px
+        }
+
+        /* Footer Upgrade */
+        .footer-custom {
+            padding: 80px 0 40px;
+            background: #000;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-logo-desc {
+            max-width: 250px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .footer-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+            padding-left: 5px;
+        }
+
+        /* Social Buttons (Rasmga o'xshash) */
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .social-btn i {
+            font-size: 1.2rem;
+        }
+
+        .fa-telegram {
+            color: #0088cc;
+        }
+
+        .fa-instagram {
+            color: #e1306c;
+        }
+
+        /* Login Button Custom */
+        .nav-login-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-login-link:hover {
+            color: var(--gold) !important;
+        }
+
+        /* 2. Standart telefonlar uchun (768px gacha) */
+        @media (max-width: 767.98px) {
+
+            /* Navbar mobil moslashuvi */
+            .navbar {
+                padding: 10px 0;
+            }
+
+            .navbar-brand span {
+                font-size: 1.3rem;
+            }
+
+            /* Animatsiya: Vertikal holatga o'tkazamiz */
+            .anim-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            /* Animatsiya xatolarini to'g'irlash */
+            @keyframes moveLeft {
+                from {
+                    transform: translateY(20px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .center-logo-img {
+                width: 85px;
+                height: 85px;
+                animation: moveLeft 1s forwards ease-out;
+            }
+
+            .anim-text-box {
+                margin-left: 0;
+                margin-top: 10px;
+                width: auto !important;
+                /* Mobil qurilmada kenglik cheklanmaydi */
+                opacity: 1 !important;
+                animation: none;
+                /* Mobil qurilmada murakkab animatsiya yuklamaslik uchun */
+            }
+
+            .anim-text-box h1 {
+                font-size: 2.8rem;
+            }
+
+            .anim-text-box p {
+                font-size: 0.9rem;
+                letter-spacing: 2px;
+            }
+
+            /* Parallax qismini moslashtirish */
+            .parallax-section {
+                height: 350px;
+                background-attachment: scroll;
+            }
+
+            /* Mobilda batareya tejash uchun scroll qilingan ma'qul */
+            .parallax-content h2 {
+                font-size: 1.8rem;
+                padding: 0 20px;
+            }
+        }
+
+        /* 3. Juda kichik telefonlar uchun (480px gacha) */
+        @media (max-width: 479.98px) {
+            .anim-text-box h1 {
+                font-size: 2.2rem;
+            }
+
+            .nav-btn-tg {
+                padding: 8px 15px !important;
+                font-size: 0.85rem;
+            }
+
+            .service-card {
+                padding: 25px 15px;
+            }
+
+            .service-card i {
+                font-size: 3rem;
+            }
+        }
+
+        /* LANDSCAPE (Telefonni yotiq ushlaganda) */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .video-wrapper {
+                height: 120vh;
+            }
+
+            /* Yotiq ekranda video qisqarib qolmasligi uchun */
+            .anim-logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="mainNav" class="navbar navbar-expand-lg navbar-dark fixed-top on-video">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'favicons/favico.png' %}" alt="Logo" class="nav-logo-img">
+                <span>ECOLIFE</span>
+            </a>
+
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link text-white-50 small">
+                            <i class="fa-regular fa-user me-1"></i> @{{ request.user.username }}
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-warning btn-sm px-4 rounded-pill" href="/logout/">Chiqish</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-medium" href="/login/">Kirish</a>
+                    </li>
+                    <li class="nav-item">
+                        <a target="_blank" class="nav-link nav-btn-tg px-4"
+                            href="https://t.me/eco_start_appBot?start=auth">
+                            <i class="fab fa-telegram-plane me-2"></i>Ro'yxatdan o'tish
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="video-wrapper">
+        <video autoplay muted loop playsinline>
+            <source src="/static/videos/eco_logo.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay">
+            <div class="anim-container">
+                <img src="{% static 'favicons/favico.png' %}" class="center-logo-img" alt="Logo">
+                <div class="anim-text-box">
+                    <h1>EcoLife</h1>
+                    <p>Tabiatni biz bilan asra</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section bg-black py-5" style="padding-top: 120px !important; padding-bottom: 120px !important;">
+        <div class="container">
+
+            <div class="text-center mb-5" style="margin-bottom: 100px !important;">
+                <h2 class="hero-title text-white font-bold uppercase tracking-widest opacity-0">
+                    Ekologiyani asrashni
+                </h2>
+                <h2 class="hero-title text-white font-bold uppercase tracking-widest opacity-0">
+                    Boshlang!
+                </h2>
+                <div class="title-line mx-auto mt-4"></div>
+            </div>
+
+            <div class="row g-4 mb-20">
+                <div class="col-md-3 step-card opacity-0">
+                    <div class="service-card text-center p-4">
+                        <div class="step-number">01</div>
+                        <h4>Ro'yxatdan o'tish</h4>
+                        <p class="text-white-50">Eco Life dan to'laqonli foydalanish uchun Telegram Bot orqali
+                            ro'yxatdan o'ting</p>
+                    </div>
+                </div>
+                <div class="col-md-3 step-card opacity-0">
+                    <div class="service-card text-center p-4">
+                        <div class="step-number">02</div>
+                        <h4>Login</h4>
+                        <p class="text-white-50">Ro'yxatdan o'tgandan keyin Web sahifa orali login qiling</p>
+                    </div>
+                </div>
+                <div class="col-md-3 step-card opacity-0">
+                    <div class="service-card text-center p-4">
+                        <div class="step-number">03</div>
+                        <h4>Botni ishlatishni boshlang!</h4>
+                        <p class="text-white-50">Botni o'zingizga sozlang va Ekologik zarar ko'rgan yerlarni ulashing
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-3 step-card opacity-0">
+                    <div class="service-card text-center p-4">
+                        <div class="step-number">04</div>
+                        <h4>Voila !</h4>
+                        <p class="text-white-50">Web sahifa orqali faoliyatingizni kuzatib boring va daromad qiling!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-5">
+            </div>
+        </div>
+    </div>
+    <div class="parallax-section">
+        <div class="parallax-content">
+            <h2>Eco Life – Kelajak uchun bugun harakat qil</h2>
+        </div>
+    </div>
+
+    <footer class="footer-custom">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <a class="navbar-brand mb-3" href="/">
+                        <img src="{% static 'favicons/favico.png' %}" alt="Logo" class="nav-logo-img">
+                        <span>ECOLIFE</span>
+                    </a>
+                    <p class="footer-logo-desc text-white-50">
+                        Dasturchilar tomonidan tabiatni asrash uchun yaratilgan eng oson ekologik platforma.
+                    </p>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Xizmatlar</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Obuna sotib olish</a></li>
+                        <li><a href="#">Akkauntim</a></li>
+                        <li><a href="#">AgroBiznes</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Resurslar</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% static 'files/FAQ.docx' %}" download="eco_life_qollanma.docx">Qo'llanma</a></li>
+                        <li><a target="_blank" href="https://t.me/King_richer1">Bog'lanish</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Bizga qo'shiling</h5>
+                    <a target="_blank" href="https://t.me/eco_life_elrts" class="social-btn">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </a>
+                </div>
+            </div>
+
+            <hr class="mt-5 mb-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center text-white-50 small">
+                © 2026 Eco Life Platform | Barcha huquqlar himoyalangan
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const observerOptions = {
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        entry.target.classList.remove('opacity-0');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.hero-title, .step-card').forEach(el => {
+                observer.observe(el);
+            });
+        });
+        window.onscroll = function () {
+            const nav = document.getElementById('mainNav');
+            if (window.pageYOffset > (window.innerHeight - 100)) {
+                nav.classList.add("scrolled");
+                nav.classList.remove("on-video");
+            } else {
+                nav.classList.add("on-video");
+                nav.classList.remove("scrolled");
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
