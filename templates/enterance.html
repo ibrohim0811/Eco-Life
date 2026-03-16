@@ -315,6 +315,58 @@
             }
         }
 
+        .feature-box {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-12px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .feature-img-wrapper {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .feature-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.6s;
+        }
+
+        .feature-box:hover .feature-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .feature-content {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .feature-content h5 {
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-content p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
         /* ===== ADVANCED PARALLAX ===== */
         .parallax-section {
             height: 500px;
@@ -582,16 +634,6 @@
 
             <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
-                    {% if request.user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="nav-link text-white-50 small">
-                            <i class="fa-regular fa-user me-1"></i> @{{ request.user.username }}
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-outline-warning btn-sm px-4 rounded-pill" href="/logout/">Chiqish</a>
-                    </li>
-                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link text-white fw-medium" href="/login/">Kirish</a>
                     </li>
@@ -600,8 +642,7 @@
                             href="https://t.me/eco_start_appBot?start=auth">
                             <i class="fab fa-telegram-plane me-2"></i>Ro'yxatdan o'tish
                         </a>
-                    </li>
-                    {% endif %}
+                    </li>   
                 </ul>
             </div>
         </div>
@@ -665,6 +706,59 @@
                         <div class="step-number">04</div>
                         <h4>Voila !</h4>
                         <p class="text-white-50">Web sahifa orqali faoliyatingizni kuzatib boring va daromad qiling!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-5 pt-5 pb-5">
+                <div class="text-center mb-5">
+                    <img src="{% static 'favicons/favico.png' %}" alt="Logo" class="mb-3"
+                        style="width: 60px; filter: drop-shadow(0 0 10px var(--gold));">
+                    <h2 class="hero-title text-white">Eco Life Bilan Siz:</h2>
+                    <div class="title-line mx-auto"></div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-box">
+                            <div class="feature-img-wrapper">
+                                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80"
+                                    alt="Nature Monitoring">
+                            </div>
+                            <div class="feature-content">
+                                <h5>Ekoligik zarar</h5>
+                                <p>Telegram Bot orqali, ekologik zarar ko'rgan yer haqida ulashing !
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-box">
+                            <div class="feature-img-wrapper">
+                                <img src="https://cdnuploads.aa.com.tr/uploads/Contents/2015/01/12/thumbs_b_c_08e4ff032ca689ce18327d4912693a9c.jpg"
+                                    alt="Agro Business">
+                            </div>
+                            <div class="feature-content">
+                                <h5>Agro-Biznesni Rivojlantirasiz</h5>
+                                <p>Ekologik toza mahsulotlar va xizmatlar bilan tanishasiz hamda sotuvlarni amalga
+                                    oshirasiz.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-box">
+                            <div class="feature-img-wrapper">
+                                <img src="https://png.pngtree.com/thumb_back/fw800/background/20251228/pngtree-balancing-nature-and-wealth-on-a-scale-back-image_20939981.webp"
+                                    alt="Earnings">
+                            </div>
+                            <div class="feature-content">
+                                <h5>Daromad Topasiz</h5>
+                                <p>Har bir eko-harakatingiz uchun real UZS miqdorda rag'batlantirishlarga ega
+                                    bo'lasiz.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

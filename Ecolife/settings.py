@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
+    "axes",
     "AgroBusiness",
     "eco",
     "subscriptions",
@@ -35,12 +35,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = "Ecolife.urls"
@@ -115,7 +117,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -144,4 +146,22 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
+AXES_PROXY_COUNT = 1
+AXES_IPWARE_PROXY_COUNT = 1
+AXES_IPWARE_META_PRECEDENCE = ('HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR')
+
+AXES_LOCKOUT_TEMPLATE = 'lockout.html'
+AXES_FAILURE_LIMIT = 5
+
+
+LOGIN_URL = 'login'  
+LOGIN_REDIRECT_URL = 'main'
+
+CSRF_TRUSTED_ORIGINS = ['https://domeningiz.app.railway.com', 'http://localhost:8000']
+TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY')
+TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY')

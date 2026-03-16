@@ -7,6 +7,7 @@ banned = You're banned from Eco Life admins 🚫
 acc = Account 👤
 settings = Settings ⚙️
 forgot_password = Forgot password 🤔
+invalid_phone = Invalid phone
 hello = Hello
 first_name = First Name
 last_name = Last Name

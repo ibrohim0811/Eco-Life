@@ -96,3 +96,4 @@ register_required=Зарегистрируйтесь
 welcome_back= Добро пожаловать
 already_registered = Вы уже зарегистрированы.
 error_try_again_later  = ошибка, попробуйте позже
+invalid_phone = Неверный номер телефона

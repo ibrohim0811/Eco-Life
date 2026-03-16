@@ -12,19 +12,22 @@ services:
   web:
     build: .
     container_name: ecosys_web
+    # PYTHONPATH ni shu yerning o'zida ko'rsatib ketamiz
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=Ecolife.settings
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=db
     depends_on:
       - db
-
+      
   redis:
     image: redis:7-alpine
     container_name: ecosys_redis
@@ -49,7 +52,7 @@ services:
   bot:
     build: .
     container_name: ecosys_bot
-    command: python bot/main.py  
+    command: python bot/main.py
     volumes:
       - .:/app
     environment:

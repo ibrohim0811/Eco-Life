@@ -31,7 +31,7 @@ class Users(AbstractUser):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_banned = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='users/', default='users/image.png')
+    image = models.ImageField(upload_to='users/', blank=True, null=True)
     balance = models.BigIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -96,3 +96,4 @@ register_required=Ro'yxatdan o'ting
 welcome_back= Qaytib kelganingizdan xursandmiz
 already_registered =Allaqachon royxatdan otib bolgansiz
 error_try_again_later = Xatolik qaytadan urinib ko'ring
+invalid_phone = Telefon raqam xato

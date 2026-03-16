@@ -1,83 +1,231 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
 
-{% block title %}Boshqaruv Paneli{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecolife - Go Version</title>
 
-{% block content %}
-<div class="container mb-5">
-    <div class="row g-4 mb-5">
-        <div class="col-md-3">
-            <div class="service-card text-center">
-                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Mening Balansim</div>
-                <h2 class="text-gold mt-2 fw-bold">125,000 <small style="font-size: 1rem;">UZS</small></h2>
-                <i class="fas fa-wallet mt-2 opacity-50"></i>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {% load static %}
+
+    <style>
+        :root {
+            --gold-gradient: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --aqua-neon: #00ffff;
+        }
+
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-top: 100px;
+        }
+
+        /* --- NAVBAR STYLE --- */
+        #mainNav {
+            background: rgba(0, 0, 0, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            padding: 12px 0;
+        }
+
+        /* --- AQUA THUNDER ANIMATION --- */
+        .go-status-wrapper {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .aqua-sphere-mini {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.2) 0%, transparent 70%);
+            border: 1.5px solid rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            animation: rotateSphere 3s linear infinite;
+        }
+
+        .thunder-mini {
+            color: var(--aqua-neon);
+            font-size: 18px;
+            z-index: 2;
+            filter: drop-shadow(0 0 8px var(--aqua-neon));
+            animation: flashLightning 2s infinite;
+        }
+
+        @keyframes rotateSphere {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes flashLightning {
+
+            0%,
+            90%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            92%,
+            98% {
+                opacity: 0.4;
+                transform: scale(1.2);
+            }
+
+            95% {
+                opacity: 1;
+                transform: scale(0.9);
+            }
+        }
+
+        /* --- USERNAME & CAPSULE --- */
+        .username-go {
+            background: linear-gradient(90deg, #fff, #00ffff, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 1.1rem;
+            animation: shineText 3s linear infinite;
+        }
+
+        @keyframes shineText {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .user-capsule {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 25, 35, 0.6) !important;
+            border: 1px solid rgba(0, 255, 255, 0.3) !important;
+        }
+
+        .user-capsule:active {
+            transform: scale(0.95);
+        }
+
+        /* --- iOS STYLE DROPDOWN --- */
+        /* iOS Style Dropdown - To'g'rilangan versiya */
+        .ios-dropdown {
+            background: rgba(20, 20, 25, 0.8) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 22px !important;
+            padding: 8px !important;
+            min-width: 230px !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+
+            /* Animatsiya uchun boshlang'ich holat */
+            transform-origin: top right;
+            transform: scale(0.9) translateY(-10px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+
+        /* Bootstrap 'show' klassi qo'shilganda */
+        .dropdown-menu.show {
+            transform: scale(1) translateY(15px);
+            opacity: 1;
+        }
+
+        .ios-item {
+            border-radius: 14px !important;
+            padding: 12px 16px !important;
+            color: white !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            border: none !important;
+            /* Ramkani olib tashlash */
+        }
+
+        .ios-item:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: var(--aqua-neon) !important;
+        }
+
+        /* --- CARD STYLE --- */
+        .service-card {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            transition: 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="mainNav" class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <img src="{% static 'favicons/favico.png' %}"
+                    style="width: 35px; filter: drop-shadow(0 0 5px #FFD700);">
+                <span
+                    style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 1.4rem;">ECOLIFE</span>
+            </a>
+
+            <div class="ms-auto">
+                <div class="dropdown">
+                    <div class="user-capsule d-flex align-items-center gap-3 rounded-pill px-3 py-1 shadow-lg"
+                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+
+                        <div class="go-status-wrapper">
+                            <div class="aqua-sphere-mini"></div>
+                            <i class="fas fa-bolt thunder-mini"></i>
+                        </div>
+                        <span class="username-go">@{{ request.user.username }}</span>
+                        <img src="{{ request.user.profile.image.url|default:'/static/images/default_avatar.png' }}"
+                            class="rounded-circle"
+                            style="width: 52px; height: 52px; object-fit: cover; border: 2px solid var(--aqua-neon);">
+                    </div>
+
+                    <ul class="dropdown-menu dropdown-menu-end ios-dropdown" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item ios-item" href="#"><i class="fas fa-user-circle me-3"></i>
+                                Profilim</a></li>
+                        <li><a class="dropdown-item ios-item" href="#"><i class="fas fa-cog me-3"></i> Sozlamalar</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider opacity-10">
+                        </li>
+                        <li><a class="dropdown-item ios-item ios-logout" href="{% url 'logout' %}"><i
+                                    class="fas fa-power-off me-3"></i> Chiqish</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="service-card text-center">
-                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Ekologik XP</div>
-                <h2 class="text-white mt-2 fw-bold">2,450</h2>
-                <i class="fas fa-leaf mt-2 text-success opacity-50"></i>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="service-card text-center">
-                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Topilgan Joylar</div>
-                <h2 class="text-white mt-2 fw-bold">14 ta</h2>
-                <i class="fas fa-map-marker-alt mt-2 text-danger opacity-50"></i>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="service-card text-center">
-                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Faollik Darajasi</div>
-                <h2 class="text-gold mt-2 fw-bold">Silver</h2>
-                <i class="fas fa-medal mt-2 opacity-50"></i>
+    </nav>
+
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="service-card text-center">
+                    <h5 class="text-secondary">Xush kelibsiz!</h5>
+                    <h2 class="fw-bold">Go Version Faol</h2>
+                    <p class="opacity-50">Tizim to'liq aqua defender himoyasida.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="service-card p-0 overflow-hidden">
-                <div class="p-4 d-flex justify-content-between align-items-center">
-                    <h5 class="m-0"><i class="fas fa-map-marked-alt text-gold me-2"></i> Ekologik Monitoring</h5>
-                    <span class="badge rounded-pill bg-danger animate-pulse" style="font-size: 0.7rem;">LIVE</span>
-                </div>
-                <div id="map" style="height: 450px; background: #0a0a0a; position: relative;">
-                    <div class="h-100 d-flex align-items-center justify-content-center text-white-50">
-                        <div class="text-center">
-                            <div class="spinner-border text-warning mb-3" role="status"></div>
-                            <p>Xarita yuklanmoqda...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
-        <div class="col-lg-4">
-            <div class="service-card">
-                <h5 class="mb-4 text-gold border-bottom border-secondary pb-3">
-                    <i class="fas fa-trophy me-2"></i> Top Faollar
-                </h5>
-                <div class="leaderboard">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="rounded-circle bg-warning text-black d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-weight: bold;">1</div>
-                            <span>@shoh_dev</span>
-                        </div>
-                        <span class="text-gold fw-bold">4500 XP</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-weight: bold;">2</div>
-                            <span>@eco_warrior</span>
-                        </div>
-                        <span class="text-white-50">3200 XP</span>
-                    </div>
-                </div>
-                <button class="btn btn-outline-warning w-100 mt-4 rounded-pill btn-sm">Barcha reytingni ko'rish</button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+</html>
