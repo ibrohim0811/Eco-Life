@@ -17,10 +17,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from eco.views import EnteranceTemplateView, UserLoginView
+from eco.views import EnteranceTemplateView, UserLoginView, MainTemplateView, logout
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", EnteranceTemplateView.as_view(), name='enterance'),
     path("login/", UserLoginView.as_view(), name='login'),
+    path("logout/", logout, name='logout'),
+    path("app/", MainTemplateView.as_view(), name='main'),
 ]

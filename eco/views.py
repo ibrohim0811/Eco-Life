@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.views.generic import ListView, TemplateView, FormView
 from django.contrib import messages
 from .forms import UserLoginForm
@@ -14,7 +14,7 @@ class EnteranceTemplateView(TemplateView):
 
 
 class MainTemplateView(TemplateView):
-    pass
+    template_name = 'main.html'
     
 class UserLoginView(NotLoginRequiredMixin, FormView):
     form_class = UserLoginForm
@@ -37,5 +37,8 @@ class UserLoginView(NotLoginRequiredMixin, FormView):
         messages.success(self.request, "Xush kelibsiz ✅")
         return redirect(self.success_url)
 
-    
+
+def logout(request):
+    logout(request)
+    return redirect('/')
     

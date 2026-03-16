@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Boshqaruv Paneli{% endblock %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="service-card text-center">
+                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Mening Balansim</div>
+                <h2 class="text-gold mt-2 fw-bold">125,000 <small style="font-size: 1rem;">UZS</small></h2>
+                <i class="fas fa-wallet mt-2 opacity-50"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="service-card text-center">
+                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Ekologik XP</div>
+                <h2 class="text-white mt-2 fw-bold">2,450</h2>
+                <i class="fas fa-leaf mt-2 text-success opacity-50"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="service-card text-center">
+                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Topilgan Joylar</div>
+                <h2 class="text-white mt-2 fw-bold">14 ta</h2>
+                <i class="fas fa-map-marker-alt mt-2 text-danger opacity-50"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="service-card text-center">
+                <div style="font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Faollik Darajasi</div>
+                <h2 class="text-gold mt-2 fw-bold">Silver</h2>
+                <i class="fas fa-medal mt-2 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="service-card p-0 overflow-hidden">
+                <div class="p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0"><i class="fas fa-map-marked-alt text-gold me-2"></i> Ekologik Monitoring</h5>
+                    <span class="badge rounded-pill bg-danger animate-pulse" style="font-size: 0.7rem;">LIVE</span>
+                </div>
+                <div id="map" style="height: 450px; background: #0a0a0a; position: relative;">
+                    <div class="h-100 d-flex align-items-center justify-content-center text-white-50">
+                        <div class="text-center">
+                            <div class="spinner-border text-warning mb-3" role="status"></div>
+                            <p>Xarita yuklanmoqda...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="service-card">
+                <h5 class="mb-4 text-gold border-bottom border-secondary pb-3">
+                    <i class="fas fa-trophy me-2"></i> Top Faollar
+                </h5>
+                <div class="leaderboard">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-warning text-black d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-weight: bold;">1</div>
+                            <span>@shoh_dev</span>
+                        </div>
+                        <span class="text-gold fw-bold">4500 XP</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-weight: bold;">2</div>
+                            <span>@eco_warrior</span>
+                        </div>
+                        <span class="text-white-50">3200 XP</span>
+                    </div>
+                </div>
+                <button class="btn btn-outline-warning w-100 mt-4 rounded-pill btn-sm">Barcha reytingni ko'rish</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

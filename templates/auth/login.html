@@ -170,7 +170,7 @@
         <h2>Eco-Life</h2>
         <p class="subtitle">Tizimga kirish uchun ma'lumotlarni kiriting</p>
         
-        <form method="POST">
+        <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             <div class="input-group">
                 <input type="text" name="username" placeholder="Foydalanuvchi nomi" required>
