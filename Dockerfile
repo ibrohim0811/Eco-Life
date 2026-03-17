@@ -20,4 +20,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # Gunicorn orqali ishga tushirish (Railway PORT o'zgaruvchisini o'zi beradi)
-CMD gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
