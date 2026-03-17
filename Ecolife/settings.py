@@ -12,9 +12,9 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 
 # Application definition
@@ -80,6 +80,15 @@ DATABASES = {
     }
 }
 
+import dj_database_url
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=not DEBUG  # Productionda SSL shart
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -118,6 +127,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -131,11 +141,9 @@ AUTH_USER_MODEL = "accounts.Users"
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-
-SESSION_COOKIE_AGE = 172800
-SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600 
+SESSION_SAVE_EVERY_REQUEST = True
 
 from celery.schedules import crontab
 
@@ -151,13 +159,11 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-AXES_PROXY_COUNT = 1
-AXES_IPWARE_PROXY_COUNT = 1
-AXES_IPWARE_META_PRECEDENCE = ('HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR')
 
-AXES_LOCKOUT_TEMPLATE = 'lockout.html'
+
 AXES_FAILURE_LIMIT = 5
-
+AXES_COOLOFF_TIME = 1  # 1 soat
+AXES_RESET_ON_SUCCESS = True
 
 LOGIN_URL = 'login'  
 LOGIN_REDIRECT_URL = 'main'
@@ -165,3 +171,7 @@ LOGIN_REDIRECT_URL = 'main'
 CSRF_TRUSTED_ORIGINS = ['https://domeningiz.app.railway.com', 'http://localhost:8000']
 TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY')
 TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY')
+
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
