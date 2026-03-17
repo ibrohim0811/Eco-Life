@@ -138,7 +138,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] # Sizning original statik 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Collectstatic fayllarni yig'adigan joy
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+WHITENOISE_USE_FINDERS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
