@@ -1,1 +1,1 @@
-web: gunicorn Ecolife.wsgi
+web: python manage.py migrate && gunicorn Ecolife.wsgi
