@@ -12,7 +12,10 @@ class BaseCreatedModel(models.Model):
     class Meta:
         abstract = True
         
-    
+
+
+
+  
 class Users(AbstractUser):
     
     class UserRoleChoices(models.TextChoices):
@@ -38,6 +41,7 @@ class Users(AbstractUser):
     user_type = models.CharField(max_length=10, choices=UserRoleChoices.choices, default=UserRoleChoices.USER)
     points = models.IntegerField(default=0, db_index=True)
 
+    
     @property
     def rank_info(self):
         p = self.points
@@ -98,9 +102,9 @@ class BalanceHistory(BaseCreatedModel):
 
     class Meta:
         ordering = ['-created_at'] 
+       
         
             
-    
 class UserActivities(BaseCreatedModel):
     
     class ProccesStatus(models.TextChoices):
@@ -125,6 +129,19 @@ class UserActivities(BaseCreatedModel):
 
     def __str__(self):
         return self.user.phone
+    
+    
+
+class Notification(models.Model):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="notifications")
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.message}"
+    
+
 
 class Subscription(models.Model):
     class PlanChoices(models.TextChoices):

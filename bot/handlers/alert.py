@@ -16,13 +16,14 @@ from aiogram.fsm.context import FSMContext
 from django.db import transaction
 from aiogram.types import ReplyKeyboardRemove
 from django.utils import timezone
+from django.contrib import messages
 
 from aiogram_i18n.context import I18nContext
 from bot.connections import get_user_language
 from states.alert import EcoALert
 
 from UI.default import send_location
-from accounts.models import UserActivities, BalanceHistory, Users
+from accounts.models import UserActivities, BalanceHistory, Users, Notification
 from UI.default import main_menu, back
 from UI.inline import sorov
 from connections import get_user_language, get_user
@@ -167,7 +168,14 @@ async def accepted(callback: types.CallbackQuery, i18n: I18nContext):
                     description = f"#{activity_id} - ariza qabul qilindi"
                 )
                 
+                Notification.objects.create(
+                user=user,
+                message=f"Tabriklaymiz! #{activity_id} raqamli faolligingiz tasdiqlandi. +15 XP va {activity.amount} ball qo'shildi! 🎉"
+            )
+                
                 activity.user.balance += activity.amount
+                user = activity.user
+                user.points += 15
                 activity.user.save()
                 
                 return "ok", activity
