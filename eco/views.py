@@ -8,6 +8,7 @@ from .forms import UserLoginForm
 from accounts.models import Users, UserActivities
 from .mixins import NotLoginRequiredMixin
 from django.conf import settings
+from django.http import JsonResponse
 
 
 
@@ -67,9 +68,44 @@ class UserLoginView(FormView):
         return redirect(self.success_url)
 
 
+import groq
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+client = groq.Groq(api_key="SENING_GROQ_API_KEYING")
+
+@csrf_exempt
+def groq_chat(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_message = data.get("message")
+        
+        try:
+            completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile", # Yoki o'zing xohlagan model
+                messages=[
+                    {"role": "system", "content": "Sen ECOLIFE platformasining yordamchisisan. Foydalanuvchilarga tabiatni asrash va ballar to'plashda yordam berasan. Qisqa va aqlli javob ber."},
+                    {"role": "user", "content": user_message}
+                ],
+            )
+            ai_response = completion.choices[0].message.content
+            return JsonResponse({"response": ai_response})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+
 def user_out(request):
     logout(request)  
     return redirect('/')
+
+def check_notifications(request):
+    if request.user.is_authenticated:
+        unread_count = request.user.notifications.filter(is_read=False).count()
+        return JsonResponse({
+            'unread_count': unread_count
+        })
+    return JsonResponse({'unread_count': 0}, status=403)
 
 
 
