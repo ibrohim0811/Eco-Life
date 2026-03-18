@@ -16,7 +16,7 @@ class EnteranceTemplateView(TemplateView):
 
 
 
-class MainTemplateView(LoginRequiredMixin, ListView):
+class MainTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'main.html'
     
     def get_context_data(self, **kwargs):
