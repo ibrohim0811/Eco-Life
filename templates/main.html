@@ -540,24 +540,23 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": "{{ csrf_token }}" // CSRF xatosini oldini olish
+                        "X-CSRFToken": "{{ csrf_token }}"
                     },
                     body: JSON.stringify({ message: message })
                 });
 
                 const data = await response.json();
-                console.log("Backenddan kelgan ma'lumot:", data); // Tekshirish uchun
+                console.log("Serverdan kelgan javob:", data); // Konsolda tekshirib olamiz
 
-                if (data.response) {
+                if (data && data.response) {
                     document.getElementById(loadingId).innerText = data.response;
-                } else if (data.error) {
-                    document.getElementById(loadingId).innerText = "Xato: " + data.error;
+                } else if (data && data.error) {
+                    document.getElementById(loadingId).innerText = "AI Xatosi: " + data.error;
                 } else {
-                    document.getElementById(loadingId).innerText = "Tushunarsiz javob keldi.";
+                    document.getElementById(loadingId).innerText = "Server xato javob qaytardi.";
                 }
             } catch (e) {
-                console.error("Fetch xatosi:", e);
-                document.getElementById(loadingId).innerText = "Server bilan aloqa uzildi.";
+                document.getElementById(loadingId).innerText = "Aloqa xatosi: Serverga ulanib bo'lmadi.";
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }

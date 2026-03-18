@@ -94,7 +94,11 @@ def groq_chat(request):
                 ],
             )
             ai_response = completion.choices[0].message.content
-            return JsonResponse({"response": ai_response})
+            if not ai_response:
+                return JsonResponse({"error": "Groq bosh javob qaytardi"}, status=500)
+            else:
+                return JsonResponse({"response": ai_response})
+            
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
