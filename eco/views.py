@@ -61,7 +61,7 @@ class UserLoginView(FormView):
             messages.error(self.request, "Parol yoki Login Xato ❌")
             return self.form_invalid(form)
 
-        login(self.request, user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
 
         messages.success(self.request, "Xush kelibsiz ✅")
         return redirect(self.success_url)
