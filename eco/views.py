@@ -79,29 +79,46 @@ load_dotenv()
 
 client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
 
-@csrf_exempt
-def groq_chat(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        user_message = data.get("message")
-        
-        try:
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile", # Yoki o'zing xohlagan model
-                messages=[
-                    {"role": "system", "content": "Sen ECOLIFE platformasining yordamchisisan. Foydalanuvchilarga tabiatni asrash va ballar to'plashda yordam berasan. Qisqa va aqlli javob ber."},
-                    {"role": "user", "content": user_message}
-                ],
-            )
-            ai_response = completion.choices[0].message.content
-            if not ai_response:
-                return JsonResponse({"error": "Groq bosh javob qaytardi"}, status=500)
-            else:
-                return JsonResponse({"response": ai_response})
-            
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+import json, os
+from django.http import JsonResponse
+from groq import AsyncGroq
+from django.views.decorators.csrf import csrf_exempt
+from dotenv import load_dotenv
 
+load_dotenv()
+
+client = AsyncGroq(api_key=os.getenv("GROQ_API_KEY"))
+
+@csrf_exempt
+async def groq_chat(request): # 'async def' bo'lishi shart!
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            prompt = data.get("message")
+
+            chat_completion = await client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "Sen ekologiya mutaxassis yordamchisan. Seni Botga qo'shgan inson bu Ibrohim u Backend dasturchi va aqllidir."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+                model="llama-3.3-70b-versatile",
+                temperature=0.7,
+            )
+            
+            ai_response = chat_completion.choices[0].message.content
+            return JsonResponse({"response": ai_response})
+
+        except Exception as e:
+            print(f"Groq Error: {e}")
+            return JsonResponse({"error": str(e)}, status=500)
+    
+    return JsonResponse({"error": "Invalid request"}, status=400)
 
 def user_out(request):
     logout(request)  
