@@ -224,6 +224,142 @@
                 box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
             }
         }
+
+        .ai-msg,
+        .user-msg {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+
+        .ai-msg {
+            background: rgba(255, 255, 255, 0.05);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            color: #eee;
+        }
+
+        .user-msg {
+            background: var(--gold-gradient);
+            color: #000;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 991px) {
+            .navbar {
+                height: auto !important;
+                padding: 10px 0;
+            }
+
+            .navbar-brand span {
+                font-size: 1.2rem;
+            }
+
+            .btn-glow {
+                padding: 8px 15px;
+                font-size: 11px;
+            }
+        }
+
+        /* 2. Sarlavhalar va Stat-kartalar (Mobil uchun) */
+        @media (max-width: 768px) {
+            .display-3 {
+                font-size: 2.2rem !important;
+                /* Katta sarlavhani kichraytirdik */
+                font-weight: 800;
+            }
+
+            .stat-card {
+                padding: 25px;
+                /* Paddingni kamaytirdik */
+                text-align: center;
+            }
+
+            .stat-value {
+                font-size: 2.2rem;
+                /* Raqamlar sig'ishi uchun */
+            }
+
+            main {
+                padding-top: 20px !important;
+            }
+        }
+
+        /* 3. Global Elite (Leaderboard) Moslashuvi */
+        @media (max-width: 576px) {
+            .leader-item {
+                padding: 15px;
+                margin-bottom: 12px;
+                flex-direction: row;
+                /* Qator bo'lib qolishi shart */
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .leader-item img {
+                width: 40px;
+                /* Rasmni kichraytirdik */
+            }
+
+            .leader-item h5 {
+                font-size: 0.9rem;
+                margin-bottom: 0;
+            }
+
+            .leader-item .fs-4 {
+                font-size: 1.1rem !important;
+            }
+
+            .gold-glass.p-5 {
+                padding: 20px !important;
+                /* Konteyner paddingini kamaytirdik */
+            }
+        }
+
+        /* 4. Chat Oynasi - Mobil uchun maxsus */
+        @media (max-width: 768px) {
+            #chat-container {
+                width: 100% !important;
+                height: 100dvh !important;
+                /* Dynamic Viewport Height (iOS uchun ham zo'r) */
+                bottom: 0 !important;
+                right: 0 !important;
+                border-radius: 0 !important;
+                z-index: 10001;
+                /* Hamma narsadan tepada */
+            }
+
+            .float-chat {
+                width: 60px;
+                height: 60px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Silliq o'tish effektlari */
+        .gold-glass {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Rasmlar kesilib qolmasligi uchun */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Scrollni chiroyli qilish */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-gradient);
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -432,29 +568,6 @@
                 right: 0 !important;
                 border-radius: 0 !important;
             }
-        }
-
-        .ai-msg,
-        .user-msg {
-            max-width: 85%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 13px;
-        }
-
-        .ai-msg {
-            background: rgba(255, 255, 255, 0.05);
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-            color: #eee;
-        }
-
-        .user-msg {
-            background: var(--gold-gradient);
-            color: #000;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-            font-weight: 500;
         }
     </style>
 
