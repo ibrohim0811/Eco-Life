@@ -527,27 +527,37 @@
             const message = input.value.trim();
             if (!message) return;
 
-            // Foydalanuvchi xabarini ekranga chiqarish
             const chatMessages = document.getElementById('chat-messages');
             chatMessages.innerHTML += `<div class="user-msg">${message}</div>`;
             input.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Yuklanish holati
             const loadingId = 'loading-' + Date.now();
-            chatMessages.innerHTML += `<div class="ai-msg" id="${loadingId}"><i class="fas fa-spinner fa-spin"></i> O'ylayapman...</div>`;
+            chatMessages.innerHTML += `<div class="ai-msg" id="${loadingId}"><i class="fas fa-spinner fa-spin"></i></div>`;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
                 const response = await fetch("{% url 'groq_chat' %}", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}" // CSRF xatosini oldini olish
+                    },
                     body: JSON.stringify({ message: message })
                 });
-                const data = await response.json();
 
-                document.getElementById(loadingId).innerText = data.response;
+                const data = await response.json();
+                console.log("Backenddan kelgan ma'lumot:", data); // Tekshirish uchun
+
+                if (data.response) {
+                    document.getElementById(loadingId).innerText = data.response;
+                } else if (data.error) {
+                    document.getElementById(loadingId).innerText = "Xato: " + data.error;
+                } else {
+                    document.getElementById(loadingId).innerText = "Tushunarsiz javob keldi.";
+                }
             } catch (e) {
-                document.getElementById(loadingId).innerText = "Xatolik yuz berdi. Qayta urinib ko'ring.";
+                console.error("Fetch xatosi:", e);
+                document.getElementById(loadingId).innerText = "Server bilan aloqa uzildi.";
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
