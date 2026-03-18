@@ -69,27 +69,33 @@ class UserLoginView(FormView):
 
 
 import json
-import groq
 import os
 from django.http import JsonResponse
-from groq import Groq  # AsyncGroq EMAS, oddiy Groq!
+from groq import Groq 
 from django.views.decorators.csrf import csrf_exempt
 from dotenv import load_dotenv
 
+# .env yuklash
 load_dotenv()
 
-client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
-print(client)
-# Oddiy (sinxron) client yaratamiz
-
 @csrf_exempt
-def groq_chat(request): # 'async' so'zini olib tashladik
+def groq_chat(request):
     if request.method == "POST":
         try:
+            # API KEY borligini tekshirish
+            api_key = os.getenv('GROQ_API_KEY')
+            if not api_key:
+                return JsonResponse({"error": "API kalit topilmadi (.env faylni tekshiring)"}, status=500)
+
+            # Clientni view ichida yaratish
+            client = Groq(api_key=api_key)
+            
             data = json.loads(request.body)
             prompt = data.get("message")
 
-            # 'await' ishlatilmaydi
+            if not prompt:
+                return JsonResponse({"error": "Xabar bo'sh bo'lishi mumkin emas"}, status=400)
+
             chat_completion = client.chat.completions.create(
                 messages=[
                     {
@@ -109,11 +115,12 @@ def groq_chat(request): # 'async' so'zini olib tashladik
             return JsonResponse({"response": ai_response})
 
         except Exception as e:
-            # Xatoni terminalda ko'rish uchun:
-            print(f"!!! GROQ BACKEND XATOSI: {e}") 
-            return JsonResponse({"error": str(e)}, status=500)
+            # Terminalda aniq xatoni ko'rish uchun
+            print(f"!!! GROQ BACKEND XATOSI: {str(e)}") 
+            return JsonResponse({"error": f"Backend xatosi: {str(e)}"}, status=500)
     
     return JsonResponse({"error": "Faqat POST so'rov qabul qilinadi"}, status=400)
+
 
 def user_out(request):
     logout(request)  
