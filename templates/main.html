@@ -250,73 +250,40 @@
                     <div class="position-relative" data-bs-toggle="dropdown" aria-expanded="false"
                         style="cursor:pointer">
                         <i class="fas fa-bell fs-5 text-white-50 transition-all hover-gold"></i>
-                        {% with unread_count=request.user.notifications.filter.is_read=False.count %}
-                        {% if unread_count > 0 %}
+
+                        {% if request.user.unread_notifications_count > 0 %}
                         <span id="notif-count"
                             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark"
                             style="font-size: 0.55rem; padding: 0.35em 0.5em;">
-                            {{ unread_count }}
+                            {{ request.user.unread_notifications_count }}
                         </span>
                         {% endif %}
-                        {% endwith %}
                     </div>
 
-                    <ul id="notif-list" class="dropdown-menu dropdown-menu-end gold-glass shadow-lg mt-4 p-2"
+                    <ul id="notif-list"
+                        class="dropdown-menu dropdown-menu-end gold-glass shadow-lg mt-4 p-0 overflow-hidden"
                         style="width: 320px; border-top: 3px solid #FFD700 !important;">
-                        <li>
-                            <div class="d-flex justify-content-between align-items-center px-3 py-2">
-                                <h6 class="dropdown-header p-0 m-0 text-warning fw-black" style="letter-spacing: 1px;">
-                                    ALERTS</h6>
-                                <span class="badge bg-white bg-opacity-10 text-white-50"
-                                    style="font-size: 10px;">LATEST</span>
-                            </div>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider opacity-10">
+                        <li class="p-3 border-bottom border-white-10 bg-black bg-opacity-20">
+                            <h6 class="m-0 text-warning fw-black small" style="letter-spacing: 1px;">XABARNOMALAR</h6>
                         </li>
 
-                        <div class="notification-items" style="max-height: 350px; overflow-y: auto;">
+                        <div style="max-height: 300px; overflow-y: auto;">
                             {% for notif in request.user.notifications.all|dictsortreversed:"created_at"|slice:":5" %}
                             <li>
-                                <div class="dropdown-item py-3 border-bottom border-white-10 transition-all {% if not notif.is_read %}bg-warning bg-opacity-5{% endif %}"
+                                <div class="dropdown-item py-3 border-bottom border-white-10 {% if not notif.is_read %}bg-warning bg-opacity-5{% endif %}"
                                     style="white-space: normal;">
-                                    <div class="d-flex gap-3">
-                                        <div class="notif-icon">
-                                            {% if "XP" in notif.message %}
-                                            <i class="fas fa-bolt text-warning"></i>
-                                            {% else %}
-                                            <i class="fas fa-check-circle text-success"></i>
-                                            {% endif %}
-                                        </div>
-                                        <div>
-                                            <div class="small text-white fw-medium line-height-sm">{{ notif.message }}
-                                            </div>
-                                            <div style="font-size: 9px;"
-                                                class="text-white-50 mt-1 text-uppercase tracking-widest">
-                                                <i class="far fa-clock me-1"></i> {{ notif.created_at|timesince }} oldin
-                                            </div>
-                                        </div>
+                                    <div class="small text-white opacity-75">{{ notif.message }}</div>
+                                    <div class="text-white-50 mt-1" style="font-size: 9px;">
+                                        <i class="far fa-clock me-1"></i> {{ notif.created_at|timesince }} oldin
                                     </div>
                                 </div>
                             </li>
                             {% empty %}
-                            <li>
-                                <div class="dropdown-item text-center py-4 opacity-50">
-                                    <i class="fas fa-bell-slash d-block mb-2 fs-4"></i>
-                                    <span class="small">Hozircha xabarlar yo'q</span>
-                                </div>
-                            </li>
+                            <li class="p-4 text-center opacity-50 small">Xabarlar yo'q</li>
                             {% endfor %}
                         </div>
-
-                        <li>
-                            <a class="dropdown-item text-center small text-warning fw-bold py-2 mt-2" href="#">
-                                BARCHASINI KO'RISH <i class="fas fa-chevron-right ms-1" style="font-size: 8px;"></i>
-                            </a>
-                        </li>
                     </ul>
                 </div>
-
                 <div class="dropdown">
                     <div class="d-flex align-items-center gap-3 ps-3 border-start border-white-10"
                         data-bs-toggle="dropdown" style="cursor:pointer">
