@@ -25,7 +25,6 @@ docker-compose.yml
 .env
 
 # Statik va Media fayllar (Agar Docker volume ishlatayotgan bo'lsangiz)
-static/
 media/
 
 # Boshqa kesh va vaqtinchalik fayllar
