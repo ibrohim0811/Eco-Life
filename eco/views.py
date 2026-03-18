@@ -68,10 +68,11 @@ class UserLoginView(FormView):
         return redirect(self.success_url)
 
 
-import groq
 import json
+import groq
 import os
 from django.http import JsonResponse
+from groq import Groq  # AsyncGroq EMAS, oddiy Groq!
 from django.views.decorators.csrf import csrf_exempt
 from dotenv import load_dotenv
 
@@ -79,32 +80,25 @@ load_dotenv()
 
 client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
 
-import json, os
-from django.http import JsonResponse
-from groq import AsyncGroq
-from django.views.decorators.csrf import csrf_exempt
-from dotenv import load_dotenv
-
-load_dotenv()
-
-client = AsyncGroq(api_key=os.getenv("GROQ_API_KEY"))
+# Oddiy (sinxron) client yaratamiz
 
 @csrf_exempt
-async def groq_chat(request): # 'async def' bo'lishi shart!
+def groq_chat(request): # 'async' so'zini olib tashladik
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             prompt = data.get("message")
 
-            chat_completion = await client.chat.completions.create(
+            # 'await' ishlatilmaydi
+            chat_completion = client.chat.completions.create(
                 messages=[
                     {
-                        "role": "system",
+                        "role": "system", 
                         "content": "Sen ekologiya mutaxassis yordamchisan. Seni Botga qo'shgan inson bu Ibrohim u Backend dasturchi va aqllidir."
                     },
                     {
-                        "role": "user",
-                        "content": prompt,
+                        "role": "user", 
+                        "content": prompt
                     }
                 ],
                 model="llama-3.3-70b-versatile",
@@ -115,10 +109,11 @@ async def groq_chat(request): # 'async def' bo'lishi shart!
             return JsonResponse({"response": ai_response})
 
         except Exception as e:
-            print(f"Groq Error: {e}")
+            # Xatoni terminalda ko'rish uchun:
+            print(f"!!! GROQ BACKEND XATOSI: {e}") 
             return JsonResponse({"error": str(e)}, status=500)
     
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    return JsonResponse({"error": "Faqat POST so'rov qabul qilinadi"}, status=400)
 
 def user_out(request):
     logout(request)  
