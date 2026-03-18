@@ -12,8 +12,8 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+# 
 
 
 ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")]
@@ -140,14 +140,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_USE_FINDERS = True
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.Users"
@@ -176,13 +174,13 @@ AUTHENTICATION_BACKENDS = [
 
 
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1  # 1 soat
+AXES_COOLOFF_TIME = 1  
 AXES_RESET_ON_SUCCESS = True
 
 LOGIN_URL = 'login'  
 LOGIN_REDIRECT_URL = 'main'
 
-CSRF_TRUSTED_ORIGINS = ['https://domeningiz.app.railway.com', 'http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['https://eco-life.app.railway.com', 'http://localhost:8000']
 TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY')
 TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY')
 
