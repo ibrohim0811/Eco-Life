@@ -16,4 +16,4 @@ RUN mkdir -p static staticfiles
 
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:. && python bot/main.py & celery -A Ecolife worker -l info -P solo --logfile=celery_worker.log & python manage.py makemigrations accounts & python manage.py migrate --noinput && gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:. && python bot/main.py & celery -A Ecolife worker -l info -P solo --logfile=celery_worker.log & python manage.py makemigrations accounts && python manage.py migrate --noinput && gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
