@@ -191,7 +191,7 @@ async def accepted(callback: types.CallbackQuery, i18n: I18nContext):
             
             u_id = activity.user.tg_id 
         
-            await bot.send_message(u_id, i18n("amount"), message_effect_id="5046509860389126442", reply_markup=main_menu(i18n))
+            await bot.send_message(u_id, i18n("amount"),reply_markup=main_menu(i18n))
             await callback.answer("Tasdiqlandi!")
                 
         await callback.answer("Tasdiqlandi!")
@@ -308,8 +308,7 @@ async def status_already(callback: types.CallbackQuery, i18n: I18nContext):
         await bot.send_message(
             chat_id=chat_id, 
             text=i18n("rejected"), 
-            reply_markup=main_menu(i18n),
-            message_effect_id="5104858069142078462"
+            reply_markup=main_menu(i18n)
         )
         await callback.answer(i18n("rejected"), show_alert=False)
         

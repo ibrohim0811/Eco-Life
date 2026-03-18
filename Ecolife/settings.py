@@ -193,3 +193,27 @@ SECURE_HSTS_PRELOAD = True
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
+
+import logging
+
+# Celery loglari uchun alohida fayl
+CELERY_LOG_FILE = os.path.join(BASE_DIR, 'celery_worker.log')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'celery_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': CELERY_LOG_FILE,
+        },
+    },
+    'loggers': {
+        'celery': {
+            'handlers': ['celery_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

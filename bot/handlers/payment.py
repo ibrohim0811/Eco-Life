@@ -233,7 +233,7 @@ async def accept_request_payment(call: types.CallbackQuery, i18n: I18nContext, s
         await sync_to_async(change_user_version)(user, Subscription.PlanChoices.ULTIMA, subs_expirement)
         
     state.clear()
-    await bot.send_message(user_id, i18n('check_accepted'), reply_markup=main_menu(i18n), message_effect_id='5046509860389126442')
+    await bot.send_message(user_id, i18n('check_accepted'), reply_markup=main_menu(i18n))
     
 
 @payment.callback_query(F.data.startswith('decline_'))

@@ -14,6 +14,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import FSInputFile
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 # admin.py ichida
 from accounts.tasks import run_broadcast_task
@@ -164,5 +166,40 @@ async def cmd_get_log(message: types.Message):
         await message.answer_document(FSInputFile(path))
     else:
         await message.answer("Loglar bo'sh.")
+
+
+@dp_admin.message(Command("celery_logs"))
+async def get_celery_logs(message: types.Message):
+    if str(message.from_user.id) != os.getenv("ADMIN_ID"):
+        return
+
+    log_path = "celery_worker.log"
+    pdf_path = "celery_report.pdf"
+
+    if not os.path.exists(log_path) or os.path.getsize(log_path) == 0:
+        await message.answer("Celery loglari hali bo'sh yoki fayl yaratilmagan.")
+        return
+
+    # PDF yaratish jarayoni
+    c = canvas.Canvas(pdf_path, pagesize=letter)
+    y = 750
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(30, 770, f"Celery Worker Logs - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    c.setFont("Helvetica", 9)
+
+    with open(log_path, "r") as f:
+        # Oxirgi 150 qatorni olish (PDF juda katta bo'lib ketmasligi uchun)
+        lines = f.readlines()[-150:]
+        for line in lines:
+            if y < 50:
+                c.showPage()
+                y = 750
+            # Log qatori juda uzun bo'lsa kesib tashlaymiz
+            c.drawString(30, y, line.strip()[:110])
+            y -= 12
+    c.save()
+
+    await message.answer_document(types.FSInputFile(pdf_path), caption="Celery loglari hisoboti 🛠")
+    os.remove(pdf_path)
 
 print(">>> Admin Module Ready.")
