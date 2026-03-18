@@ -12,6 +12,7 @@ from accounts.models import Subscription
 BASE_DIR = Path(__file__).resolve().parent.parent 
 env_path = BASE_DIR / '.env'
 REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+print(f"redis debug {REDIS_URL}")
 
 load_dotenv(dotenv_path=env_path)
 
