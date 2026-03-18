@@ -180,7 +180,11 @@ AXES_RESET_ON_SUCCESS = True
 LOGIN_URL = 'login'  
 LOGIN_REDIRECT_URL = 'main'
 
-CSRF_TRUSTED_ORIGINS = ['https://eco-life.app.railway.com', 'http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['https://eco-life.up.railway.app',
+    
+    
+    
+    ]
 TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY')
 TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY')
 
