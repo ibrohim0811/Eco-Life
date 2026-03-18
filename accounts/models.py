@@ -36,6 +36,37 @@ class Users(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user_type = models.CharField(max_length=10, choices=UserRoleChoices.choices, default=UserRoleChoices.USER)
+    points = models.IntegerField(default=0, db_index=True)
+
+    @property
+    def rank_info(self):
+        p = self.points
+        if p < 100:
+            return {"name": "Nihol", "badge": "🌱", "next": 100}
+        elif p < 500:
+            return {"name": "Kurtak", "badge": "🌿", "next": 500}
+        elif p < 2000:
+            return {"name": "Barg", "badge": "🍃", "next": 2000}
+        elif p < 5000:
+            return {"name": "Daraxt", "badge": "🌳", "next": 5000}
+        elif p < 10000:
+            return {"name": "O'rmon qo'riqchisi", "badge": "🛡️", "next": 10000}
+        elif p < 25000:
+            return {"name": "Ekosistema Bunyodkori", "badge": "🏗️", "next": 25000}
+        elif p < 50000:
+            return {"name": "Sayyora Najotkori", "badge": "🌍", "next": 50000}
+        else:
+            return {"name": "Yashil Afsona", "badge": "👑", "next": None}
+
+    @property
+    def progress_percent(self):
+        info = self.rank_info
+        if info["next"] is None: return 100
+        return min(int((self.points / info["next"]) * 100), 100)
+    
+    @property
+    def global_rank(self):
+        return Users.objects.filter(points__gt=self.points).count() + 1
     
     def __str__(self):
         return self.first_name

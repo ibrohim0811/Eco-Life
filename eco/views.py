@@ -16,14 +16,25 @@ class EnteranceTemplateView(TemplateView):
 
 
 
-class MainTemplateView(LoginRequiredMixin, TemplateView):
+class MainTemplateView(LoginRequiredMixin, ListView):
     template_name = 'main.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        context['banner'] = True
+        context['activity_count'] = UserActivities.objects.filter(user=self.request.user).count()  
+        
+        context['leaderboard'] = Users.objects.order_by('-points')[:10]
+        
+        return context
     
     
 class UserLoginView(FormView):
     form_class = UserLoginForm
     template_name = 'auth/login.html'
-
+    success_url = "main"
     def form_valid(self, form):
         
         token = self.request.POST.get('cf-turnstile-response')
