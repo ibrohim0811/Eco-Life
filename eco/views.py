@@ -69,11 +69,15 @@ class UserLoginView(FormView):
 
 
 import groq
+import json
+import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
+from dotenv import load_dotenv
 
-client = groq.Groq(api_key="SENING_GROQ_API_KEYING")
+load_dotenv()
+
+client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
 
 @csrf_exempt
 def groq_chat(request):
