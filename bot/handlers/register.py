@@ -151,7 +151,7 @@ async def password(msg: types.Message, state: FSMContext, i18n: I18nContext):
         language=data.get('user_lang')
     )
     
-    await msg.answer(f"{i18n('start_text')} \n {i18n('web')} \n Username: <code>{user.username}</code> \n  {msg.from_user.first_name} \n{i18n('join')}\n https://Eco-life.uz", parse_mode="HTML", reply_markup=main_menu(i18n))
+    await msg.answer(f"{i18n('start_text')} \n {i18n('web')} \n Username: <code>{user.username}</code> \n  {msg.from_user.first_name} \n{i18n('join')}\n https://eco-life.up.railway.app", parse_mode="HTML", reply_markup=main_menu(i18n))
     await state.clear()
 
 

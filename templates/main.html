@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECOLIFE | Account</title>
+    <meta name="google-site-verification" content="UoDkD5nyUULkbk1GhedkyrgsI8_B_0aWyHUJoiFyRoE" />
+    <title>ECOLIFE | Premium Experience</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% load static %}
@@ -11,152 +13,147 @@
     <style>
         :root {
             --gold-gradient: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 215, 0, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 215, 0, 0.15);
             --text-color: #ffffff;
-            --bg-color: #050505;
+            --bg-color: #030303; /* Yanada chuqur qora */
             --neon-green: #39FF14;
+            --premium-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
         [data-theme="light"] {
-            --bg-color: #f8f9fa;
-            --text-color: #1a1a1a;
-            --glass-bg: rgba(255, 255, 255, 0.8);
+            --bg-color: #f0f2f5;
+            --text-color: #111111;
+            --glass-bg: rgba(255, 255, 255, 0.9);
             --glass-border: rgba(184, 134, 11, 0.2);
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-x: hidden;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: 0.5s ease;
+            letter-spacing: -0.3px;
         }
 
-        /* Gold Glass Mixin */
-        .gold-glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-        }
-
-        /* Navbar Custom */
+        /* --- LUXURY NAVBAR --- */
         .navbar {
-            background: rgba(0, 0, 0, 0.8) !important;
-            backdrop-filter: blur(20px);
+            height: 85px; /* Kattalashtirildi */
+            background: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(25px) saturate(180%);
             border-bottom: 1px solid var(--glass-border);
-            padding: 12px 0;
+            transition: 0.3s;
+        }
+
+        .navbar-brand span {
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .btn-glow {
             border: 1px solid var(--neon-green);
             color: var(--neon-green);
             background: transparent;
-            font-weight: 800;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
-            transition: 0.3s;
+            font-weight: 700;
+            padding: 10px 30px;
+            border-radius: 50px;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.1);
+            transition: 0.4s;
         }
         .btn-glow:hover {
             background: var(--neon-green);
             color: #000;
-            box-shadow: 0 0 25px var(--neon-green);
+            box-shadow: 0 0 30px var(--neon-green);
+            transform: scale(1.05);
         }
 
-        /* Stats Section */
-        .stat-card {
-            padding: 30px;
-            text-align: center;
-            transition: 0.4s;
+        /* --- PREMIUM CARDS --- */
+        .gold-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--premium-shadow);
         }
-        .stat-card:hover { transform: translateY(-10px); border-color: #FFD700; }
+        .gold-glass:hover {
+            border-color: #FFD700;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+            transform: translateY(-8px);
+        }
+
+        .stat-card { padding: 40px; }
         .stat-value {
-            font-size: 2.8rem;
+            font-size: 3.5rem;
             font-weight: 900;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            line-height: 1;
         }
 
-        /* Leaderboard Premium Design */
-        .leader-item {
-            display: flex;
+        /* --- PLAN ICONS & LABELS --- */
+        .plan-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 18px 25px;
-            margin-bottom: 15px;
-            transition: 0.3s;
-            animation: slideIn 0.5s ease-out forwards;
-            opacity: 0;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .leader-item:hover {
-            transform: scale(1.02) translateX(10px);
-            background: rgba(255, 215, 0, 0.08);
+        .plan-ULTIMA { background: var(--gold-gradient); color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.4); }
+        .plan-PRO { background: #39FF14; color: #000; }
+        .plan-GO { background: #00D2FF; color: #fff; }
+
+        /* --- LEADERBOARD REDESIGN --- */
+        .leader-item {
+            padding: 22px 30px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+        
+        .rank-gold { 
+            background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0) 100%);
+            border-left: 5px solid #FFD700;
         }
 
-        .rank-gold { border: 2px solid #FFD700; background: rgba(255, 215, 0, 0.1); box-shadow: 0 0 20px rgba(255, 215, 0, 0.15); }
-        .rank-silver { border: 1.5px solid #C0C0C0; background: rgba(192, 192, 192, 0.05); }
-        .rank-bronze { border: 1.5px solid #CD7F32; background: rgba(205, 127, 50, 0.05); }
-
-        .premium-label {
-            font-size: 9px;
-            background: var(--gold-gradient);
-            color: #000;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 900;
-            margin-left: 8px;
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .navbar { height: 70px; }
+            .stat-value { font-size: 2.5rem; }
+            .container { padding-left: 20px; padding-right: 20px; }
+            .leader-item { flex-direction: column; text-align: center; gap: 15px; }
+            .leader-item .text-end { text-align: center !important; }
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(-30px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Ad Banner */
-        .ad-banner {
-            background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
-            border-radius: 25px;
-            padding: 30px;
-            color: #000;
-            position: relative;
-            overflow: hidden;
-        }
-        .ad-banner::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255,255,255,0.2);
-            transform: rotate(30deg);
-            animation: moveLight 4s infinite;
-        }
-        @keyframes moveLight {
-            0% { left: -150%; }
-            100% { left: 150%; }
-        }
-
-        /* Float Chat Button */
+        /* Chat Button Pulse */
         .float-chat {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 65px;
-            height: 65px;
+            bottom: 40px;
+            right: 40px;
+            width: 70px;
+            height: 70px;
             background: var(--gold-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
             color: #000;
-            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.5);
             cursor: pointer;
-            z-index: 9999;
+            z-index: 1000;
+            animation: pulse-gold 2s infinite;
+        }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
         }
     </style>
 </head>
@@ -164,115 +161,109 @@
 
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-                <img src="{% static 'favicons/favico.png' %}" width="35" class="rounded-pill border border-warning">
-                <span class="fw-bold text-white letter-spacing-1">ECOLIFE</span>
+            <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+                <img src="{% static 'favicons/favico.png' %}" width="45" class="rounded-circle border border-warning shadow-lg">
+                <span class="fw-black">ECOLIFE</span>
             </a>
 
             <div class="mx-auto d-none d-lg-block">
-                <button class="btn btn-glow rounded-pill px-5">AGRO BIZNESGA O'TISH</button>
+                <button class="btn btn-glow">AGRO BIZNES PORTAL <i class="fas fa-external-link-alt small ms-2"></i></button>
             </div>
 
-            <div class="d-flex align-items-center gap-4 text-white">
-                <i class="fas fa-moon fs-5" id="theme-icon" onclick="toggleTheme()" style="cursor:pointer"></i>
-
-                <div class="dropdown">
-                    <span class="fw-bold fs-5 cursor-pointer" data-bs-toggle="dropdown">A <i class="fas fa-caret-down small"></i></span>
-                    <div class="dropdown-menu dropdown-menu-end gold-glass p-3 shadow-lg mt-3">
-                        <label class="small mb-2 d-block opacity-75">Interface Scale</label>
-                        <input type="range" class="form-range" min="14" max="22" step="1" id="fsRange" oninput="changeFontSize(this.value)">
-                    </div>
-                </div>
+            <div class="d-flex align-items-center gap-4">
+                <i class="fas fa-sun fs-5" id="theme-icon" onclick="toggleTheme()" style="cursor:pointer; color: #FFD700;"></i>
 
                 <div class="dropdown">
                     <div class="position-relative" data-bs-toggle="dropdown" style="cursor:pointer">
-                        <i class="fas fa-bell fs-5"></i>
-                        <span id="notif-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem;">0</span>
+                        <i class="fas fa-bell fs-5 text-white-50"></i>
+                        <span id="notif-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">0</span>
                     </div>
-                    <ul id="notif-list" class="dropdown-menu dropdown-menu-end gold-glass shadow mt-4 p-2" style="width: 280px;">
-                        <li><h6 class="dropdown-header text-warning border-bottom border-warning border-opacity-25 pb-2 mb-2">NOTIFICATIONS</h6></li>
+                    <ul id="notif-list" class="dropdown-menu dropdown-menu-end gold-glass shadow-lg mt-4 p-2" style="width: 320px; border-top: 3px solid #FFD700;">
+                        <li><h6 class="dropdown-header text-warning">RECENT ALERTS</h6></li>
                     </ul>
                 </div>
 
                 <div class="dropdown">
-                    <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" style="cursor:pointer">
-                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=FFD700&color=000" class="rounded-circle border border-warning p-1" width="40">
-                        <div class="d-none d-md-block">
-                            <div class="small fw-bold">{{ request.user.username|upper }}</div>
-                            <div style="font-size: 8px;" class="text-warning fw-bold">ULTIMA USER <i class="fas fa-crown"></i></div>
+                    <div class="d-flex align-items-center gap-3 ps-3 border-start border-white-10" data-bs-toggle="dropdown" style="cursor:pointer">
+                        <div class="text-end d-none d-md-block">
+                            <div class="small fw-bold text-white">{{ request.user.username|upper }}</div>
+                            <div class="plan-badge plan-{{ request.user.subscription.plan }}">
+                                {% if request.user.subscription.plan == "ULTIMA" %}<i class="fas fa-gem"></i>
+                                {% elif request.user.subscription.plan == "PRO" %}<i class="fas fa-rocket"></i>
+                                {% else %}<i class="fas fa-paper-plane"></i>{% endif %}
+                                {{ request.user.subscription.plan }}
+                            </div>
                         </div>
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=FFD700&color=000&bold=true" class="rounded-circle border border-warning shadow" width="48">
                     </div>
-                    <ul class="dropdown-menu dropdown-menu-end gold-glass border-0 shadow mt-3 p-2">
-                        <li><a class="dropdown-item rounded-3" href="#"><i class="fas fa-user-gear me-2"></i>Settings</a></li>
-                        <li><a class="dropdown-item rounded-3 text-warning" href="#"><i class="fas fa-gem me-2"></i>Go Ultima</a></li>
-                        <li><hr class="dropdown-divider bg-warning opacity-25"></li>
-                        <li><a class="dropdown-item rounded-3 text-danger" href="{% url 'logout' %}"><i class="fas fa-power-off me-2"></i>Logout</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end gold-glass border-0 shadow-lg mt-3 p-2">
+                        <li><a class="dropdown-item rounded-3 py-2" href="#"><i class="fas fa-fingerprint me-2 text-warning"></i> Security</a></li>
+                        <li><a class="dropdown-item rounded-3 py-2" href="#"><i class="fas fa-wallet me-2 text-warning"></i> Billing</a></li>
+                        <li><hr class="dropdown-divider opacity-10"></li>
+                        <li><a class="dropdown-item rounded-3 py-2 text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i> Terminate Session</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="container mt-5 pt-4">
-        <div class="text-center mb-5">
-            <h1 class="display-4 fw-bold mb-0">Xush kelibsiz, <span class="text-warning">{{ request.user.username }}</span>!</h1>
-            <p class="text-muted opacity-75 mt-2">Bugun sayyoramiz uchun foydali ish qildingizmi?</p>
+    <main class="container mt-5 pt-5">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h6 class="text-warning fw-bold tracking-widest text-uppercase" style="font-size: 12px;">Ecological Command Center</h6>
+                <h1 class="display-3 fw-black mt-2">Empire of <span class="text-warning">Nature</span></h1>
+            </div>
         </div>
 
-        <div class="row g-4 mb-5 pb-4">
+        <div class="row g-4 mb-5">
             <div class="col-md-4">
                 <div class="gold-glass stat-card">
+                    <div class="small text-uppercase opacity-50 fw-bold mb-3"><i class="fas fa-leaf me-2"></i> Impact</div>
                     <div class="stat-value counter">{{ activity_count }}</div>
-                    <div class="fw-bold opacity-50 small tracking-widest mt-2">TOTAL ACTIVITIES</div>
+                    <div class="mt-3 small fw-bold text-success">+12% Since last week</div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="gold-glass stat-card border-warning border-opacity-50">
+                <div class="gold-glass stat-card" style="border-width: 2px;">
+                    <div class="small text-uppercase opacity-50 fw-bold mb-3"><i class="fas fa-coins me-2"></i> Net Worth</div>
                     <div class="stat-value counter">{{ request.user.balance }}</div>
-                    <div class="fw-bold opacity-50 small tracking-widest mt-2">ECO BALANCE</div>
+                    <div class="mt-3 small fw-bold text-warning">UZS</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="gold-glass stat-card">
+                    <div class="small text-uppercase opacity-50 fw-bold mb-3"><i class="fas fa-shield-alt me-2"></i> Prestige</div>
                     <div class="stat-value counter">{{ request.user.points }}</div>
-                    <div class="fw-bold opacity-50 small tracking-widest mt-2">ACHIEVEMENT POINTS</div>
+                    <div class="mt-3 small fw-bold text-info">RANK: LEGENDARY</div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-9 mx-auto">
-                <div class="gold-glass p-4 mb-5">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold text-warning mb-0"><i class="fas fa-crown me-2"></i>WORLD LEADERBOARD</h3>
-                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold" style="font-size: 10px;">GLOBAL TOP 10</span>
+        <div class="row pb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="gold-glass p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <h2 class="fw-black mb-0">Global <span class="text-warning">Elite</span></h2>
+                        <div class="small text-white-50">Live Updates <i class="fas fa-circle text-danger ms-2" style="font-size: 8px;"></i></div>
                     </div>
 
                     <div class="leader-wrapper">
                         {% for u in leaderboard %}
-                        <div class="leader-item gold-glass 
-                            {% if forloop.counter == 1 %}rank-gold{% elif forloop.counter == 2 %}rank-silver{% elif forloop.counter == 3 %}rank-bronze{% endif %}" 
-                            style="animation-delay: {{ forloop.counter|add:0.1 }}s">
-                            
+                        <div class="leader-item gold-glass {% if forloop.first %}rank-gold{% endif %}" style="animation-delay: {{ forloop.counter|add:0.1 }}s">
                             <div class="d-flex align-items-center gap-4">
-                                <div class="rank-pos fw-900 fs-4 text-center" style="width: 40px;">
-                                    {% if forloop.counter == 1 %}<i class="fas fa-trophy text-warning"></i>
-                                    {% elif forloop.counter == 2 %}<i class="fas fa-medal text-secondary"></i>
-                                    {% elif forloop.counter == 3 %}<i class="fas fa-award" style="color:#cd7f32"></i>
-                                    {% else %}<span class="opacity-25">#{{ forloop.counter }}</span>{% endif %}
+                                <div class="fs-3 fw-black text-white-50" style="width: 50px;">
+                                    {% if forloop.counter == 1 %}<i class="fas fa-crown text-warning"></i>
+                                    {% else %}{{ forloop.counter }}{% endif %}
                                 </div>
-                                
-                                <img src="https://ui-avatars.com/api/?name={{ u.username }}&background=random&color=fff" class="rounded-circle border border-warning border-opacity-50" width="50">
-                                
-                                <div class="user-meta">
-                                    <div class="fw-bold fs-5">{{ u.username }} <span class="premium-label">{{request.user.subscription.plan}}</span></div>
-                                    <div class="small opacity-50">Master Level Explorer</div>
+                                <img src="https://ui-avatars.com/api/?name={{ u.username }}&background=333&color=fff" class="rounded-pill border border-white-10" width="55">
+                                <div>
+                                    <h5 class="mb-0 fw-bold text-white">{{ u.first_name }} {{ u.last_name }}</h5>
+                                    <span class="plan-badge plan-{{u.subscription.plan}} mt-1" style="transform: scale(0.8); transform-origin: left;">{{u.subscription.plan}}</span>
                                 </div>
                             </div>
-
                             <div class="text-end">
-                                <div class="fw-900 text-warning fs-4 counter">{{ u.points }}</div>
-                                <div class="small opacity-50 fw-bold" style="font-size: 9px;">ECO PTS</div>
+                                <div class="fs-4 fw-black text-warning">{{ u.points }}</div>
+                                <div class="small opacity-50 fw-bold" style="font-size: 10px;">CREDITS</div>
                             </div>
                         </div>
                         {% endfor %}
@@ -280,13 +271,6 @@
                 </div>
             </div>
         </div>
-
-        {% if request.user.is_premium == False %}
-        <div class="ad-banner shadow-lg mb-5 text-center">
-            <h2 class="fw-900 mb-2">GO ULTIMA PLAN <i class="fas fa-bolt ms-2"></i></h2>
-            <p class="mb-4 fw-bold opacity-75">Agro-Biznes imkoniyatlarini oching va 2 barobar ko'p ball yig'ing!</p>
-        </div>
-        {% endif %}
     </main>
 
     <div class="float-chat" onclick="openChat()">
@@ -297,82 +281,27 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Theme System
         function toggleTheme() {
             const body = document.body;
-            const icon = document.getElementById('theme-icon');
             const target = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', target);
-            icon.className = target === 'dark' ? 'fas fa-moon fs-5' : 'fas fa-sun fs-5';
             localStorage.setItem('theme', target);
         }
 
-        // Font Size Scaling
-        function changeFontSize(val) {
-            document.documentElement.style.fontSize = val + 'px';
-            localStorage.setItem('fontSize', val);
-        }
-
-        // Counter Engine
         $('.counter').each(function () {
             $(this).prop('Counter', 0).animate({
                 Counter: $(this).text()
             }, {
-                duration: 2000,
+                duration: 2500,
                 easing: 'swing',
                 step: function (now) { $(this).text(Math.ceil(now).toLocaleString()); }
             });
         });
 
-        // Notifications System (LocalStorage Sync)
-        function updateNotifUI() {
-            const logs = JSON.parse(localStorage.getItem('eco_notifs') || '[]');
-            const $list = $('#notif-list');
-            $('#notif-count').text(logs.length);
-            $list.find('li:not(.dropdown-header)').remove();
-            
-            if(logs.length === 0) {
-                $list.append('<li><div class="dropdown-item text-center opacity-50 py-3">Hech qanday xabar yo\'q</div></li>');
-            } else {
-                logs.reverse().forEach(n => {
-                    $list.append(`<li><div class="dropdown-item py-2 border-bottom border-warning border-opacity-10">
-                        <div class="text-warning fw-bold small">${n.msg}</div>
-                        <div style="font-size:9px" class="opacity-50">${n.time}</div>
-                    </div></li>`);
-                });
-                $list.append('<li><button onclick="clearLogs()" class="dropdown-item text-center text-danger small fw-bold pt-2">Tozalash</button></li>');
-            }
-        }
-
-        function clearLogs() {
-            localStorage.removeItem('eco_notifs');
-            updateNotifUI();
-        }
-
-        // Initialize Settings
-        $(document).ready(function() {
-            updateNotifUI();
-            const savedTheme = localStorage.getItem('theme');
-            const savedFS = localStorage.getItem('fontSize');
-            if(savedTheme) body.setAttribute('data-theme', savedTheme);
-            if(savedFS) {
-                document.documentElement.style.fontSize = savedFS + 'px';
-                $('#fsRange').val(savedFS);
-            }
-
-            // Capture Django Messages
-            {% if messages %}
-                let logs = JSON.parse(localStorage.getItem('eco_notifs') || '[]');
-                {% for message in messages %}
-                    logs.push({msg: "{{ message|escapejs }}", time: new Date().toLocaleTimeString()});
-                {% endfor %}
-                localStorage.setItem('eco_notifs', JSON.stringify(logs.slice(-5)));
-                updateNotifUI();
-            {% endif %}
-        });
-
         function openChat() {
-            alert("Groq AI Chat tizimi yuklanmoqda...");
+            // Groq AI Integration logic
+            window.location.href = "#chat"; 
+            alert("Luxury Groq AI Assistant is initializing...");
         }
     </script>
 </body>
