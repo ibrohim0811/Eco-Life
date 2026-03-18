@@ -16,4 +16,5 @@ RUN mkdir -p static staticfiles
 
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "python manage.py migrate --noinput; gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+# Portni qidirishda xatolik bo'lmasligi uchun va xatolarni ko'rish uchun:
+CMD gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 2 --threads 4 --log-level debug
