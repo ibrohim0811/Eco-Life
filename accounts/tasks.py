@@ -11,6 +11,7 @@ from accounts.models import Subscription
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 env_path = BASE_DIR / '.env'
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 
 load_dotenv(dotenv_path=env_path)
 
@@ -24,7 +25,7 @@ DB_PARAMS = {
 }
 
 
-app = Celery('ecosys', broker='redis://localhost:6379/0')
+app = Celery('ecosys', broker=REDIS_URL)
 
 def get_all_tg_ids():
     try:
