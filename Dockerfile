@@ -16,4 +16,4 @@ RUN mkdir -p static staticfiles
 
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c","python bot/main.py & python manage.py migrate --noinput && gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000} --timeout 60"]
+CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:. && python bot/main.py & python manage.py migrate --noinput && gunicorn Ecolife.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
