@@ -121,10 +121,12 @@ def groq_chat(request):
     
     return JsonResponse({"error": "Faqat POST so'rov qabul qilinadi"}, status=400)
 
+#nmadr boldida
 
 def user_out(request):
     logout(request)  
     return redirect('/')
+
 
 def check_notifications(request):
     if request.user.is_authenticated:
