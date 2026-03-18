@@ -79,7 +79,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
-
+print(client)
 # Oddiy (sinxron) client yaratamiz
 
 @csrf_exempt

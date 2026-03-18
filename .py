@@ -58,3 +58,4 @@
 #     except Exception as e:
 #         print(f"Xatolik: {e}")
 #         await msg.answer("Chekni tahlil qilishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.")
+
