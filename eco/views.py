@@ -138,12 +138,10 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
         # Fallback: Agar tarix bo'sh bo'lsa
         context['balance_chart_data'] = chart_data or [{"time": timezone.now().strftime("%Y-%m-%d"), "value": current_balance}]
 
-        # 3. AI Prediction (Faqat FREE bo'lmaganlar uchun)
-        subs = getattr(self.request.user.subscription, 'badge_text', 'FREE')
-        badge = subs.upper() if hasattr(user, 'subscription') else 'FREE'
+        
+        
 
-        if badge != "FREE":
-            # Oxirgi 7 kunlik daromadni bitta so'rovda hisoblaymiz
+        if self.request.user.subscription.badge_text != "FREE":
             last_week = timezone.now() - timedelta(days=7)
             weekly_sum = BalanceHistory.objects.filter(
                 user=user, transaction_type='INCOME', created_at__gte=last_week
@@ -152,7 +150,7 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
             future = current_balance + (float(weekly_sum) / 7 * 30)
             context['prediction'] = {
                 "future_balance": "{:,.0f}".format(future).replace(',', ' '),
-                "plan_name": badge
+                "plan_name": self.request.user.subscription.badge_text
             }
         else:
             context['prediction'] = None # HTMLda 'Obuna bo'ling' chiqishi uchun
