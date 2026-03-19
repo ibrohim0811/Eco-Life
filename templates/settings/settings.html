@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECOLIFE | Settings</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,6 +13,7 @@
             --ios-bg: #000000;
             --glass-color: rgba(255, 255, 255, 0.05);
             --gold: #FFD700;
+            --ios-grey: #1c1c1e;
         }
 
         body {
@@ -20,13 +22,13 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
             transition: font-size 0.2s ease;
+            min-height: 100vh;
         }
 
         /* iOS Glass Container */
         .settings-wrapper {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
+            padding: 40px 0;
             background: radial-gradient(circle at top right, #1a1a1a, #000);
         }
 
@@ -46,6 +48,8 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid transparent;
+            text-decoration: none;
+            color: inherit;
         }
 
         .ios-menu-item:hover {
@@ -57,6 +61,7 @@
         .icon-box {
             width: 36px;
             height: 36px;
+            min-width: 36px; /* Ikonka siqilib qolmasligi uchun */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -65,7 +70,10 @@
         }
 
         /* Animated Icons */
-        .settings-anim { animation: fa-spin 5s infinite linear; }
+        .settings-anim { 
+            display: inline-block;
+            animation: fa-spin 5s infinite linear; 
+        }
         
         .ios-menu-item:hover .lock-anim {
             animation: lock-shake 0.5s ease;
@@ -77,7 +85,7 @@
             75% { transform: rotate(15deg); }
         }
 
-        /* Font Slider Customization */
+        /* Font Slider */
         .custom-range::-webkit-slider-runnable-track {
             background: rgba(255, 255, 255, 0.1);
             height: 6px;
@@ -88,15 +96,12 @@
             margin-top: -5px;
         }
 
-        /* 3D Pricing Cards */
-        .pricing-grid {
-            perspective: 1000px;
-        }
+        /* 3D Cards */
+        .pricing-grid { perspective: 1000px; }
 
         .pricing-card {
-            position: relative;
             border-radius: 25px;
-            min-height: 280px;
+            min-height: 300px;
             transition: transform 0.1s ease-out;
             transform-style: preserve-3d;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -116,7 +121,6 @@
             background: linear-gradient(135deg, #e0e0e0 0%, #888 100%);
             border-radius: 8px;
             margin-bottom: 20px;
-            opacity: 0.8;
         }
         .card-ultima .card-chip {
             background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
@@ -124,7 +128,7 @@
 
         .btn-ios {
             border-radius: 12px;
-            padding: 10px;
+            padding: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -136,17 +140,13 @@
             color: black;
             border: none;
         }
-        .btn-gold:hover {
-            background: #e6c200;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-        }
     </style>
 </head>
 <body>
 
-<div class="settings-wrapper">
+<div class="settings-wrapper d-flex align-items-center">
     <div class="container">
-        <div class="row g-5 align-items-stretch">
+        <div class="row g-5">
             
             <div class="col-lg-4">
                 <div class="ios-glass p-4 h-100">
@@ -157,27 +157,27 @@
                     <div class="ios-menu-list">
                         <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
                             <div class="d-flex align-items-center">
-                                <div class="icon-box bg-primary bg-opacity-20 text-primary me-3">
-                                    <i class="fas fa-gear settings-anim"></i>
+                                <div class="icon-box bg-primary bg-opacity-25 text-primary me-3">
+                                    <i class="fas fa-cog settings-anim"></i>
                                 </div>
                                 <span class="fw-medium">Akkaunt sozlamalari</span>
                             </div>
-                            <i class="fas fa-chevron-right small opacity-30"></i>
+                            <i class="fas fa-chevron-right small opacity-50"></i>
                         </div>
 
                         <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
                             <div class="d-flex align-items-center">
-                                <div class="icon-box bg-success bg-opacity-20 text-success me-3">
-                                    <i class="fas fa-lock lock-anim"></i>
+                                <div class="icon-box bg-success bg-opacity-25 text-success me-3">
+                                    <i class="fas fa-shield-halved lock-anim"></i>
                                 </div>
                                 <span class="fw-medium">Xavfsizlik sozlamalari</span>
                             </div>
-                            <i class="fas fa-chevron-right small opacity-30"></i>
+                            <i class="fas fa-chevron-right small opacity-50"></i>
                         </div>
 
                         <div class="ios-menu-item p-3 mb-3">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="icon-box bg-info bg-opacity-20 text-info me-3">
+                                <div class="icon-box bg-info bg-opacity-25 text-info me-3">
                                     <i class="fas fa-font"></i>
                                 </div>
                                 <span class="fw-medium">Matn o'lchami</span>
@@ -190,57 +190,57 @@
 
                         <div class="py-2"></div>
 
-                        <div class="ios-menu-item d-flex align-items-center p-3 text-danger border-danger border-opacity-10">
-                            <div class="icon-box bg-danger bg-opacity-20 text-danger me-3">
-                                <i class="fas fa-sign-out-alt"></i>
+                        <a href="/logout" class="ios-menu-item d-flex align-items-center p-3 text-danger border-danger border-opacity-10">
+                            <div class="icon-box bg-danger bg-opacity-25 text-danger me-3">
+                                <i class="fas fa-power-off"></i>
                             </div>
                             <span class="fw-bold">Tizimdan chiqish</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-8">
-                <div class="row g-4 h-100 pricing-grid">
+                <div class="row g-4 pricing-grid">
                     
                     <div class="col-md-4">
-                        <div class="pricing-card card-go p-4 h-100 shadow-lg">
+                        <div class="pricing-card card-go p-4 shadow-lg">
                             <div>
                                 <div class="card-chip"></div>
-                                <h3 class="fw-black text-white mb-1">GO</h3>
-                                <p class="small opacity-50">Go obunasi</p>
+                                <h3 class="fw-bold text-white mb-1">GO</h3>
+                                <p class="small opacity-50">Boshlang'ich obuna</p>
                             </div>
                             <div class="mt-4">
-                                <h2 class="fw-bold mb-3">25 000 UZS <small class="fs-6 opacity-50">Oylik</small></h2>
-                                <button class="btn btn-outline-light btn-ios w-100">Upgrade to Pro</button>
+                                <h3 class="fw-bold mb-3 small">25 000 UZS <span class="fs-6 opacity-50">/ oy</span></h3>
+                                <a style="text-decoration: none;" href="https://t.me/eco_start_appBot?start=auth"><button class="btn btn-outline-light btn-ios w-100">Tanlash</button></a>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="pricing-card card-pro p-4 h-100 shadow-lg border-primary border-opacity-25">
+                        <div class="pricing-card card-pro p-4 shadow-lg border-primary border-opacity-25">
                             <div>
                                 <div class="card-chip"></div>
-                                <h3 class="fw-black text-white mb-1">PRO</h3>
-                                <p class="small opacity-50">Advanced features</p>
+                                <h3 class="fw-bold text-white mb-1">PRO</h3>
+                                <p class="small opacity-50">Kengaytirilgan imkoniyat</p>
                             </div>
                             <div class="mt-4">
-                                <h2 class="fw-bold mb-3">50 000 UZS <small class="fs-6 opacity-50">Oylik</small></h2>
-                                <button class="btn btn-primary btn-ios w-100 shadow">Upgrade to Pro</button>
+                                <h3 class="fw-bold mb-3 small">50 000 UZS <span class="fs-6 opacity-50">/ oy</span></h3>
+                                <a style="text-decoration: none;" href="https://t.me/eco_start_appBot?start=auth"><button class="btn btn-primary btn-ios w-100 shadow">Upgrade</button></a>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="pricing-card card-ultima p-4 h-100 shadow-lg border-warning border-opacity-25">
+                        <div class="pricing-card card-ultima p-4 shadow-lg border-warning border-opacity-25">
                             <div>
                                 <div class="card-chip"></div>
-                                <h3 class="fw-black text-gold mb-1">ULTIMA</h3>
-                                <p class="small opacity-50">Unlimited ecological power</p>
+                                <h3 class="fw-bold text-gold mb-1">ULTIMA</h3>
+                                <p class="small opacity-50">Cheksiz ekotizim</p>
                             </div>
                             <div class="mt-4">
-                                <h2 class="fw-bold mb-3 text-gold">80 000 UZS<small class="fs-6 opacity-50 text-white">oylik</small></h2>
-                                <button class="btn btn-gold btn-ios w-100">Get Ultima</button>
+                                <h3 class="fw-bold mb-3 text-gold small">80 000 UZS <span class="fs-6 opacity-50 text-white">/ oy</span></h3>
+                                <a style="text-decoration: none;" href="https://t.me/eco_start_appBot?start=auth"><button class="btn btn-gold btn-ios w-100">Get Premium</button></a>
                             </div>
                         </div>
                     </div>
@@ -253,8 +253,10 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    // 1. Font Size Change Logic
+    // 1. Font Size Change
     $('#fontSizeRange').on('input', function() {
         let size = $(this).val();
         $('body').css('font-size', size + 'px');
@@ -262,30 +264,18 @@
 
     // 2. 3D Card Tilt Effect
     const cards = document.querySelectorAll('.pricing-card');
-    
     cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-            
+            const rotateX = (y - rect.height/2) / 10;
+            const rotateY = (rect.width/2 - x) / 10;
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
         });
-        
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
         });
-    });
-
-    // 3. Simple click handling
-    $('.ios-menu-item').on('click', function() {
-        console.log("Navigating to:", $(this).find('span').text());
     });
 </script>
 
