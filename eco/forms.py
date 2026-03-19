@@ -17,7 +17,7 @@ class ProfileSettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.get('instance') 
-        super(ProfileSettingsForm, self).init(*args, **kwargs)
+        super(ProfileSettingsForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         user = super().save(commit=False)
