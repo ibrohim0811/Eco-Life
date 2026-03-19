@@ -115,49 +115,41 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        
+        # 1. Faoliyatlar (Top 5)
         context['user_activities'] = UserActivities.objects.filter(user=user).order_by('-created_at')[:5]
 
-        
-        history_queryset = BalanceHistory.objects.filter(user=user).order_by('-created_at')[:10]
+        # 2. Grafik uchun (Oxirgi 7 ta tranzaksiya)
+        history_queryset = BalanceHistory.objects.filter(user=user).order_by('-created_at')[:7]
         
         chart_data = []
         current_temp_balance = float(user.balance)
 
-        for entry in history_queryset:
+        # Agar tarix bo'sh bo'lsa, hech bo'lmasa bitta nuqta (hozirgi balans) ko'rinishi uchun
+        if not history_queryset.exists():
             chart_data.append({
-                "time": entry.created_at.strftime("%Y-%m-%d"),
+                "time": timezone.now().strftime("%Y-%m-%d"),
                 "value": current_temp_balance
             })
-            
-            if str(entry.transaction_type).upper() == 'INCOME':
-                current_temp_balance -= float(entry.amount)
-            elif str(entry.transaction_type).upper() == 'EXPENSE':
-                current_temp_balance += float(entry.amount)
+        else:
+            for entry in history_queryset:
+                chart_data.append({
+                    "time": entry.created_at.strftime("%Y-%m-%d"),
+                    "value": current_temp_balance
+                })
+                
+                # Orqaga qaytish mantiqi
+                tp = str(entry.transaction_type).upper()
+                if tp == 'INCOME':
+                    current_temp_balance -= float(entry.amount)
+                elif tp == 'EXPENSE':
+                    current_temp_balance += float(entry.amount)
+
+        # Eskidan yangiga tartiblaymiz
+        context['balance_chart_data'] = list(reversed(chart_data))
         
-        prediction_data = None
-        if hasattr(user, 'subscription') and user.subscription.badge_text != "FREE":
-            last_week = timezone.now() - timedelta(days=7)
-            weekly_income = BalanceHistory.objects.filter(
-                user=user, 
-                transaction_type='INCOME',
-                created_at__gte=last_week
-            ).aggregate(total=Sum('amount'))['total'] or 0
+        # ... (prediction qismi o'zgarishsiz qoladi)
+        return context    
             
-            
-            daily_avg = weekly_income / 7
-            future_balance = float(user.balance) + (daily_avg * 30)
-            
-            prediction_data = {
-                "daily_avg": round(daily_avg, 1),
-                "future_balance": round(future_balance, 0)
-            }
-        
-        context['prediction'] = prediction_data
-        
-        return context
-    
-        
         
 
 

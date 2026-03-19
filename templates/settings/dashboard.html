@@ -192,10 +192,19 @@
                             <h6 class="mb-1 fw-bold text-white" style="font-size: 14px;">AI Prediction <span
                                     class="badge bg-warning text-dark ms-2" style="font-size: 8px;">PREMIUM</span></h6>
                             <p class="small mb-0 opacity-75" style="font-size: 12px;">
-                                30 kundan keyin: <span class="text-success fw-bold">{{
-                                    prediction.future_balance|floatformat:0 }} UZS</span>
+                                30 kundan keyin: <span class="text-success fw-bold">{{ prediction.future_balance|floatformat:0 }} UZS</span>
                             </p>
                         </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="ios-glass p-3 mb-4 border-secondary border-opacity-25 opacity-75">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-lock me-3 text-secondary"></i>
+                        <p class="small mb-0">
+                            Kelajakdagi balansingizni AI orqali bashorat qilishni xohlaysizmi?
+                            <a href="#" class="text-warning text-decoration-none fw-bold">PRO rejasiga o'ting →</a>
+                        </p>
                     </div>
                 </div>
                 {% endif %}
@@ -219,103 +228,66 @@
         </div>
     </div>
 
-    {% if prediction %}
-    <div class="ios-glass p-3 mb-4 border-warning border-opacity-25"
-        style="background: linear-gradient(90deg, rgba(255,215,0,0.05) 0%, rgba(0,0,0,0) 100%);">
-        <div class="d-flex align-items-center">
-            <div class="ai-icon me-3">
-                <i class="fas fa-robot text-warning h4 mb-0"></i>
-            </div>
-            <div>
-                <h6 class="mb-1 fw-bold text-white">AI Prediction <span class="badge bg-warning text-dark ms-2"
-                        style="font-size: 8px;">PREMIUM</span></h6>
-                <p class="small mb-0 opacity-75">
-                    Hozirgi faolligingizda (kuniga <span class="text-warning fw-bold">{{ prediction.daily_avg }}
-                        UZS</span>),
-                    30 kundan keyin balansingiz <span class="text-success fw-bold">{{
-                        prediction.future_balance|floatformat:0 }} UZS</span> bo'lishi kutilmoqda!
-                </p>
-            </div>
-            <div class="ms-auto">
-                <i class="fas fa-chart-line text-success opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    {% else %}
-    <div class="ios-glass p-3 mb-4 border-secondary border-opacity-25 opacity-75">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-lock me-3 text-secondary"></i>
-            <p class="small mb-0">
-                Kelajakdagi balansingizni AI orqali bashorat qilishni xohlaysizmi?
-                <a href="#" class="text-warning text-decoration-none fw-bold">PRO rejasiga o'ting →</a>
-            </p>
-        </div>
-    </div>
-    {% endif %}
-
     {{ balance_chart_data|json_script:"chart-data" }}
 
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.umd.js"></script>
     <script>
-        window.onload = function() { // DOMContentLoaded dan ko'ra ishonchliroq
-        const container = document.getElementById('tradingChart');
-        const rawData = JSON.parse(document.getElementById('chart-data').textContent);
+        window.onload = function () {
+            const container = document.getElementById('tradingChart');
+            const chartDataNode = document.getElementById('chart-data');
 
-        if (!rawData || rawData.length < 2) {
-            container.innerHTML = '<div class="h-100 d-flex align-items-center justify-content-center opacity-25 py-5">Ma\'lumot yetarli emas</div>';
-            return;
-        }
+            if (!chartDataNode) return; // Xavfsizlik uchun
 
-        // Grafikni yaratishdan oldin konteyner kengligini tekshiramiz
-        const width = container.offsetWidth || container.parentElement.clientWidth - 40;
-        
-        const chart = LightweightCharts.createChart(container, {
-            width: width,
-            height: 400,
-            layout: {
-                background: { type: 'solid', color: 'transparent' },
-                textColor: '#848e9c',
-            },
-            grid: {
-                vertLines: { color: 'rgba(255, 255, 255, 0.02)' },
-                horzLines: { color: 'rgba(255, 255, 255, 0.02)' },
-            },
-            rightPriceScale: { 
-                borderVisible: false,
-                entireTextOnly: true 
-            },
-            timeScale: { 
-                borderVisible: false,
-                timeVisible: true,
-                secondsVisible: false
-            },
-            handleScroll: true,
-            handleScale: true,
-        });
+            let rawData = JSON.parse(chartDataNode.textContent);
 
-        const series = chart.addAreaSeries({
-            lineColor: '#FFD700',
-            topColor: 'rgba(255, 215, 0, 0.3)',
-            bottomColor: 'rgba(255, 215, 0, 0)',
-            lineWidth: 3,
-            priceFormat: {
-                type: 'volume',
-                precision: 0,
-            },
-        });
+            // Agar ma'lumot 1 ta bo'lsa, xato bermasligi uchun 
+            if (!rawData || rawData.length === 0) {
+                container.innerHTML = '<div class="h-100 d-flex align-items-center justify-content-center opacity-25 py-5">Hali ma\'lumotlar yo\'q</div>';
+                return;
+            }
 
-        series.setData(rawData);
-        chart.timeScale().fitContent();
+            const width = container.offsetWidth || container.parentElement.clientWidth;
 
-        // Responsive resize - Throttle bilan
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                chart.applyOptions({ width: container.offsetWidth });
-            }, 200);
-        });
-    };
+            const chart = LightweightCharts.createChart(container, {
+                width: width,
+                height: 400,
+                layout: {
+                    background: { type: 'solid', color: 'transparent' },
+                    textColor: '#848e9c',
+                },
+                grid: {
+                    vertLines: { visible: false },
+                    horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
+                },
+                rightPriceScale: { borderVisible: false },
+                timeScale: {
+                    borderVisible: false,
+                    fixLeftEdge: true,
+                    fixRightEdge: true
+                },
+            });
+
+            const series = chart.addAreaSeries({
+                lineColor: '#FFD700',
+                topColor: 'rgba(255, 215, 0, 0.3)',
+                bottomColor: 'rgba(255, 215, 0, 0)',
+                lineWidth: 3,
+                priceFormat: { type: 'volume', precision: 0 },
+            });
+
+            series.setData(rawData);
+            chart.timeScale().fitContent();
+
+            // Responsive resize
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    chart.applyOptions({ width: container.offsetWidth });
+                    chart.timeScale().fitContent();
+                }, 200);
+            });
+        };
     </script>
 
 </body>
