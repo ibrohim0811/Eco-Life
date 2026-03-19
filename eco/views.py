@@ -108,6 +108,12 @@ class UserDashboard(LoginRequiredMixin, TemplateView):
 
 
 
+from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 class TradingDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'settings/dashboard.html'
 
@@ -115,16 +121,18 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # 1. Faoliyatlar (Top 5)
-        context['user_activities'] = UserActivities.objects.filter(user=user).order_by('-created_at')[:5]
+        # 1. Faoliytlar (Top 5)
+        context['user_activities'] = UserActivities.objects.filter(
+            user=user
+        ).order_by('-created_at')[:5]
 
-        # 2. Grafik uchun (Oxirgi 7 ta tranzaksiya)
-        history_queryset = BalanceHistory.objects.filter(user=user).order_by('-created_at')[:7]
+        history_queryset = BalanceHistory.objects.filter(
+            user=user
+        ).order_by('-created_at')[:7]
         
         chart_data = []
         current_temp_balance = float(user.balance)
 
-        # Agar tarix bo'sh bo'lsa, hech bo'lmasa bitta nuqta (hozirgi balans) ko'rinishi uchun
         if not history_queryset.exists():
             chart_data.append({
                 "time": timezone.now().strftime("%Y-%m-%d"),
@@ -137,18 +145,38 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
                     "value": current_temp_balance
                 })
                 
-                # Orqaga qaytish mantiqi
                 tp = str(entry.transaction_type).upper()
                 if tp == 'INCOME':
                     current_temp_balance -= float(entry.amount)
                 elif tp == 'EXPENSE':
                     current_temp_balance += float(entry.amount)
 
-        # Eskidan yangiga tartiblaymiz
         context['balance_chart_data'] = list(reversed(chart_data))
         
-        # ... (prediction qismi o'zgarishsiz qoladi)
-        return context    
+        
+        user_plan = "FREE"
+        if hasattr(user, 'subscription') and user.subscription:
+            user_plan = str(user.subscription.badge_text).upper()
+
+        if user_plan in ['ULTIMA', 'PRO', 'GO']:
+            last_week = timezone.now() - timedelta(days=7)
+            weekly_income = BalanceHistory.objects.filter(
+                user=user, 
+                transaction_type='INCOME',
+                created_at__gte=last_week
+            ).aggregate(total=Sum('amount'))['total'] or 0
+            
+            daily_avg = float(weekly_income) / 7
+            future_balance = float(user.balance) + (daily_avg * 30) 
+            
+            context['prediction'] = {
+                "future_balance": round(future_balance, 0),
+                "plan_name": user_plan
+            }
+        else:
+            context['prediction'] = None
+
+        return context
             
         
 
