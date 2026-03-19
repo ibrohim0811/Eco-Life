@@ -263,7 +263,7 @@
 
                         <div class="text-center mb-5">
                             <div class="profile-image-wrapper">
-                                <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ request.user.username }}&background=random{% endif %}" 
+                                <img src="{% if request.user.image %}{{ request.user.image.url }}{% else %}https://ui-avatars.com/api/?name={{ request.user.username }}&background=random{% endif %}" 
                                     id="userAvatar" 
                                     class="user-avatar" 
                                     alt="User">
