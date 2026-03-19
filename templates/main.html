@@ -51,7 +51,18 @@
             letter-spacing: -0.3px;
         }
 
-        body a, .text-white, .text-gray-700, .dropdown-item, .lead, p, h1, h2, h3, h4, h5, h6 {
+        body a,
+        .text-white,
+        .text-gray-700,
+        .dropdown-item,
+        .lead,
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             color: var(--text-color) !important;
         }
 
@@ -421,6 +432,44 @@
                 bottom: 20px;
                 right: 20px;
             }
+
+            .dropdown-menu#notif-list {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100dvh !important;
+                margin: 0 !important;
+                transform: none !important;
+                border-radius: 0 !important;
+                z-index: 10002;
+                /* Chatdan ham teparoqda bo'lishi mumkin */
+                display: none;
+                /* JS orqali boshqariladi */
+            }
+
+            /* Menyuni ochganda ko'rsatish */
+            .dropdown-menu#notif-list.show {
+                display: flex !important;
+                flex-direction: column;
+            }
+
+            /* Ichki ro'yxatni scroll bo'ladigan qilish */
+            .dropdown-menu#notif-list div[style*="max-height"] {
+                max-height: none !important;
+                flex-grow: 1;
+            }
+
+            /* Mobil menyuda "Yopish" tugmasi ko'rinishi uchun */
+            .notif-close-mobile {
+                display: block !important;
+            }
+
+
+            /* Default holatda yashirin bo'lsin */
+            .notif-close-mobile {
+                display: none;
+            }
         }
 
         /* Silliq o'tish effektlari */
@@ -457,7 +506,8 @@
             </a>
 
             <div class="mx-auto d-flex justify-content-center">
-                <button class="btn btn-glow btn-sm">AGRO BIZNES PORTAL <i class="fas fa-external-link-alt small ms-2"></i></button>
+                <button class="btn btn-glow btn-sm">AGRO BIZNES PORTAL <i
+                        class="fas fa-external-link-alt small ms-2"></i></button>
             </div>
 
             <div class="d-flex align-items-center gap-4">
@@ -481,11 +531,16 @@
                     <ul id="notif-list"
                         class="dropdown-menu dropdown-menu-end gold-glass shadow-lg mt-4 p-0 overflow-hidden"
                         style="width: 320px; border-top: 3px solid #FFD700 !important;">
-                        <li class="p-3 border-bottom border-white-10 bg-black bg-opacity-20">
+
+                        <li
+                            class="p-3 border-bottom border-white-10 bg-black bg-opacity-20 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 text-warning fw-black small" style="letter-spacing: 1px;">XABARNOMALAR</h6>
+                            <button type="button" class="btn-close btn-close-white d-md-none"
+                                onclick="$('#notif-list').removeClass('show'); $('body').css('overflow', 'auto');"
+                                aria-label="Close"></button>
                         </li>
 
-                        <div style="max-height: 300px; overflow-y: auto;">
+                        <div class="notification-items" style="max-height: 300px; overflow-y: auto;">
                             {% for notif in request.user.notifications.all|dictsortreversed:"created_at"|slice:":5" %}
                             <li>
                                 <div class="dropdown-item py-3 border-bottom border-white-10 {% if not notif.is_read %}bg-warning bg-opacity-5{% endif %}"
@@ -581,7 +636,8 @@
 
                     <div class="leader-wrapper">
                         {% for u in leaderboard %}
-                        <div class="leader-item gold-glass {% if forloop.first %}rank-gold{% endif %}" style="animation-delay: 0.2s">
+                        <div class="leader-item gold-glass {% if forloop.first %}rank-gold{% endif %}"
+                            style="animation-delay: 0.2s">
                             <div class="d-flex align-items-center gap-4">
                                 <div class="fs-3 fw-black text-white-50" style="width: 50px;">
                                     {% if forloop.counter == 1 %}<i class="fas fa-crown text-warning"></i>
@@ -758,6 +814,17 @@
         // Enter tugmasini bosganda yuborish
         document.getElementById('user-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') sendMessage();
+        });
+        // Dropdown ochilganda fonni qotirish (Mobilda)
+        $('.dropdown').on('show.bs.dropdown', function () {
+            if (window.innerWidth <= 768) {
+                $('body').css('overflow', 'hidden'); // Orqa fonni qimirlamaydigan qiladi
+            }
+        });
+
+        // Dropdown yopilganda fonni ochish
+        $('.dropdown').on('hide.bs.dropdown', function () {
+            $('body').css('overflow', 'auto'); // Scrollni qaytaradi
         });
     </script>
 </body>
