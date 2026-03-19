@@ -120,41 +120,24 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         
-        # 1. So'nggi 5 ta harakat
-        context['user_activities'] = UserActivities.objects.filter(user=user).order_by('-created_at')[:5]
-
-        # 2. Grafik: Balans tarixi (Oxirgi 7 ta)
-        history = BalanceHistory.objects.filter(user=user).order_by('created_at')[:7]
-        
-        chart_data = []
-        current_balance = float(user.balance)
-        
-        for entry in history:
-            chart_data.append({
-                "time": entry.created_at.strftime("%Y-%m-%d"),
-                "value": float(entry.amount) # Yoki o'sha vaqtdagi jami balans mantiqingiz
-            })
-
-        # Fallback: Agar tarix bo'sh bo'lsa
-        context['balance_chart_data'] = chart_data or [{"time": timezone.now().strftime("%Y-%m-%d"), "value": current_balance}]
-
+        context['balance'] = BalanceHistory.objects.filter(user=self.request.user).order_by('-created_at')
+        context['act'] = UserActivities.objects.filter(user=self.request.user)
         
         
-
         if self.request.user.subscription.badge_text != "FREE":
             last_week = timezone.now() - timedelta(days=7)
             weekly_sum = BalanceHistory.objects.filter(
                 user=user, transaction_type='INCOME', created_at__gte=last_week
             ).aggregate(total=Sum('amount'))['total'] or 0
             
-            future = current_balance + (float(weekly_sum) / 7 * 30)
+            future = self.request.user.balance + (float(weekly_sum) / 7 * 30)
             context['prediction'] = {
                 "future_balance": "{:,.0f}".format(future).replace(',', ' '),
                 "plan_name": self.request.user.subscription.badge_text
             }
         else:
-            context['prediction'] = None # HTMLda 'Obuna bo'ling' chiqishi uchun
-
+            context['prediction'] = None
+        
         return context
     
     
