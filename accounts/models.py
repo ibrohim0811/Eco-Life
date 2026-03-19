@@ -40,7 +40,7 @@ class Users(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     user_type = models.CharField(max_length=10, choices=UserRoleChoices.choices, default=UserRoleChoices.USER)
     points = models.IntegerField(default=0, db_index=True)
-
+    gmail = models.EmailField(default="none@gmail.com", blank=True, null=True)
     
     @property
     def rank_info(self):

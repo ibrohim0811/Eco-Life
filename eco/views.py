@@ -1,14 +1,16 @@
 import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.views.generic import ListView, TemplateView, FormView
+from django.views.generic import ListView, TemplateView, FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .forms import UserLoginForm
 from accounts.models import Users, UserActivities
 from .mixins import NotLoginRequiredMixin
 from django.conf import settings
+from django.urls import reverse_lazy
 from django.http import JsonResponse
+from .forms import ProfileSettingsForm
 
 
 
@@ -70,6 +72,23 @@ class UserLoginView(FormView):
 
         messages.success(self.request, "Xush kelibsiz ✅")
         return redirect(self.success_url)
+    
+class ProfileSettingsView(LoginRequiredMixin, UpdateView):
+    model = Users
+    form_class = ProfileSettingsForm
+    template_name = 'settings.html' 
+    success_url = reverse_lazy('profile_settings') 
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, "Profil ma'lumotlari muvaffaqiyatli yangilandi!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Ma'lumotlarni saqlashda xatolik yuz berdi.")
+        return super().form_invalid(form)
 
 
 import json
@@ -132,7 +151,16 @@ def groq_chat(request):
     
     return JsonResponse({"error": "Faqat POST so'rov qabul qilinadi"}, status=400)
 
-#nmadr boldida
+
+def check_username(request):
+    username = request.GET.get('username', None)
+    if not username:
+        return JsonResponse({'is_taken': False})
+    
+    exists = Users.objects.filter(username__iexact=username).exclude(pk=request.user.pk).exists()
+    
+    return JsonResponse({'is_taken': exists})
+
 
 def user_out(request):
     logout(request)  
