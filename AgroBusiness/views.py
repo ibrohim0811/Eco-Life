@@ -34,7 +34,7 @@ def otp_verify_view(request):
         else:
             messages.error(request, "Xato kod kiritdingiz. Qaytadan urinib ko'ring.")
 
-    return render(request, 'auth/otp_page.html') 
+    return render(request, 'business/agroe.html') 
 
 class ProductListView(LoginRequiredMixin, TemplateView):
-    template_name = "business/agroe.html"
+    template_name = "business/agro_main.html"
