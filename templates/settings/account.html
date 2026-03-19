@@ -267,7 +267,7 @@
                         <p class="small opacity-50 mt-1">@{{request.user.username}}</p>
                     </div>
 
-                    <form id="profileForm">
+                    <form action="{% url 'profile_settings' %}" method="POST" id="profileForm">
                         {% csrf_token %}
                         <div class="row g-3">
                             <div class="col-md-6">
