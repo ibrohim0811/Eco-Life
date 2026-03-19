@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from eco.views import (
     EnteranceTemplateView, UserLoginView, MainTemplateView, user_out,
     custom_page_not_found, custom_server_error, custom_permission_denied,
@@ -19,6 +21,8 @@ urlpatterns = [
     path('profile-settings/', ProfileSettingsView.as_view(), name='profile_settings'),
     
     ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 handler404 = 'eco.views.custom_page_not_found'
