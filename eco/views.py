@@ -111,8 +111,7 @@ class UserDashboard(LoginRequiredMixin, TemplateView):
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import timedelta
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class TradingDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'settings/dashboard.html'
@@ -121,44 +120,53 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # 1. Faoliytlar (Top 5)
+        # 1. So'nggi harakatlar (Top 5)
         context['user_activities'] = UserActivities.objects.filter(
             user=user
         ).order_by('-created_at')[:5]
 
+        # 2. Grafik mantiqi (Oxirgi 7 ta tranzaksiya asosida balans tarixi)
         history_queryset = BalanceHistory.objects.filter(
             user=user
         ).order_by('-created_at')[:7]
         
         chart_data = []
+        # Balansni floatga o'tkazamiz (DecimalField bo'lsa JSON xatosi bermasligi uchun)
         current_temp_balance = float(user.balance)
 
         if not history_queryset.exists():
+            # Agar tarix bo'sh bo'lsa, hozirgi balansni bitta nuqta qilib ko'rsatamiz
             chart_data.append({
                 "time": timezone.now().strftime("%Y-%m-%d"),
                 "value": current_temp_balance
             })
         else:
+            # FIFO (First In First Out) teskari hisoblash mantiqi
             for entry in history_queryset:
                 chart_data.append({
                     "time": entry.created_at.strftime("%Y-%m-%d"),
                     "value": current_temp_balance
                 })
                 
+                # Tranzaksiya turiga qarab o'tmishdagi balansni tiklaymiz
                 tp = str(entry.transaction_type).upper()
+                amount = float(entry.amount)
                 if tp == 'INCOME':
-                    current_temp_balance -= float(entry.amount)
+                    current_temp_balance -= amount
                 elif tp == 'EXPENSE':
-                    current_temp_balance += float(entry.amount)
+                    current_temp_balance += amount
 
+        # Grafik eskidan yangiga qarab chizilishi kerak
         context['balance_chart_data'] = list(reversed(chart_data))
         
-        
+        # 3. AI Prediction Mantiqi (ULTIMA, PRO va PREMIUM uchun)
         user_plan = "FREE"
         if hasattr(user, 'subscription') and user.subscription:
+            # Obuna nomini katta harflarda olamiz
             user_plan = str(user.subscription.badge_text).upper()
 
-        if user_plan in ['ULTIMA', 'PRO', 'GO']:
+        if user_plan in ['ULTIMA', 'PRO', 'PREMIUM']:
+            # Oxirgi 7 kundagi umumiy daromad
             last_week = timezone.now() - timedelta(days=7)
             weekly_income = BalanceHistory.objects.filter(
                 user=user, 
@@ -166,20 +174,19 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
                 created_at__gte=last_week
             ).aggregate(total=Sum('amount'))['total'] or 0
             
+            # Kunlik o'rtacha daromad
             daily_avg = float(weekly_income) / 7
-            future_balance = float(user.balance) + (daily_avg * 30) 
+            # 30 kundan keyingi taxminiy balans
+            future_balance = float(user.balance) + (daily_avg * 30)
             
             context['prediction'] = {
-                "future_balance": round(future_balance, 0),
+                "future_balance": "{:,.0f}".format(future_balance).replace(',', ' '), # 1 250 000 ko'rinishida
                 "plan_name": user_plan
             }
         else:
             context['prediction'] = None
 
         return context
-            
-        
-
 
 import json
 import os
