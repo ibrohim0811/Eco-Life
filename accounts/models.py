@@ -41,6 +41,7 @@ class Users(AbstractUser):
     user_type = models.CharField(max_length=10, choices=UserRoleChoices.choices, default=UserRoleChoices.USER)
     points = models.IntegerField(default=0, db_index=True)
     gmail = models.EmailField(default="none@gmail.com", blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
     
     @property
     def rank_info(self):

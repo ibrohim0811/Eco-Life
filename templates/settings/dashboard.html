@@ -3,77 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECOLIFE | Dashboard</title>
+    <title>ECOLIFE | Premium Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --ios-bg: #0b0d11; --gold: #FFD700; --glass: rgba(30, 32, 38, 0.75); --border: rgba(255, 255, 255, 0.08); }
-        body { background: radial-gradient(circle at top right, #1c1c1e, #0b0d11); color: #eaecef; font-family: -apple-system, sans-serif; min-height: 100vh; }
-        .ios-glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 20px; }
-        .status-badge { font-size: 10px; padding: 4px 10px; border-radius: 6px; font-weight: 700; text-transform: uppercase; }
-        
-        /* Status ranglari */
+        :root { 
+            --ios-bg: #05070a; 
+            --gold: #FFD700; 
+            --gold-glow: rgba(255, 215, 0, 0.15);
+            --glass: rgba(20, 22, 28, 0.8); 
+            --border: rgba(255, 255, 255, 0.05);
+            --premium-gradient: linear-gradient(135deg, #FFD700 0%, #b8860b 100%);
+        }
+
+        body { 
+            background: radial-gradient(circle at 10% 10%, #1a1c22 0%, #05070a 100%); 
+            color: #f8f9fa; 
+            font-family: 'SF Pro Display', -apple-system, sans-serif; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Premium Card Effect */
+        .ios-glass { 
+            background: var(--glass); 
+            backdrop-filter: blur(25px) saturate(150%); 
+            border: 1px solid var(--border); 
+            border-radius: 28px; 
+            padding: 25px; 
+            margin-bottom: 20px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ios-glass:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--gold-glow);
+        }
+
+        /* Premium AI Prediction Block */
+        .premium-ai-card {
+            background: linear-gradient(90deg, rgba(255,215,0,0.08) 0%, rgba(5,7,10,0) 100%);
+            border-left: 4px solid var(--gold) !important;
+        }
+
+        .ai-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: var(--premium-gradient);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3);
+            animation: pulse-gold 2s infinite;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+
+        .status-badge { 
+            font-size: 9px; 
+            padding: 5px 12px; 
+            border-radius: 8px; 
+            font-weight: 800; 
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
         .status-kutilmoqda { background: #f0b90b; color: #000; }
-        .status-qabul-qilindi { background: #02c076; color: #000; }
+        .status-qabul-qilindi { background: #02c076; color: #fff; }
         .status-qabul-qilinmadi { background: #f84960; color: #fff; }
         .status-bajarilgan { background: #3772ff; color: #fff; }
+
+        .history-item { 
+            border-bottom: 1px solid rgba(255,255,255,0.03); 
+            padding: 18px 0; 
+            transition: 0.3s;
+        }
         
-        .history-item { border-bottom: 1px solid var(--border); padding: 15px 0; transition: 0.3s; }
-        .history-item:last-child { border-bottom: none; }
-        .amount-income { color: #02c076; font-weight: bold; }
-        .amount-expense { color: #f84960; font-weight: bold; }
+        .history-item:hover {
+            background: rgba(255,255,255,0.02);
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 12px;
+        }
+
+        .amount-income { color: #00ffa3; font-weight: 800; font-size: 1.1rem; }
+        .amount-expense { color: #ff4d6d; font-weight: 800; font-size: 1.1rem; }
+
+        .premium-text-gradient {
+            background: var(--premium-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--ios-bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h2 class="fw-bold m-0">Dashboard</h2>
-            <p class="opacity-50 small m-0">{{ request.user.first_name }} | {{ request.user.phone }}</p>
+    <div class="row align-items-center mb-5">
+        <div class="col-md-7">
+            <h2 class="fw-bold m-0 d-flex align-items-center">
+                Dashboard 
+                <span class="badge ms-3 bg-dark border border-warning text-warning" style="font-size: 10px; letter-spacing: 1px;">PREMIUM ACCESS</span>
+            </h2>
+            <p class="opacity-50 small mt-2">
+                <i class="fas fa-user-circle me-1"></i> {{ request.user.first_name }} 
+                <span class="mx-2">|</span> 
+                <i class="fas fa-phone me-1"></i> {{ request.user.phone }}
+            </p>
         </div>
-        <div class="ios-glass py-2 px-4 mb-0">
-            <span class="opacity-50 small me-2">BALANS:</span>
-            <span class="fw-bold text-warning h5 m-0">{{ request.user.balance }} UZS</span>
+        <div class="col-md-5 text-md-end">
+            <div class="ios-glass d-inline-block py-3 px-4 mb-0" style="background: rgba(255,215,0,0.05);">
+                <span class="opacity-50 small d-block text-uppercase" style="letter-spacing: 1px;">Asosiy Hisob</span>
+                <span class="fw-bold text-warning h3 m-0">{{ request.user.balance }} <small style="font-size: 14px;">UZS</small></span>
+            </div>
         </div>
     </div>
 
     <div class="row g-4">
         <div class="col-12">
             {% if prediction %}
-            <div class="ios-glass border-warning border-opacity-25" style="background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);">
+            <div class="ios-glass premium-ai-card">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-magic text-warning h3 m-0 me-3"></i>
+                    <div class="ai-icon-wrapper me-4">
+                        <i class="fas fa-brain text-white h3 m-0"></i>
+                    </div>
                     <div>
-                        <h6 class="m-0 fw-bold">AI Bashorati ({{ prediction.plan_name }})</h6>
-                        <p class="m-0 small opacity-75">Sizning faolligingiz bo'yicha 30 kundan keyingi balans: <span class="text-success fw-bold">{{ prediction.future_balance }} UZS</span></p>
+                        <h6 class="m-0 fw-bold premium-text-gradient">AI ANALYST PRO ({{ prediction.plan_name }})</h6>
+                        <p class="m-0 mt-1 opacity-75">
+                            Sizning dinamikangiz asosida 30 kundan keyingi balans: 
+                            <span class="text-success fw-bold h5 ms-1">{{ prediction.future_balance }} UZS</span>
+                        </p>
+                    </div>
+                    <div class="ms-auto d-none d-md-block">
+                        <i class="fas fa-chart-line text-warning opacity-25 h1"></i>
                     </div>
                 </div>
             </div>
             {% else %}
-            <div class="ios-glass text-center opacity-50">
-                <i class="fas fa-lock mb-2"></i>
-                <p class="small m-0">AI Bashoratini ko'rish uchun <strong>Premium</strong> obunaga o'ting.</p>
+            <div class="ios-glass text-center py-5 border-dashed">
+                <div class="opacity-25 mb-3">
+                    <i class="fas fa-lock h1"></i>
+                </div>
+                <h6 class="fw-bold">AI Bashorat Funksiyasi Yopiq</h6>
+                <p class="small text-secondary mb-4">Moliyaviy o'sishingizni AI orqali tahlil qilish uchun Premium paketga o'ting.</p>
+                <a href="#" class="btn btn-warning btn-sm px-4 fw-bold rounded-pill">OBUNA BO'LISH</a>
             </div>
             {% endif %}
         </div>
 
         <div class="col-lg-6">
             <div class="ios-glass">
-                <h5 class="fw-bold mb-4"><i class="fas fa-wallet me-2 opacity-50"></i>Moliya tarixi</h5>
-                <div class="history-list">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold m-0"><i class="fas fa- crown me-2 text-warning"></i>Moliya tarixi</h5>
+                    <i class="fas fa-sliders-h opacity-50 cursor-pointer"></i>
+                </div>
+                <div class="history-list px-1">
                     {% for item in balance %}
                     <div class="history-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small fw-bold">{{ item.description|default:"Tranzaksiya" }}</div>
-                            <div class="opacity-25" style="font-size: 10px;">{{ item.created_at|date:"d.m.Y | H:i" }}</div>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; border: 1px solid var(--border);">
+                                <i class="fas {% if item.transaction_type == 'INCOME' %}fa-arrow-down text-success{% else %}fa-arrow-up text-danger{% endif %} small"></i>
+                            </div>
+                            <div>
+                                <div class="small fw-bold">{{ item.description|default:"Tizim amaliyoti" }}</div>
+                                <div class="opacity-25" style="font-size: 10px;">{{ item.created_at|date:"d M, Y | H:i" }}</div>
+                            </div>
                         </div>
                         <div class="{% if item.transaction_type == 'INCOME' %}amount-income{% else %}amount-expense{% endif %}">
                             {% if item.transaction_type == 'INCOME' %}+{% else %}-{% endif %}{{ item.amount }}
                         </div>
                     </div>
                     {% empty %}
-                    <p class="text-center opacity-25 py-4">Moliya tarixi mavjud emas</p>
+                    <div class="text-center py-5 opacity-25">
+                        <i class="fas fa-receipt h2 mb-3"></i>
+                        <p class="small">Hozircha ma'lumotlar yo'q</p>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -81,16 +199,24 @@
 
         <div class="col-lg-6">
             <div class="ios-glass">
-                <h5 class="fw-bold mb-4"><i class="fas fa-tasks me-2 opacity-50"></i>Harakatlar holati</h5>
-                <div class="activity-list">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold m-0"><i class="fas fa-bolt me-2 text-warning"></i>Harakatlar holati</h5>
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill small" style="font-size: 9px;">LIVE UPDATES</span>
+                </div>
+                <div class="activity-list px-1">
                     {% for activity in act %}
                     <div class="history-item d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="small fw-bold">ID: #{{ activity.id }}</div>
-                            <div class="opacity-25" style="font-size: 10px;">{{ activity.created_at|timesince }} oldin</div>
+                            <div class="small fw-bold d-flex align-items-center">
+                                Task #{{ activity.id }}
+                                <i class="fas fa-external-link-alt ms-2 opacity-25" style="font-size: 9px;"></i>
+                            </div>
+                            <div class="opacity-25" style="font-size: 10px;">
+                                <i class="far fa-clock me-1"></i> {{ activity.created_at|timesince }} oldin
+                            </div>
                         </div>
                         <div class="text-end">
-                            <div class="small fw-bold text-warning mb-1">+{{ activity.amount }} UZS</div>
+                            <div class="fw-bold text-warning small mb-2">+{{ activity.amount }} UZS</div>
                             <span class="status-badge 
                                 {% if activity.status == 'kutilmoqda' %}status-kutilmoqda
                                 {% elif activity.status == 'qabul qilindi' %}status-qabul-qilindi
@@ -101,7 +227,10 @@
                         </div>
                     </div>
                     {% empty %}
-                    <p class="text-center opacity-25 py-4">Harakatlar mavjud emas</p>
+                    <div class="text-center py-5 opacity-25">
+                        <i class="fas fa-terminal h2 mb-3"></i>
+                        <p class="small">Faollik kuzatilmadi</p>
+                    </div>
                     {% endfor %}
                 </div>
             </div>

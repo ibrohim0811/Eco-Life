@@ -113,6 +113,10 @@ from django.utils import timezone
 from datetime import timedelta
 
 
+class SubscriptionTemplateview(LoginRequiredMixin, TemplateView):
+    template_name = "subs.html"
+
+
 class TradingDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'settings/dashboard.html'
 

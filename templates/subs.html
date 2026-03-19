@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOLIFE | Subscription Plans</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #05070a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --gold: #FFD700;
+            --blue: #007aff;
+            --silver: #8e8e93;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #1c1f26 0%, #05070a 100%);
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header-section h1 {
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .plan-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            padding: 45px 35px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        /* Badge for Popular Choice */
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue);
+            color: white;
+            padding: 6px 22px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        .plan-name {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .plan-price span {
+            font-size: 16px;
+            opacity: 0.4;
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 40px;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li i {
+            margin-right: 15px;
+            width: 18px;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .buy-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 22px;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-go { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-go:hover { background: rgba(255,255,255,0.2); }
+
+        .btn-pro { background: var(--blue); color: #fff; box-shadow: 0 10px 25px rgba(0, 122, 255, 0.3); }
+        .btn-pro:hover { transform: scale(1.03); background: #0066d6; }
+
+        .btn-ultima { 
+            background: var(--gold); 
+            color: #000; 
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+            animation: pulse-gold 2s infinite;
+        }
+        .btn-ultima:hover { transform: scale(1.03); }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+
+        /* Card ULTIMA Special Glow */
+        .card-ultima {
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .card-ultima:hover {
+            border-color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <h1 class="display-5">Obuna bo'ling</h1>
+        <p class="opacity-50">Sizning moliyaviy o'sishingiz uchun maxsus tahlillar</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-4 col-md-6">
+            <div class="plan-card">
+                <div class="plan-name" style="color: var(--silver);">Starter Go</div>
+                <div class="plan-price">25 000 <span>/oy</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check text-secondary"></i> Asosiy statistika</li>
+                    <li><i class="fas fa-check text-secondary"></i> Kunlik 5 ta tahlil</li>
+                    <li><i class="fas fa-check text-secondary"></i> Telegram bildirishnoma</li>
+                    <li style="opacity: 0.3;"><i class="fas fa-times"></i> AI Bashorat</li>
+                </ul>
+                <a href="https://t.me/eco_start_appBot?start=auth" class="buy-btn btn-go">Tanlash</a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="plan-card">
+                <div class="popular-badge">ENG KO'P SOTILGAN</div>
+                <div class="plan-name" style="color: var(--blue);">Pro Analyst</div>
+                <div class="plan-price">50 000 <span>/oy</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-brain text-primary"></i> <b>AI Bashorat (Lite)</b></li>
+                    <li><i class="fas fa-check text-primary"></i> Cheksiz moliya tarixi</li>
+                    <li><i class="fas fa-check text-primary"></i> Priority texnik yordam</li>
+                    <li><i class="fas fa-check text-primary"></i> Savdo signallari</li>
+                </ul>
+                <a href="https://t.me/eco_start_appBot?start=auth" class="buy-btn btn-pro">Sotib olish</a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="plan-card card-ultima">
+                <div class="plan-name" style="color: var(--gold);">Ultima Mentor</div>
+                <div class="plan-price" style="color: var(--gold);">80 000 <span>/oy</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-crown text-warning"></i> <b>Full AI Prediction Pro</b></li>
+                    <li><i class="fas fa-check text-warning"></i> Shaxsiy tahlilchi</li>
+                    <li><i class="fas fa-check text-warning"></i> VIP yopiq hamjamiyat</li>
+                    <li><i class="fas fa-check text-warning"></i> Maxsus strategiyalar</li>
+                </ul>
+                <a href="https://t.me/eco_start_appBot?start=auth" class="buy-btn btn-ultima">ULTIMA'GA O'TISH</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

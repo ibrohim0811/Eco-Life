@@ -9,6 +9,7 @@ from eco.views import (
     custom_bad_request, check_notifications, groq_chat, SettingsTemplateView, check_username, ProfileSettingsView,
     TradingDashboardView
 )
+from AgroBusiness.views import ProductListView
 
 urlpatterns = [
     path("only-ibrohim-can-enter/", admin.site.urls),
@@ -22,6 +23,7 @@ urlpatterns = [
     path('check-username/', check_username, name='check_username'),
     path('profile-settings/', ProfileSettingsView.as_view(), name='profile_settings'),
     path('profile-dashboard/', TradingDashboardView.as_view(), name='dashboard'),
+    path('agro-biznes/', ProductListView.as_view(), name='agro_main'),
     
     ]
 
