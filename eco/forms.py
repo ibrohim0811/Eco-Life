@@ -5,9 +5,8 @@ from accounts.models import Users
 class UserLoginForm(Form):
     username = CharField()
     password = CharField(widget=PasswordInput)
-    
-from django import forms
-from .models import Users  # Model nomingiz Users ekanligiga qarab
+
+
 
 class ProfileSettingsForm(forms.ModelForm):
     profile_image = forms.ImageField(required=False)
