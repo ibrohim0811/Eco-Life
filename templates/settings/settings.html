@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="uz" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECOLIFE | Settings</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
             --ios-bg: #000000;
@@ -27,16 +28,16 @@
 
         /* Ortga tugmasi - Mobil uchun moslashuvchan */
         .back-btn {
-            width: 200px; 
-            height: 55px; 
-            border: none; 
-            border-radius: 15px; 
-            background-color: rgba(255, 255, 255, 0.1); 
+            width: 200px;
+            height: 55px;
+            border: none;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
             color: white;
             margin: 20px;
             transition: 0.3s;
         }
-        
+
         @media (max-width: 576px) {
             .back-btn {
                 width: 120px;
@@ -58,7 +59,7 @@
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
         /* Menu Styles */
@@ -88,12 +89,25 @@
         }
 
         /* Animated Icons */
-        .settings-anim { display: inline-block; animation: fa-spin 5s infinite linear; }
-        
+        .settings-anim {
+            display: inline-block;
+            animation: fa-spin 5s infinite linear;
+        }
+
         @keyframes lock-shake {
-            0%, 100% { transform: rotate(0); }
-            25% { transform: rotate(-15deg); }
-            75% { transform: rotate(15deg); }
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            25% {
+                transform: rotate(-15deg);
+            }
+
+            75% {
+                transform: rotate(15deg);
+            }
         }
 
         /* 3D Cards */
@@ -106,12 +120,20 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .card-go { background: linear-gradient(135deg, #2c2c2e 0%, #000000 100%); }
-        .card-pro { background: linear-gradient(135deg, #1c1c1e 0%, #0a2e52 100%); }
-        .card-ultima { background: linear-gradient(135deg, #2c1f00 0%, #000000 100%); }
+        .card-go {
+            background: linear-gradient(135deg, #2c2c2e 0%, #000000 100%);
+        }
+
+        .card-pro {
+            background: linear-gradient(135deg, #1c1c1e 0%, #0a2e52 100%);
+        }
+
+        .card-ultima {
+            background: linear-gradient(135deg, #2c1f00 0%, #000000 100%);
+        }
 
         .card-chip {
             width: 45px;
@@ -130,150 +152,171 @@
 
         /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (max-width: 991px) {
-            .ios-glass { margin-bottom: 30px; }
-            .pricing-grid { perspective: none; } /* Mobil qurilmalarda 3D effektini kamaytiramiz */
+            .ios-glass {
+                margin-bottom: 30px;
+            }
+
+            .pricing-grid {
+                perspective: none;
+            }
+
+            /* Mobil qurilmalarda 3D effektini kamaytiramiz */
         }
 
         @media (max-width: 768px) {
-            .pricing-card { min-height: 250px; }
-            .settings-wrapper { padding: 10px 0; }
+            .pricing-card {
+                min-height: 250px;
+            }
+
+            .settings-wrapper {
+                padding: 10px 0;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<a style="text-decoration: none;" href="{% url 'main' %}">
-    <button class="back-btn"> ⬅️ Ortga</button>
-</a>
+    <a style="text-decoration: none;" href="{% url 'main' %}">
+        <button class="back-btn"> ⬅️ Ortga</button>
+    </a>
 
-<div class="settings-wrapper">
-    <div class="container">
-        <div class="row g-4"> <div class="col-lg-4">
-                <div class="ios-glass p-4 h-100">
-                    <h4 class="fw-bold mb-4 text-white d-flex align-items-center">
-                        <i class="fas fa-sliders-h me-3 text-warning"></i>Sozlamalar
-                    </h4>
-                    
-                    <div class="ios-menu-list">
-                        <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
-                            <div class="d-flex align-items-center">
-                                <div class="icon-box bg-primary bg-opacity-25 text-primary me-3">
-                                    <i class="fas fa-cog settings-anim"></i>
+    <div class="settings-wrapper">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="ios-glass p-4 h-100">
+                        <h4 class="fw-bold mb-4 text-white d-flex align-items-center">
+                            <i class="fas fa-sliders-h me-3 text-warning"></i>Sozlamalar
+                        </h4>
+
+                        <div class="ios-menu-list">
+                            <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
+                                <a href="{% url 'profile_settings' %}">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box bg-primary bg-opacity-25 text-primary me-3">
+                                            <i class="fas fa-cog settings-anim"></i>
+                                        </div>
+                                        <span class="fw-medium">Akkaunt sozlamalari</span>
+                                    </div>
+                                </a>
+                                <i class="fas fa-chevron-right small opacity-50"></i>
+                            </div>
+
+                            <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-box bg-success bg-opacity-25 text-success me-3">
+                                        <i class="fas fa-shield-halved lock-anim"></i>
+                                    </div>
+                                    <span class="fw-medium">Xavfsizlik</span>
                                 </div>
-                                <span class="fw-medium">Akkaunt sozlamalari</span>
+                                <i class="fas fa-chevron-right small opacity-50"></i>
                             </div>
-                            <i class="fas fa-chevron-right small opacity-50"></i>
-                        </div>
 
-                        <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
-                            <div class="d-flex align-items-center">
-                                <div class="icon-box bg-success bg-opacity-25 text-success me-3">
-                                    <i class="fas fa-shield-halved lock-anim"></i>
+                            <div class="ios-menu-item p-3 mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="icon-box bg-info bg-opacity-25 text-info me-3">
+                                        <i class="fas fa-font"></i>
+                                    </div>
+                                    <span class="fw-medium">Matn o'lchami</span>
                                 </div>
-                                <span class="fw-medium">Xavfsizlik</span>
+                                <input type="range" class="form-range custom-range" min="14" max="22" step="2"
+                                    id="fontSizeRange" value="16">
                             </div>
-                            <i class="fas fa-chevron-right small opacity-50"></i>
-                        </div>
 
-                        <div class="ios-menu-item p-3 mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="icon-box bg-info bg-opacity-25 text-info me-3">
-                                    <i class="fas fa-font"></i>
+                            <a href="/logout"
+                                class="ios-menu-item d-flex align-items-center p-3 text-danger border-danger border-opacity-10 mt-3">
+                                <div class="icon-box bg-danger bg-opacity-25 text-danger me-3">
+                                    <i class="fas fa-power-off"></i>
                                 </div>
-                                <span class="fw-medium">Matn o'lchami</span>
-                            </div>
-                            <input type="range" class="form-range custom-range" min="14" max="22" step="2" id="fontSizeRange" value="16">
+                                <span class="fw-bold">Tizimdan chiqish</span>
+                            </a>
                         </div>
-
-                        <a href="/logout" class="ios-menu-item d-flex align-items-center p-3 text-danger border-danger border-opacity-10 mt-3">
-                            <div class="icon-box bg-danger bg-opacity-25 text-danger me-3">
-                                <i class="fas fa-power-off"></i>
-                            </div>
-                            <span class="fw-bold">Tizimdan chiqish</span>
-                        </a>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-lg-8">
-                <div class="row g-4 pricing-grid">
-                    
-                    <div class="col-md-4 col-sm-6">
-                        <div class="pricing-card card-go p-4 shadow-lg">
-                            <div>
-                                <div class="card-chip"></div>
-                                <h3 class="fw-bold text-white mb-1">GO</h3>
-                                <p class="small opacity-50">Boshlang'ich</p>
-                            </div>
-                            <div class="mt-4">
-                                <h4 class="fw-bold mb-3 small">25 000 <span class="fs-6 opacity-50">UZS</span></h4>
-                                <a href="#" class="btn btn-outline-light btn-ios w-100">Tanlash</a>
+                <div class="col-lg-8">
+                    <div class="row g-4 pricing-grid">
+
+                        <div class="col-md-4 col-sm-6">
+                            <div class="pricing-card card-go p-4 shadow-lg">
+                                <div>
+                                    <div class="card-chip"></div>
+                                    <h3 class="fw-bold text-white mb-1">GO</h3>
+                                    <p class="small opacity-50">Boshlang'ich</p>
+                                </div>
+                                <div class="mt-4">
+                                    <h4 class="fw-bold mb-3 small">25 000 <span class="fs-6 opacity-50">UZS</span></h4>
+                                    <a href="#" class="btn btn-outline-light btn-ios w-100">Tanlash</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-4 col-sm-6">
-                        <div class="pricing-card card-pro p-4 shadow-lg border-primary border-opacity-25">
-                            <div>
-                                <div class="card-chip"></div>
-                                <h3 class="fw-bold text-white mb-1">PRO</h3>
-                                <p class="small opacity-50">Advanced</p>
-                            </div>
-                            <div class="mt-4">
-                                <h4 class="fw-bold mb-3 small">50 000 <span class="fs-6 opacity-50">UZS</span></h4>
-                                <a href="#" class="btn btn-primary btn-ios w-100 shadow">Upgrade</a>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="pricing-card card-pro p-4 shadow-lg border-primary border-opacity-25">
+                                <div>
+                                    <div class="card-chip"></div>
+                                    <h3 class="fw-bold text-white mb-1">PRO</h3>
+                                    <p class="small opacity-50">Advanced</p>
+                                </div>
+                                <div class="mt-4">
+                                    <h4 class="fw-bold mb-3 small">50 000 <span class="fs-6 opacity-50">UZS</span></h4>
+                                    <a href="#" class="btn btn-primary btn-ios w-100 shadow">Upgrade</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-4 col-sm-12">
-                        <div class="pricing-card card-ultima p-4 shadow-lg border-warning border-opacity-25">
-                            <div>
-                                <div class="card-chip" style="background: linear-gradient(135deg, #ffd700, #b8860b);"></div>
-                                <h3 class="fw-bold text-warning mb-1">ULTIMA</h3>
-                                <p class="small opacity-50">Cheksiz</p>
-                            </div>
-                            <div class="mt-4">
-                                <h4 class="fw-bold mb-3 text-warning small">80 000 <span class="fs-6 text-white opacity-50">UZS</span></h4>
-                                <a href="#" class="btn btn-warning btn-ios w-100 text-dark">Premium</a>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="pricing-card card-ultima p-4 shadow-lg border-warning border-opacity-25">
+                                <div>
+                                    <div class="card-chip"
+                                        style="background: linear-gradient(135deg, #ffd700, #b8860b);"></div>
+                                    <h3 class="fw-bold text-warning mb-1">ULTIMA</h3>
+                                    <p class="small opacity-50">Cheksiz</p>
+                                </div>
+                                <div class="mt-4">
+                                    <h4 class="fw-bold mb-3 text-warning small">80 000 <span
+                                            class="fs-6 text-white opacity-50">UZS</span></h4>
+                                    <a href="#" class="btn btn-warning btn-ios w-100 text-dark">Premium</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    // Font o'lchamini o'zgartirish
-    $('#fontSizeRange').on('input', function() {
-        $('body').css('font-size', $(this).val() + 'px');
-    });
-
-    // 3D Tilt faqat desktopda ishlaydi (mobilda xalaqit bermasligi uchun)
-    if (window.innerWidth > 991) {
-        const cards = document.querySelectorAll('.pricing-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const rX = (y - rect.height/2) / 10;
-                const rY = (rect.width/2 - x) / 10;
-                card.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg) scale3d(1.05, 1.05, 1.05)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            });
+    <script>
+        // Font o'lchamini o'zgartirish
+        $('#fontSizeRange').on('input', function () {
+            $('body').css('font-size', $(this).val() + 'px');
         });
-    }
-</script>
+
+        // 3D Tilt faqat desktopda ishlaydi (mobilda xalaqit bermasligi uchun)
+        if (window.innerWidth > 991) {
+            const cards = document.querySelectorAll('.pricing-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rX = (y - rect.height / 2) / 10;
+                    const rY = (rect.width / 2 - x) / 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg) scale3d(1.05, 1.05, 1.05)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+    </script>
 
 </body>
+
 </html>

@@ -3,7 +3,7 @@ from django.urls import path
 from eco.views import (
     EnteranceTemplateView, UserLoginView, MainTemplateView, user_out,
     custom_page_not_found, custom_server_error, custom_permission_denied,
-    custom_bad_request, check_notifications, groq_chat, SettingsTemplateView, check_username
+    custom_bad_request, check_notifications, groq_chat, SettingsTemplateView, check_username, ProfileSettingsView
 )
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('settings/', SettingsTemplateView.as_view(), name='settings'),
     path('api/chat/', groq_chat, name='groq_chat'),
     path('check-username/', check_username, name='check_username'),
+    path('profile-settings/', ProfileSettingsView.as_view(), name='profile_settings'),
     
     ]
 
