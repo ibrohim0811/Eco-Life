@@ -130,12 +130,10 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
                 "value": current_temp_balance
             })
             
-            if entry.transaction_type == 'INCOME':
+            if str(entry.transaction_type).upper() == 'INCOME':
                 current_temp_balance -= float(entry.amount)
-            else:
+            elif str(entry.transaction_type).upper() == 'EXPENSE':
                 current_temp_balance += float(entry.amount)
-
-        context['balance_chart_data'] = list(reversed(chart_data))
         
         prediction_data = None
         if hasattr(user, 'subscription') and user.subscription.badge_text != "FREE":

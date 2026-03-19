@@ -298,6 +298,7 @@ async def status_already(callback: types.CallbackQuery, i18n: I18nContext):
                 )
                 
                 act.user.balance -= punishment 
+                act.user.save()
                 act.save()
                 return act
             except UserActivities.DoesNotExist:
