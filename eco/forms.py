@@ -13,7 +13,7 @@ class ProfileSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Users
-        fields = ['first_name', 'last_name', 'username', 'gmail', 'about', 'avatar']
+        fields = ['first_name', 'last_name', 'username', 'gmail', 'about', 'image']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.get('instance') 
@@ -23,7 +23,7 @@ class ProfileSettingsForm(forms.ModelForm):
         user = super().save(commit=False)
 
         
-        if self.cleaned_data.get('profile_image'):
+        if self.cleaned_data.get('avatar'):
             user.avatar = self.cleaned_data['avatar']
 
         if hasattr(user, 'subscription') and user.subscription.plan == "Free":
