@@ -159,7 +159,7 @@ async def accepted(callback: types.CallbackQuery, i18n: I18nContext):
                 activity = UserActivities.objects.select_related('user').select_for_update().get(id=activity_id)
                 activity.status = activity.ProccesStatus.ACCEPTED
                 
-                
+                user = activity.user
                 
                 BalanceHistory.objects.create(
                     user=activity.user,
@@ -169,12 +169,11 @@ async def accepted(callback: types.CallbackQuery, i18n: I18nContext):
                 )
                 
                 Notification.objects.create(
-                user=user,
-                message=f"Tabriklaymiz! #{activity_id} raqamli faolligingiz tasdiqlandi. +15 XP va {activity.amount} ball qo'shildi! 🎉"
-            )
+                    user=user,
+                    message=f"Tabriklaymiz! #{activity_id} raqamli faolligingiz tasdiqlandi. +15 XP va {activity.amount} ball qo'shildi! 🎉"
+                )
                 
                 activity.user.balance += activity.amount
-                user = activity.user
                 user.points += 15
                 activity.user.save()
                 

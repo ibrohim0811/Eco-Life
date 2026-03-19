@@ -113,7 +113,7 @@
         </div>
         <div class="ios-glass p-2 d-flex align-items-center px-3">
             <i class="fas fa-wallet text-warning me-2"></i>
-            <span class="fw-bold">{{ request.user.balance }} XP</span>
+            <span class="fw-bold">{{ request.user.balance }} UZS</span>
         </div>
     </div>
 
@@ -123,7 +123,7 @@
                 <span class="ios-label">Joriy hisobingiz</span>
                 <div class="d-flex align-items-baseline gap-2 mt-2">
                     <h1 class="display-5 fw-bold mb-0" style="color: var(--gold);">{{ request.user.balance }}</h1>
-                    <span class="h4 opacity-50">XP</span>
+                    <span class="h4 opacity-50">UZS</span>
                 </div>
             </div>
 
@@ -192,8 +192,8 @@
         <div>
             <h6 class="mb-1 fw-bold text-white">AI Prediction <span class="badge bg-warning text-dark ms-2" style="font-size: 8px;">PREMIUM</span></h6>
             <p class="small mb-0 opacity-75">
-                Hozirgi faolligingizda (kuniga <span class="text-warning fw-bold">{{ prediction.daily_avg }} XP</span>), 
-                30 kundan keyin balansingiz <span class="text-success fw-bold">{{ prediction.future_balance|floatformat:0 }} XP</span> bo'lishi kutilmoqda!
+                Hozirgi faolligingizda (kuniga <span class="text-warning fw-bold">{{ prediction.daily_avg }} UZS</span>), 
+                30 kundan keyin balansingiz <span class="text-success fw-bold">{{ prediction.future_balance|floatformat:0 }} UZS</span> bo'lishi kutilmoqda!
             </p>
         </div>
         <div class="ms-auto">
