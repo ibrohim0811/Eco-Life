@@ -217,3 +217,7 @@ LOGGING = {
         },
     },
 }
+
+
+if not os.path.exists(str(MEDIA_ROOT)):
+    os.makedirs(str(MEDIA_ROOT), exist_ok=True)
