@@ -14,6 +14,10 @@ from django.http import JsonResponse
 
 class EnteranceTemplateView(TemplateView):
     template_name = 'enterance.html'
+    
+    
+class SettingsTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'settings/settings.html'
 
 
 

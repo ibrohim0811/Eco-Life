@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOLIFE | Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --glass-color: rgba(255, 255, 255, 0.05);
+            --gold: #FFD700;
+        }
+
+        body {
+            background-color: var(--ios-bg);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            transition: font-size 0.2s ease;
+        }
+
+        /* iOS Glass Container */
+        .settings-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: radial-gradient(circle at top right, #1a1a1a, #000);
+        }
+
+        .ios-glass {
+            background: rgba(28, 28, 30, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Menu Styles */
+        .ios-menu-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .ios-menu-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-box {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Animated Icons */
+        .settings-anim { animation: fa-spin 5s infinite linear; }
+        
+        .ios-menu-item:hover .lock-anim {
+            animation: lock-shake 0.5s ease;
+        }
+
+        @keyframes lock-shake {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
+        /* Font Slider Customization */
+        .custom-range::-webkit-slider-runnable-track {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 10px;
+        }
+        .custom-range::-webkit-slider-thumb {
+            background: var(--gold);
+            margin-top: -5px;
+        }
+
+        /* 3D Pricing Cards */
+        .pricing-grid {
+            perspective: 1000px;
+        }
+
+        .pricing-card {
+            position: relative;
+            border-radius: 25px;
+            min-height: 280px;
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-go { background: linear-gradient(135deg, #2c2c2e 0%, #000000 100%); }
+        .card-pro { background: linear-gradient(135deg, #1c1c1e 0%, #0a2e52 100%); }
+        .card-ultima { background: linear-gradient(135deg, #2c1f00 0%, #000000 100%); }
+
+        .card-chip {
+            width: 50px;
+            height: 38px;
+            background: linear-gradient(135deg, #e0e0e0 0%, #888 100%);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        .card-ultima .card-chip {
+            background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+        }
+
+        .btn-ios {
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: black;
+            border: none;
+        }
+        .btn-gold:hover {
+            background: #e6c200;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="settings-wrapper">
+    <div class="container">
+        <div class="row g-5 align-items-stretch">
+            
+            <div class="col-lg-4">
+                <div class="ios-glass p-4 h-100">
+                    <h4 class="fw-bold mb-4 text-white d-flex align-items-center">
+                        <i class="fas fa-sliders-h me-3 text-warning"></i>Sozlamalar
+                    </h4>
+                    
+                    <div class="ios-menu-list">
+                        <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-primary bg-opacity-20 text-primary me-3">
+                                    <i class="fas fa-gear settings-anim"></i>
+                                </div>
+                                <span class="fw-medium">Akkaunt sozlamalari</span>
+                            </div>
+                            <i class="fas fa-chevron-right small opacity-30"></i>
+                        </div>
+
+                        <div class="ios-menu-item d-flex align-items-center justify-content-between p-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-success bg-opacity-20 text-success me-3">
+                                    <i class="fas fa-lock lock-anim"></i>
+                                </div>
+                                <span class="fw-medium">Xavfsizlik sozlamalari</span>
+                            </div>
+                            <i class="fas fa-chevron-right small opacity-30"></i>
+                        </div>
+
+                        <div class="ios-menu-item p-3 mb-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-box bg-info bg-opacity-20 text-info me-3">
+                                    <i class="fas fa-font"></i>
+                                </div>
+                                <span class="fw-medium">Matn o'lchami</span>
+                            </div>
+                            <input type="range" class="form-range custom-range" min="14" max="22" step="2" id="fontSizeRange" value="16">
+                            <div class="d-flex justify-content-between small opacity-50 mt-1">
+                                <span>A</span><span class="fs-5">A</span>
+                            </div>
+                        </div>
+
+                        <div class="py-2"></div>
+
+                        <div class="ios-menu-item d-flex align-items-center p-3 text-danger border-danger border-opacity-10">
+                            <div class="icon-box bg-danger bg-opacity-20 text-danger me-3">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <span class="fw-bold">Tizimdan chiqish</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="row g-4 h-100 pricing-grid">
+                    
+                    <div class="col-md-4">
+                        <div class="pricing-card card-go p-4 h-100 shadow-lg">
+                            <div>
+                                <div class="card-chip"></div>
+                                <h3 class="fw-black text-white mb-1">GO</h3>
+                                <p class="small opacity-50">Go obunasi</p>
+                            </div>
+                            <div class="mt-4">
+                                <h2 class="fw-bold mb-3">25 000 UZS <small class="fs-6 opacity-50">Oylik</small></h2>
+                                <button class="btn btn-outline-light btn-ios w-100">Upgrade to Pro</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="pricing-card card-pro p-4 h-100 shadow-lg border-primary border-opacity-25">
+                            <div>
+                                <div class="card-chip"></div>
+                                <h3 class="fw-black text-white mb-1">PRO</h3>
+                                <p class="small opacity-50">Advanced features</p>
+                            </div>
+                            <div class="mt-4">
+                                <h2 class="fw-bold mb-3">50 000 UZS <small class="fs-6 opacity-50">Oylik</small></h2>
+                                <button class="btn btn-primary btn-ios w-100 shadow">Upgrade to Pro</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="pricing-card card-ultima p-4 h-100 shadow-lg border-warning border-opacity-25">
+                            <div>
+                                <div class="card-chip"></div>
+                                <h3 class="fw-black text-gold mb-1">ULTIMA</h3>
+                                <p class="small opacity-50">Unlimited ecological power</p>
+                            </div>
+                            <div class="mt-4">
+                                <h2 class="fw-bold mb-3 text-gold">80 000 UZS<small class="fs-6 opacity-50 text-white">oylik</small></h2>
+                                <button class="btn btn-gold btn-ios w-100">Get Ultima</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // 1. Font Size Change Logic
+    $('#fontSizeRange').on('input', function() {
+        let size = $(this).val();
+        $('body').css('font-size', size + 'px');
+    });
+
+    // 2. 3D Card Tilt Effect
+    const cards = document.querySelectorAll('.pricing-card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+    });
+
+    // 3. Simple click handling
+    $('.ios-menu-item').on('click', function() {
+        console.log("Navigating to:", $(this).find('span').text());
+    });
+</script>
+
+</body>
+</html>
