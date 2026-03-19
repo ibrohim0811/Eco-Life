@@ -13,7 +13,7 @@ class ProfileSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Users
-        fields = ['first_name', 'last_name', 'username', 'gmail', 'about', 'image']
+        fields = ['first_name', 'last_name', 'username', 'gmail', 'about', 'avatar']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.get('instance') 

@@ -23,7 +23,7 @@ urlpatterns = [
     ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    
 
 handler404 = 'eco.views.custom_page_not_found'
 handler500 = 'eco.views.custom_server_error'
