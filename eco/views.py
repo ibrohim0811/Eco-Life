@@ -128,36 +128,34 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
         # 2. Grafik mantiqi (Oxirgi 7 ta tranzaksiya asosida balans tarixi)
         history_queryset = BalanceHistory.objects.filter(
             user=user
-        ).order_by('-created_at')[:7]
-        
+        ).order_by('created_at')[:7]  # ⚠️ MUHIM: eski → yangi
+
         chart_data = []
-        # Balansni floatga o'tkazamiz (DecimalField bo'lsa JSON xatosi bermasligi uchun)
-        current_temp_balance = float(user.balance)
 
-        if not history_queryset.exists():
-            # Agar tarix bo'sh bo'lsa, hozirgi balansni bitta nuqta qilib ko'rsatamiz
+        total = 0
+
+        for entry in history_queryset:
+            amount = float(entry.amount)
+            tp = str(entry.transaction_type).upper()
+
+            if tp == 'INCOME':
+                total += amount
+            elif tp == 'EXPENSE':
+                total -= amount
+
             chart_data.append({
-                "time": timezone.now().strftime("%Y-%m-%d"),
-                "value": current_temp_balance
+                "time": entry.created_at.strftime("%Y-%m-%d"),
+                "value": total
             })
-        else:
-            # FIFO (First In First Out) teskari hisoblash mantiqi
-            for entry in history_queryset:
-                chart_data.append({
-                    "time": entry.created_at.strftime("%Y-%m-%d"),
-                    "value": current_temp_balance
-                })
-                
-                # Tranzaksiya turiga qarab o'tmishdagi balansni tiklaymiz
-                tp = str(entry.transaction_type).upper()
-                amount = float(entry.amount)
-                if tp == 'INCOME':
-                    current_temp_balance -= amount
-                elif tp == 'EXPENSE':
-                    current_temp_balance += amount
 
-        # Grafik eskidan yangiga qarab chizilishi kerak
-        context['balance_chart_data'] = list(reversed(chart_data))
+        # Agar data bo'sh bo'lsa fallback
+        if not chart_data:
+            chart_data = [{
+                "time": timezone.now().strftime("%Y-%m-%d"),
+                "value": float(user.balance)
+            }]
+
+        context['balance_chart_data'] = chart_data
         
         # 3. AI Prediction Mantiqi (ULTIMA, PRO va PREMIUM uchun)
         user_plan = "FREE"
