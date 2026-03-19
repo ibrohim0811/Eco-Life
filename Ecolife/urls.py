@@ -7,7 +7,7 @@ from eco.views import (
 )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("only-ibrohim-can-enter/", admin.site.urls),
     path("", EnteranceTemplateView.as_view(), name='enterance'),
     path("login/", UserLoginView.as_view(), name='login'),
     path("logout/", user_out, name='logout'),
