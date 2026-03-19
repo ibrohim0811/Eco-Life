@@ -74,6 +74,13 @@
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px var(--gold); }
         }
+
+        /* Grafik o'lchamini nazorat qilish */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -134,7 +141,6 @@
             </div>
 
             <div class="col-lg-8">
-                
                 {% if prediction %}
                 <div class="ios-glass p-4 mb-4 border-warning border-opacity-25" 
                      style="background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%);">
@@ -147,7 +153,7 @@
                                 AI Bashorati <span class="badge bg-warning text-dark ms-2">{{ prediction.plan_name }}</span>
                             </h6>
                             <p class="mb-0 opacity-75">
-                                Sizning faolligingiz asosida 30 kundan keyingi taxminiy balans: 
+                                30 kundan keyingi taxminiy balans: 
                                 <span class="text-success fw-bold h5 ms-1">{{ prediction.future_balance }} UZS</span>
                             </p>
                         </div>
@@ -157,10 +163,12 @@
 
                 <div class="ios-glass p-4">
                     <div class="mb-4">
-                        <h5 class="fw-bold mb-0">Balans O'zgarishi</h5>
-                        <span class="ios-label">Oxirgi 7 tranzaksiya dinamikasi</span>
+                        <h5 class="fw-bold mb-0">Balans Dinamikasi</h5>
+                        <span class="ios-label">Oxirgi tranzaksiyalar tahlili</span>
                     </div>
-                    <div id="tradingChart" style="height: 400px; width: 100%;"></div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,46 +176,62 @@
 
     {{ balance_chart_data|json_script:"chart-data" }}
 
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('tradingChart');
             const dataNode = document.getElementById('chart-data');
-            if (!container || !dataNode) return;
+            if (!dataNode) return;
 
+            // Ma'lumotlarni olish
             const rawData = JSON.parse(dataNode.textContent);
+            
+            // Chart.js uchun ma'lumotlarni formatlash
+            // Agar vaqt (time) va qiymat (value) bo'lsa:
+            const labels = rawData.map((item, index) => item.time || `T-${rawData.length - index}`);
+            const values = rawData.map(item => item.value);
 
-            const chart = LightweightCharts.createChart(container, {
-                width: container.offsetWidth,
-                height: 400,
-                layout: {
-                    background: { type: 'solid', color: 'transparent' },
-                    textColor: '#848e9c',
-                    fontFamily: '-apple-system, system-ui, sans-serif',
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            // Gradient yaratish (chiroyli ko'rinish uchun)
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.4)');
+            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Balans (UZS)',
+                        data: values,
+                        borderColor: '#FFD700',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4, // Chiziqni yumshoq (smooth) qiladi
+                        pointBackgroundColor: '#FFD700',
+                        pointRadius: 4
+                    }]
                 },
-                grid: {
-                    vertLines: { visible: false },
-                    horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
-                },
-                rightPriceScale: { borderVisible: false },
-                timeScale: { borderVisible: false },
-            });
-
-            const series = chart.addAreaSeries({
-                lineColor: '#FFD700',
-                topColor: 'rgba(255, 215, 0, 0.3)',
-                bottomColor: 'rgba(255, 215, 0, 0)',
-                lineWidth: 3,
-            });
-
-            series.setData(rawData);
-            chart.timeScale().fitContent();
-
-            new ResizeObserver(entries => {
-                if (entries.length > 0) {
-                    chart.applyOptions({ width: entries[0].contentRect.width });
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false } // Ortqicha yozuvlarni o'chiramiz
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#848e9c', font: { size: 10 } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#848e9c', font: { size: 10 } }
+                        }
+                    }
                 }
-            }).observe(container);
+            });
         });
     </script>
 </body>
