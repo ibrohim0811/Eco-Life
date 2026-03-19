@@ -82,13 +82,22 @@ class ProfileSettingsView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['files'] = self.request.FILES  
+        return kwargs
+
     def form_valid(self, form):
         messages.success(self.request, "Profil ma'lumotlari muvaffaqiyatli yangilandi!")
         return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "Ma'lumotlarni saqlashda xatolik yuz berdi.")
-        return super().form_invalid(form)
 
 
 import json

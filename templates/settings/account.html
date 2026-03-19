@@ -255,20 +255,25 @@
             <div class="col-lg-8">
                 <div class="ios-glass p-5">
 
-                    <div class="text-center mb-5">
-                        <div class="profile-image-wrapper">
-                            <img src="{{ request.user.avatar.url }}" id="userAvatar" class="user-avatar" alt="User">
-                            <label for="avatarInput" class="avatar-edit-btn">
-                                <i class="fas fa-camera"></i>
-                            </label>
-                            <input name="avatar" type="file" id="avatarInput" hidden accept="image/*">
-                        </div>
-                        <h5 class="mt-3 fw-bold mb-0">{{ request.user.first_name }} {{ request.user.last_name }}</h5>
-                        <p class="small opacity-50 mt-1">@{{request.user.username}}</p>
-                    </div>
 
-                    <form action="{% url 'profile_settings' %}" method="POST" id="profileForm">
+
+                    <form action="{% url 'profile_settings' %}" enctype="multipart/form-data" method="POST"
+                        id="profileForm">
                         {% csrf_token %}
+
+                        <div class="text-center mb-5">
+                            <div class="profile-image-wrapper">
+                                <img src="{{ request.user.avatar.url }}" id="userAvatar" class="user-avatar" alt="User">
+                                <label for="avatarInput" class="avatar-edit-btn">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input name="avatar" type="file" id="avatarInput" hidden accept="image/*">
+                            </div>
+                            <h5 class="mt-3 fw-bold mb-0">{{ request.user.first_name }} {{ request.user.last_name }}
+                            </h5>
+                            <p class="small opacity-50 mt-1">@{{request.user.username}}</p>
+                        </div>
+
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="ios-input-group">
@@ -323,7 +328,7 @@
                                     </small>
                                     {% else %}
                                     <small class="text-success" style="font-size: 0.65rem;">
-                                        <i class="fas fa-crown me-1"></i> Sizda <b>{{ request.user.subscription.badge_text }}</b> obunasi mavjud.
+                                        <i class="fas fa-crown me-1"></i> Sizda <b>{{request.user.subscription.badge_text }}</b> obunasi mavjud.
                                     </small>
                                     {% endif %}
                                 </div>
@@ -332,7 +337,7 @@
                             <div class="col-12">
                                 <div class="ios-input-group">
                                     <label class="ios-label">Men haqimda (Bio)</label>
-                                    <textarea class="form-control ios-input"
+                                    <textarea name="about" class="form-control ios-input"
                                         rows="3">Tabiatni asrash - bizning umumiy burchimiz! 🌱</textarea>
                                 </div>
                             </div>
@@ -413,7 +418,7 @@
             }, 500);
         });
 
-        
+
     </script>
 
 </body>
