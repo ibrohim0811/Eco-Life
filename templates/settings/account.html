@@ -323,8 +323,7 @@
                                     </small>
                                     {% else %}
                                     <small class="text-success" style="font-size: 0.65rem;">
-                                        <i class="fas fa-crown me-1"></i> Sizda <b>{{ user.subscription.badge_text
-                                            }}</b> obunasi mavjud.
+                                        <i class="fas fa-crown me-1"></i> Sizda <b>{{ request.user.subscription.badge_text }}</b> obunasi mavjud.
                                     </small>
                                     {% endif %}
                                 </div>
