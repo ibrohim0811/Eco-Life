@@ -13,7 +13,7 @@
         :root {
             --ios-bg: #0b0d11;
             --gold: #FFD700;
-            --glass: rgba(30, 32, 38, 0.7);
+            --glass: rgba(30, 32, 38, 0.75);
             --border: rgba(255, 255, 255, 0.08);
             --success: #02c076;
             --warning: #f0b90b;
@@ -23,23 +23,25 @@
         body {
             background-color: var(--ios-bg);
             color: #eaecef;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             min-height: 100vh;
             background: radial-gradient(circle at top right, #1c1c1e, #0b0d11);
+            overflow-x: hidden;
         }
 
+        /* Glassmorphism optimizatsiyasi */
         .ios-glass {
             background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--border);
-            border-radius: 28px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .balance-card {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.02) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.25);
         }
 
         .ios-label {
@@ -47,182 +49,178 @@
             color: #848e9c;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
         }
 
         .activity-item {
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
             border: 1px solid transparent;
         }
 
         .activity-item:hover {
-            background: rgba(255, 255, 255, 0.07);
-            transform: scale(1.02);
-            border-color: var(--border);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .status-badge {
             font-size: 10px;
-            padding: 3px 10px;
-            border-radius: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: 700;
-            text-transform: capitalize;
         }
 
-        #tradingChart {
+        /* Chart konteyneri responsivligi */
+        .chart-wrapper {
+            position: relative;
             width: 100%;
-            height: 450px;
-            margin-top: 10px;
+            height: 400px;
+            min-height: 300px;
         }
 
         .btn-time {
             background: rgba(255, 255, 255, 0.05);
-            border: none;
+            border: 1px solid transparent;
             color: #848e9c;
-            padding: 5px 15px;
-            border-radius: 10px;
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 12px;
-            transition: 0.2s;
+            font-weight: 500;
+            transition: 0.2s all ease;
         }
+
+        .btn-time:hover { background: rgba(255, 255, 255, 0.1); }
 
         .btn-time.active {
             background: var(--gold);
             color: #000;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
         }
 
-        .ai-icon {
-            position: relative;
-            animation: pulse-ai 2s infinite;
-        }
+        .ai-icon { animation: pulse-ai 2s infinite ease-in-out; }
 
         @keyframes pulse-ai {
-            0% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px var(--gold); }
+        }
 
-            50% {
-                transform: scale(1.1);
-                opacity: 1;
-                text-shadow: 0 0 10px var(--gold);
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .ios-glass { border-radius: 20px; padding: 1.25rem !important; }
+            #tradingChart { height: 300px !important; }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="container py-4 py-lg-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
             <div>
-                <h3 class="fw-bold mb-0">Dashboard</h3>
-                <p class="opacity-50 small mb-0">Xush kelibsiz, {{ request.user.first_name }}!</p>
+                <h2 class="fw-bold mb-0">Dashboard</h2>
+                <p class="opacity-50 small mb-0 font-monospace text-uppercase">Market Overview • Live</p>
             </div>
-            <div class="ios-glass p-2 d-flex align-items-center px-3">
+            <div class="ios-glass p-2 d-flex align-items-center px-3 align-self-start align-self-md-center">
                 <i class="fas fa-wallet text-warning me-2"></i>
-                <span class="fw-bold">{{ request.user.balance }} UZS</span>
+                <span class="fw-bold">{{ request.user.balance }} <small class="opacity-50">UZS</small></span>
             </div>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-4">
                 <div class="ios-glass p-4 mb-4 balance-card">
-                    <span class="ios-label">Joriy hisobingiz</span>
+                    <span class="ios-label">Joriy Balans</span>
                     <div class="d-flex align-items-baseline gap-2 mt-2">
-                        <h1 class="display-5 fw-bold mb-0" style="color: var(--gold);">{{ request.user.balance }}</h1>
-                        <span class="h4 opacity-50">UZS</span>
+                        <h1 class="display-6 fw-bold mb-0" style="color: var(--gold);">{{ request.user.balance }}</h1>
+                        <span class="h5 opacity-50 mb-0">UZS</span>
                     </div>
                 </div>
 
                 <div class="ios-glass p-4">
-                    <h6 class="fw-bold mb-4">So'nggi harakatlar</h6>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h6 class="fw-bold mb-0">So'nggi harakatlar</h6>
+                        <i class="fas fa-history opacity-25"></i>
+                    </div>
 
                     {% for act in user_activities %}
-                    <div class="activity-item p-3 mb-3 d-flex align-items-center">
-                        <div class="me-3 p-2 rounded-3 
-                        {% if act.status == 'qabul qilindi' %}bg-success text-success
-                        {% elif act.status == 'kutilmoqda' %}bg-warning text-warning
-                        {% else %}bg-danger text-danger{% endif %} bg-opacity-10">
-                            <i
-                                class="fas {% if act.video_file_id %}fa-play-circle{% else %}fa-check-double{% endif %} h5 mb-0"></i>
+                    <div class="activity-item p-3 mb-2 d-flex align-items-center">
+                        <div class="me-3 p-2 rounded-3 bg-opacity-10 
+                            {% if act.status == 'qabul qilindi' %}bg-success text-success
+                            {% elif act.status == 'kutilmoqda' %}bg-warning text-warning
+                            {% else %}bg-danger text-danger{% endif %}">
+                            <i class="fas {% if act.video_file_id %}fa-play-circle{% else %}fa-check-double{% endif %} fa-lg"></i>
                         </div>
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between">
-                                <span class="small fw-bold">ID: #{{ act.id }}</span>
-                                <span class="small fw-bold text-success">+{{ act.amount }}</span>
+                                <span class="small fw-bold text-opacity-75">ID: #{{ act.id }}</span>
+                                <span class="small fw-bold {% if act.status == 'rad etildi' %}text-danger{% else %}text-success{% endif %}">
+                                    {% if act.status != 'rad etildi' %}+{% endif %}{{ act.amount }}
+                                </span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-1">
                                 <span class="status-badge 
-                                {% if act.status == 'qabul qilindi' %}bg-success text-dark
-                                {% elif act.status == 'kutilmoqda' %}bg-warning text-dark
-                                {% else %}bg-danger text-white{% endif %}">
+                                    {% if act.status == 'qabul qilindi' %}bg-success text-dark
+                                    {% elif act.status == 'kutilmoqda' %}bg-warning text-dark
+                                    {% else %}bg-danger text-white{% endif %}">
                                     {{ act.status }}
                                 </span>
-                                <span class="opacity-25 small" style="font-size: 10px;">{{ act.created_at|timesince }}
-                                    oldin</span>
+                                <span class="opacity-25" style="font-size: 9px;">{{ act.created_at|timesince }} oldin</span>
                             </div>
                         </div>
                     </div>
                     {% empty %}
                     <div class="text-center opacity-25 py-5">
-                        <i class="fas fa-folder-open h2"></i>
-                        <p class="small">Harakatlar yo'q</p>
+                        <i class="fas fa-receipt h2 mb-3"></i>
+                        <p class="small">Hozircha ma'lumot yo'q</p>
                     </div>
                     {% endfor %}
                 </div>
             </div>
 
             <div class="col-lg-8">
-                {% if prediction %}
-                <div class="ios-glass p-3 mb-3 border-warning border-opacity-25"
-                    style="background: linear-gradient(90deg, rgba(255,215,0,0.05) 0%, rgba(0,0,0,0) 100%);">
+                <div class="ios-glass p-3 mb-4 border-warning border-opacity-25" 
+                     style="background: linear-gradient(90deg, rgba(255,215,0,0.08) 0%, transparent 100%);">
                     <div class="d-flex align-items-center">
                         <div class="ai-icon me-3">
-                            <i class="fas fa-robot text-warning h4 mb-0"></i>
+                            <i class="fas fa-brain text-warning h4 mb-0"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h6 class="mb-1 fw-bold text-white" style="font-size: 14px;">AI Prediction <span
-                                    class="badge bg-warning text-dark ms-2" style="font-size: 8px;">PREMIUM</span></h6>
+                            <h6 class="mb-1 fw-bold text-white d-flex align-items-center" style="font-size: 14px;">
+                                AI Prediction
+                                {% if not prediction %}
+                                <span class="badge bg-warning text-dark ms-2" style="font-size: 8px;">PREMIUM</span>
+                                {% endif %}
+                            </h6>
                             <p class="small mb-0 opacity-75" style="font-size: 12px;">
-                                30 kundan keyin: <span class="text-success fw-bold">{{ prediction.future_balance|floatformat:0 }} UZS</span>
+                                {% if prediction %}
+                                    30 kunlik prognoz: <span class="text-success fw-bold">{{ prediction.future_balance }} UZS</span>
+                                {% else %}
+                                    Balansingiz o'sish dinamikasini bilish uchun <a href="#" class="text-warning text-decoration-none fw-bold">PRO rejaga</a> o'ting.
+                                {% endif %}
                             </p>
                         </div>
                     </div>
                 </div>
-                {% else %}
-                <div class="ios-glass p-3 mb-4 border-secondary border-opacity-25 opacity-75">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-lock me-3 text-secondary"></i>
-                        <p class="small mb-0">
-                            Kelajakdagi balansingizni AI orqali bashorat qilishni xohlaysizmi?
-                            <a href="#" class="text-warning text-decoration-none fw-bold">PRO rejasiga o'ting →</a>
-                        </p>
-                    </div>
-                </div>
-                {% endif %}
 
-                <div class="ios-glass p-4" style="min-height: 520px;">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="ios-glass p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                         <div>
-                            <h5 class="fw-bold mb-0 text-white text-nowrap">Balans o'zgarishi</h5>
-                            <span class="ios-label">Real-vaqtdagi statistika</span>
+                            <h5 class="fw-bold mb-0 text-white">Balans o'zgarishi</h5>
+                            <span class="ios-label">Live Chart (Oxirgi 7 ta)</span>
                         </div>
-                        <div class="d-flex gap-1">
+                        <div class="d-flex gap-2">
                             <button class="btn-time">1D</button>
                             <button class="btn-time active">7D</button>
                             <button class="btn-time">1M</button>
                         </div>
                     </div>
 
-                    <div id="tradingChart" style="min-height: 400px;"></div>
+                    <div class="chart-wrapper">
+                        <div id="tradingChart"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -232,64 +230,74 @@
 
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.umd.js"></script>
     <script>
-        window.onload = function () {
+        document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('tradingChart');
-            const chartDataNode = document.getElementById('chart-data');
+            const dataNode = document.getElementById('chart-data');
+            
+            if (!container || !dataNode) return;
 
-            if (!chartDataNode) return; // Xavfsizlik uchun
+            const rawData = JSON.parse(dataNode.textContent);
 
-            let rawData = JSON.parse(chartDataNode.textContent);
-
-            // Agar ma'lumot 1 ta bo'lsa, xato bermasligi uchun 
             if (!rawData || rawData.length === 0) {
-                container.innerHTML = '<div class="h-100 d-flex align-items-center justify-content-center opacity-25 py-5">Hali ma\'lumotlar yo\'q</div>';
+                container.innerHTML = `<div class="d-flex flex-column align-items-center justify-content-center h-100 opacity-25">
+                    <i class="fas fa-chart-area fa-3x mb-3"></i>
+                    <p>Grafik uchun ma'lumot yetarli emas</p>
+                </div>`;
                 return;
             }
 
-            const width = container.offsetWidth || container.parentElement.clientWidth;
-
+            // Chart yaratish
             const chart = LightweightCharts.createChart(container, {
-                width: width,
+                width: container.offsetWidth,
                 height: 400,
                 layout: {
                     background: { type: 'solid', color: 'transparent' },
                     textColor: '#848e9c',
+                    fontSize: 11,
+                    fontFamily: '-apple-system, system-ui, sans-serif',
                 },
                 grid: {
                     vertLines: { visible: false },
                     horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
                 },
-                rightPriceScale: { borderVisible: false },
+                rightPriceScale: {
+                    borderVisible: false,
+                    scaleMargins: { top: 0.2, bottom: 0.2 },
+                },
                 timeScale: {
                     borderVisible: false,
                     fixLeftEdge: true,
-                    fixRightEdge: true
+                    fixRightEdge: true,
                 },
+                handleScroll: { mouseWheel: true, pressedMouseMove: true },
+                handleScale: { axisPressedMouseMove: true, pinch: true },
             });
 
             const series = chart.addAreaSeries({
                 lineColor: '#FFD700',
-                topColor: 'rgba(255, 215, 0, 0.3)',
+                topColor: 'rgba(255, 215, 0, 0.25)',
                 bottomColor: 'rgba(255, 215, 0, 0)',
                 lineWidth: 3,
                 priceFormat: { type: 'volume', precision: 0 },
             });
 
+            // Silliq chizish uchun animatsiya kabi yuklash
             series.setData(rawData);
             chart.timeScale().fitContent();
 
-            // Responsive resize
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    chart.applyOptions({ width: container.offsetWidth });
-                    chart.timeScale().fitContent();
-                }, 200);
+            // Mukammal Responsive logic
+            const resizeObserver = new ResizeObserver(entries => {
+                if (entries.length === 0 || !entries[0].contentRect) return;
+                const newWidth = entries[0].contentRect.width;
+                chart.applyOptions({ width: newWidth });
+                chart.timeScale().fitContent();
             });
-        };
+
+            resizeObserver.observe(container);
+
+            // Clean up
+            window.addEventListener('unload', () => resizeObserver.disconnect());
+        });
     </script>
-
 </body>
-
 </html>
