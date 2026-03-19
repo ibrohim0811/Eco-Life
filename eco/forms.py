@@ -9,7 +9,7 @@ class UserLoginForm(Form):
 
 
 class ProfileSettingsForm(forms.ModelForm):
-    profile_image = forms.ImageField(required=False)
+    avatar = forms.ImageField(required=False)
 
     class Meta:
         model = Users
@@ -24,7 +24,7 @@ class ProfileSettingsForm(forms.ModelForm):
 
         
         if self.cleaned_data.get('avatar'):
-            user.avatar = self.cleaned_data['avatar']
+            user.image = self.cleaned_data['avatar']
 
         if hasattr(user, 'subscription') and user.subscription.plan == "Free":
             user.gmail = self.instance.gmail 
