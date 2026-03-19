@@ -314,7 +314,7 @@
                                     class="ios-input-group {% if user.subscription.plan == 'Free' %}ios-readonly{% endif %}">
                                     <label class="ios-label">Gmail</label>
                                     <input type="email" name="gmail" id="emailInput" class="form-control ios-input"
-                                        value="{{ user.gmail }}" {% if request.user.subscription.plan=='Free' %}readonly{%endif%}>
+                                        value="{{ user.gmail }}" {% if request.user.subscription.plan == 'Free' %}readonly{%endif%}>
 
                                     {% if request.user.subscription.plan == 'Free' %}
                                     <small class="text-warning" style="font-size: 0.65rem;">
