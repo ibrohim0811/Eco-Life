@@ -13,7 +13,7 @@ urlpatterns = [
     path("logout/", user_out, name='logout'),
     path("app/", MainTemplateView.as_view(), name='main'),
     path('api/check-notifications/', check_notifications, name='check_notifications'),
-    path('settings/', SettingsTemplateView, name='settings'),
+    path('settings/', SettingsTemplateView.as_view(), name='settings'),
     path('api/chat/', groq_chat, name='groq_chat'),
 ]
 
