@@ -316,7 +316,7 @@
                                     <input type="email" name="gmail" id="emailInput" class="form-control ios-input"
                                         value="{{ user.gmail }}" {% if user.subscription.plan=='Free' %}readonly{%endif%}>
 
-                                    {% if user.subscription.plan == 'Free' %}
+                                    {% if request.user.subscription.plan == 'Free' %}
                                     <small class="text-warning" style="font-size: 0.65rem;">
                                         <i class="fas fa-lock me-1"></i> Emailni o'zgartirish uchun <b>PRO</b> obuna
                                         kerak.
