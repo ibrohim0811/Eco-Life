@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOLIFE | Trading Dashboard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --ios-bg: #0b0d11;
+            --gold: #FFD700;
+            --glass: rgba(30, 32, 38, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --success: #02c076;
+            --warning: #f0b90b;
+            --danger: #f84960;
+        }
+
+        body {
+            background-color: var(--ios-bg);
+            color: #eaecef;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(circle at top right, #1c1c1e, #0b0d11);
+        }
+
+        .ios-glass {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .ios-label {
+            font-size: 11px;
+            color: #848e9c;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .activity-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: scale(1.02);
+            border-color: var(--border);
+        }
+
+        .status-badge {
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        #tradingChart {
+            width: 100%;
+            height: 450px;
+            margin-top: 10px;
+        }
+
+        .btn-time {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #848e9c;
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .btn-time.active {
+            background: var(--gold);
+            color: #000;
+            font-weight: 600;
+        }
+        .ai-icon {
+            position: relative;
+            animation: pulse-ai 2s infinite;
+        }
+
+    @keyframes pulse-ai {
+        0% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 10px var(--gold); }
+        100% { transform: scale(1); opacity: 0.8; }
+    }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h3 class="fw-bold mb-0">Dashboard</h3>
+            <p class="opacity-50 small mb-0">Xush kelibsiz, {{ request.user.first_name }}!</p>
+        </div>
+        <div class="ios-glass p-2 d-flex align-items-center px-3">
+            <i class="fas fa-wallet text-warning me-2"></i>
+            <span class="fw-bold">{{ request.user.balance }} XP</span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="ios-glass p-4 mb-4 balance-card">
+                <span class="ios-label">Joriy hisobingiz</span>
+                <div class="d-flex align-items-baseline gap-2 mt-2">
+                    <h1 class="display-5 fw-bold mb-0" style="color: var(--gold);">{{ request.user.balance }}</h1>
+                    <span class="h4 opacity-50">XP</span>
+                </div>
+            </div>
+
+            <div class="ios-glass p-4">
+                <h6 class="fw-bold mb-4">So'nggi harakatlar</h6>
+                
+                {% for act in user_activities %}
+                <div class="activity-item p-3 mb-3 d-flex align-items-center">
+                    <div class="me-3 p-2 rounded-3 
+                        {% if act.status == 'qabul qilindi' %}bg-success text-success
+                        {% elif act.status == 'kutilmoqda' %}bg-warning text-warning
+                        {% else %}bg-danger text-danger{% endif %} bg-opacity-10">
+                        <i class="fas {% if act.video_file_id %}fa-play-circle{% else %}fa-check-double{% endif %} h5 mb-0"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <span class="small fw-bold">ID: #{{ act.id }}</span>
+                            <span class="small fw-bold text-success">+{{ act.amount }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="status-badge 
+                                {% if act.status == 'qabul qilindi' %}bg-success text-dark
+                                {% elif act.status == 'kutilmoqda' %}bg-warning text-dark
+                                {% else %}bg-danger text-white{% endif %}">
+                                {{ act.status }}
+                            </span>
+                            <span class="opacity-25 small" style="font-size: 10px;">{{ act.created_at|timesince }} oldin</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center opacity-25 py-5">
+                    <i class="fas fa-folder-open h2"></i>
+                    <p class="small">Harakatlar yo'q</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="ios-glass p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="fw-bold mb-0 text-white">Balans o'zgarishi</h5>
+                        <span class="ios-label">Real-vaqtdagi statistika</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn-time">1D</button>
+                        <button class="btn-time active">7D</button>
+                        <button class="btn-time">1M</button>
+                    </div>
+                </div>
+
+                <div id="tradingChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if prediction %}
+<div class="ios-glass p-3 mb-4 border-warning border-opacity-25" style="background: linear-gradient(90deg, rgba(255,215,0,0.05) 0%, rgba(0,0,0,0) 100%);">
+    <div class="d-flex align-items-center">
+        <div class="ai-icon me-3">
+            <i class="fas fa-robot text-warning h4 mb-0"></i>
+        </div>
+        <div>
+            <h6 class="mb-1 fw-bold text-white">AI Prediction <span class="badge bg-warning text-dark ms-2" style="font-size: 8px;">PREMIUM</span></h6>
+            <p class="small mb-0 opacity-75">
+                Hozirgi faolligingizda (kuniga <span class="text-warning fw-bold">{{ prediction.daily_avg }} XP</span>), 
+                30 kundan keyin balansingiz <span class="text-success fw-bold">{{ prediction.future_balance|floatformat:0 }} XP</span> bo'lishi kutilmoqda!
+            </p>
+        </div>
+        <div class="ms-auto">
+            <i class="fas fa-chart-line text-success opacity-50"></i>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="ios-glass p-3 mb-4 border-secondary border-opacity-25 opacity-75">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-lock me-3 text-secondary"></i>
+        <p class="small mb-0">
+            Kelajakdagi balansingizni AI orqali bashorat qilishni xohlaysizmi? 
+            <a href="#" class="text-warning text-decoration-none fw-bold">PRO rejasiga o'ting →</a>
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{{ balance_chart_data|json_script:"chart-data" }}
+
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.umd.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('tradingChart');
+        const rawData = JSON.parse(document.getElementById('chart-data').textContent);
+
+        if (rawData.length < 2) {
+            container.innerHTML = '<div class="h-100 d-flex align-items-center justify-content-center opacity-25">Grafik uchun yetarli ma\'lumot yo\'q (kamida 2 ta nuqta kerak)</div>';
+            return;
+        }
+
+        const chart = LightweightCharts.createChart(container, {
+            layout: {
+                background: { type: 'solid', color: 'transparent' },
+                textColor: '#848e9c',
+            },
+            grid: {
+                vertLines: { color: 'rgba(255, 255, 255, 0.02)' },
+                horzLines: { color: 'rgba(255, 255, 255, 0.02)' },
+            },
+            rightPriceScale: { borderVisible: false },
+            timeScale: { borderVisible: false },
+            handleScroll: true,
+            handleScale: true,
+        });
+
+        const series = chart.addAreaSeries({
+            lineColor: '#FFD700',
+            topColor: 'rgba(255, 215, 0, 0.3)',
+            bottomColor: 'rgba(255, 215, 0, 0)',
+            lineWidth: 3,
+        });
+
+        series.setData(rawData);
+        chart.timeScale().fitContent();
+
+        // Responsive resize
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ width: container.clientWidth });
+        });
+    });
+</script>
+
+</body>
+</html>

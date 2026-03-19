@@ -5,12 +5,15 @@ from django.views.generic import ListView, TemplateView, FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .forms import UserLoginForm
-from accounts.models import Users, UserActivities
+from accounts.models import Users, UserActivities, BalanceHistory
 from .mixins import NotLoginRequiredMixin
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 from .forms import ProfileSettingsForm
+from django.db.models import Avg, Sum
+from datetime import timedelta
+from django.utils import timezone
 
 
 
@@ -98,6 +101,66 @@ class ProfileSettingsView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Profil ma'lumotlari muvaffaqiyatli yangilandi!")
         return super().form_valid(form)
+    
+    
+class UserDashboard(LoginRequiredMixin, TemplateView):
+    template_name = 'settings/dashboard/html'
+
+
+
+class TradingDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'settings/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        
+        context['user_activities'] = UserActivities.objects.filter(user=user).order_by('-created_at')[:5]
+
+        
+        history_queryset = BalanceHistory.objects.filter(user=user).order_by('-created_at')[:10]
+        
+        chart_data = []
+        current_temp_balance = float(user.balance)
+
+        for entry in history_queryset:
+            chart_data.append({
+                "time": entry.created_at.strftime("%Y-%m-%d"),
+                "value": current_temp_balance
+            })
+            
+            if entry.transaction_type == 'INCOME':
+                current_temp_balance -= float(entry.amount)
+            else:
+                current_temp_balance += float(entry.amount)
+
+        context['balance_chart_data'] = list(reversed(chart_data))
+        
+        prediction_data = None
+        if hasattr(user, 'subscription') and user.subscription.badge_text != "FREE":
+            last_week = timezone.now() - timedelta(days=7)
+            weekly_income = BalanceHistory.objects.filter(
+                user=user, 
+                transaction_type='INCOME',
+                created_at__gte=last_week
+            ).aggregate(total=Sum('amount'))['total'] or 0
+            
+            
+            daily_avg = weekly_income / 7
+            future_balance = float(user.balance) + (daily_avg * 30)
+            
+            prediction_data = {
+                "daily_avg": round(daily_avg, 1),
+                "future_balance": round(future_balance, 0)
+            }
+        
+        context['prediction'] = prediction_data
+        
+        return context
+    
+        
+        
 
 
 import json
