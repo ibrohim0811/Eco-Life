@@ -1,238 +1,126 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECOLIFE | Dashboard</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <style>
-        :root {
-            --ios-bg: #0b0d11;
-            --gold: #FFD700;
-            --glass: rgba(30, 32, 38, 0.75);
-            --border: rgba(255, 255, 255, 0.08);
-            --success: #02c076;
-            --warning: #f0b90b;
-            --danger: #f84960;
-        }
-
-        body {
-            background-color: var(--ios-bg);
-            color: #eaecef;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            min-height: 100vh;
-            background: radial-gradient(circle at top right, #1c1c1e, #0b0d11);
-        }
-
-        .ios-glass {
-            background: var(--glass);
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.02) 100%);
-            border: 1px solid rgba(255, 215, 0, 0.25);
-        }
-
-        .ios-label {
-            font-size: 11px;
-            color: #848e9c;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .activity-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .activity-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .status-badge {
-            font-size: 10px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 700;
-        }
-
-        .ai-icon { animation: pulse-ai 2s infinite ease-in-out; }
-        @keyframes pulse-ai {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px var(--gold); }
-        }
-
-        /* Grafik o'lchamini nazorat qilish */
-        .chart-container {
-            position: relative;
-            height: 350px;
-            width: 100%;
-        }
+        :root { --ios-bg: #0b0d11; --gold: #FFD700; --glass: rgba(30, 32, 38, 0.75); --border: rgba(255, 255, 255, 0.08); --success: #02c076; }
+        body { background: radial-gradient(circle at top right, #1c1c1e, #0b0d11); color: #eaecef; font-family: -apple-system, sans-serif; min-height: 100vh; }
+        .ios-glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
+        .balance-card { background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%); border: 1px solid rgba(255, 215, 0, 0.2); }
+        .activity-item { background: rgba(255, 255, 255, 0.03); border-radius: 16px; padding: 15px; margin-bottom: 10px; transition: 0.3s; }
+        .activity-item:hover { background: rgba(255, 255, 255, 0.06); }
+        .status-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
+        .ai-glow { border: 1px solid rgba(255, 215, 0, 0.3); background: linear-gradient(90deg, rgba(255, 215, 0, 0.05), transparent); }
     </style>
 </head>
-
 <body>
 
-    <div class="container py-4 py-lg-5">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h2 class="fw-bold mb-0">Dashboard</h2>
-                <p class="opacity-50 small mb-0">{{ request.user.first_name }} uchun shaxsiy kabinet</p>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold m-0">Dashboard</h2>
+        <div class="ios-glass py-2 px-3">
+            <i class="fas fa-wallet text-warning me-2"></i>
+            <span class="fw-bold">{{ request.user.balance }} <small class="opacity-50">UZS</small></span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="ios-glass mb-4 balance-card">
+                <small class="text-secondary text-uppercase fw-bold" style="font-size: 10px;">Joriy Balans</small>
+                <h1 class="display-6 fw-bold mt-2" style="color: var(--gold);">{{ request.user.balance }} <span class="h4 opacity-50">UZS</span></h1>
             </div>
-            <div class="ios-glass p-2 px-3 d-flex align-items-center">
-                <i class="fas fa-wallet text-warning me-2"></i>
-                <span class="fw-bold">{{ request.user.balance }} <small class="opacity-50">UZS</small></span>
+
+            <div class="ios-glass">
+                <h6 class="fw-bold mb-4">Oxirgi harakatlar</h6>
+                {% for act in user_activities %}
+                <div class="activity-item d-flex align-items-center">
+                    <div class="me-3 text-success"><i class="fas fa-arrow-up"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <span class="small fw-bold">ID: #{{ act.id }}</span>
+                            <span class="small text-success">+{{ act.amount }}</span>
+                        </div>
+                        <span class="status-badge bg-success text-dark mt-1 d-inline-block">{{ act.status }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center opacity-50 small">Harakatlar yo'q</p>
+                {% endfor %}
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="ios-glass p-4 mb-4 balance-card">
-                    <span class="ios-label">Hozirgi Hisobingiz</span>
-                    <div class="d-flex align-items-baseline gap-2 mt-2">
-                        <h1 class="display-6 fw-bold mb-0" style="color: var(--gold);">{{ request.user.balance }}</h1>
-                        <span class="h5 opacity-50 mb-0">UZS</span>
-                    </div>
-                </div>
-
-                <div class="ios-glass p-4">
-                    <h6 class="fw-bold mb-4"><i class="fas fa-history me-2 opacity-50"></i>Harakatlar tarixi</h6>
-                    {% for act in user_activities %}
-                    <div class="activity-item p-3 mb-2 d-flex align-items-center">
-                        <div class="me-3 p-2 rounded-3 bg-opacity-10 
-                            {% if act.status == 'qabul qilindi' %}bg-success text-success
-                            {% elif act.status == 'kutilmoqda' %}bg-warning text-warning
-                            {% else %}bg-danger text-danger{% endif %}">
-                            <i class="fas {% if act.video_file_id %}fa-video{% else %}fa-check-circle{% endif %}"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between">
-                                <span class="small fw-bold">ID: #{{ act.id }}</span>
-                                <span class="small fw-bold text-success">+{{ act.amount }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-1">
-                                <span class="status-badge 
-                                    {% if act.status == 'qabul qilindi' %}bg-success text-dark
-                                    {% elif act.status == 'kutilmoqda' %}bg-warning text-dark
-                                    {% else %}bg-danger text-white{% endif %}">
-                                    {{ act.status|title }}
-                                </span>
-                                <span class="opacity-25" style="font-size: 9px;">{{ act.created_at|timesince }} oldin</span>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p class="text-center opacity-25 py-4 small">Harakatlar mavjud emas</p>
-                    {% endfor %}
+        <div class="col-lg-8">
+            {% if prediction %}
+            <div class="ios-glass ai-glow mb-4 d-flex align-items-center">
+                <i class="fas fa-brain text-warning h2 m-0 me-4"></i>
+                <div>
+                    <h6 class="mb-1 fw-bold">AI Bashorati ({{ prediction.plan_name }})</h6>
+                    <p class="mb-0 opacity-75 small">30 kundan keyingi taxminiy balans: <span class="text-success fw-bold">{{ prediction.future_balance }} UZS</span></p>
                 </div>
             </div>
+            {% else %}
+            <div class="ios-glass mb-4 text-center opacity-75 border-secondary">
+                <i class="fas fa-lock mb-2"></i>
+                <h6 class="small mb-1">AI Bashorati yopiq</h6>
+                <p class="x-small mb-0">Bashoratni ko'rish uchun <a href="#" class="text-warning text-decoration-none fw-bold">Premium</a> obunaga o'ting.</p>
+            </div>
+            {% endif %}
 
-            <div class="col-lg-8">
-                {% if prediction %}
-                <div class="ios-glass p-4 mb-4 border-warning border-opacity-25" 
-                     style="background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%);">
-                    <div class="d-flex align-items-center">
-                        <div class="ai-icon me-4">
-                            <i class="fas fa-brain text-warning h2 mb-0"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-1 fw-bold text-white">
-                                AI Bashorati <span class="badge bg-warning text-dark ms-2">{{ prediction.plan_name }}</span>
-                            </h6>
-                            <p class="mb-0 opacity-75">
-                                30 kundan keyingi taxminiy balans: 
-                                <span class="text-success fw-bold h5 ms-1">{{ prediction.future_balance }} UZS</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-                <div class="ios-glass p-4">
-                    <div class="mb-4">
-                        <h5 class="fw-bold mb-0">Balans Dinamikasi</h5>
-                        <span class="ios-label">Oxirgi tranzaksiyalar tahlili</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="mainChart"></canvas>
-                    </div>
+            <div class="ios-glass">
+                <h5 class="fw-bold mb-4">Balans Tarixi</h5>
+                <div style="height: 350px;">
+                    <canvas id="balanceChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    {{ balance_chart_data|json_script:"chart-data" }}
+{{ balance_chart_data|json_script:"chart-data" }}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dataNode = document.getElementById('chart-data');
+        if (!dataNode) return;
+        const rawData = JSON.parse(dataNode.textContent);
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dataNode = document.getElementById('chart-data');
-            if (!dataNode) return;
+        const ctx = document.getElementById('balanceChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+        gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
 
-            // Ma'lumotlarni olish
-            const rawData = JSON.parse(dataNode.textContent);
-            
-            // Chart.js uchun ma'lumotlarni formatlash
-            // Agar vaqt (time) va qiymat (value) bo'lsa:
-            const labels = rawData.map((item, index) => item.time || `T-${rawData.length - index}`);
-            const values = rawData.map(item => item.value);
-
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            
-            // Gradient yaratish (chiroyli ko'rinish uchun)
-            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.4)');
-            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Balans (UZS)',
-                        data: values,
-                        borderColor: '#FFD700',
-                        borderWidth: 3,
-                        backgroundColor: gradient,
-                        fill: true,
-                        tension: 0.4, // Chiziqni yumshoq (smooth) qiladi
-                        pointBackgroundColor: '#FFD700',
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false } // Ortqicha yozuvlarni o'chiramiz
-                    },
-                    scales: {
-                        y: {
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#848e9c', font: { size: 10 } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#848e9c', font: { size: 10 } }
-                        }
-                    }
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: rawData.map(d => d.time),
+                datasets: [{
+                    data: rawData.map(d => d.value),
+                    borderColor: '#FFD700',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#FFD700'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#848e9c' } },
+                    x: { grid: { display: false }, ticks: { color: '#848e9c' } }
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>

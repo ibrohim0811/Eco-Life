@@ -119,73 +119,46 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        
+        # 1. So'nggi 5 ta harakat
+        context['user_activities'] = UserActivities.objects.filter(user=user).order_by('-created_at')[:5]
 
-        # 1. So'nggi harakatlar (Top 5)
-        context['user_activities'] = UserActivities.objects.filter(
-            user=user
-        ).order_by('-created_at')[:5]
-
-        # 2. Grafik mantiqi (Oxirgi 7 ta tranzaksiya asosida balans tarixi)
-        history_queryset = BalanceHistory.objects.filter(
-            user=user
-        ).order_by('created_at')[:7]  # ⚠️ MUHIM: eski → yangi
-
+        # 2. Grafik: Balans tarixi (Oxirgi 7 ta)
+        history = BalanceHistory.objects.filter(user=user).order_by('created_at')[:7]
+        
         chart_data = []
-
-        total = 0
-
-        for entry in history_queryset:
-            amount = float(entry.amount)
-            tp = str(entry.transaction_type).upper()
-
-            if tp == 'INCOME':
-                total += amount
-            elif tp == 'EXPENSE':
-                total -= amount
-
+        current_balance = float(user.balance)
+        
+        for entry in history:
             chart_data.append({
                 "time": entry.created_at.strftime("%Y-%m-%d"),
-                "value": total
+                "value": float(entry.amount) # Yoki o'sha vaqtdagi jami balans mantiqingiz
             })
 
-        # Agar data bo'sh bo'lsa fallback
-        if not chart_data:
-            chart_data = [{
-                "time": timezone.now().strftime("%Y-%m-%d"),
-                "value": float(user.balance)
-            }]
+        # Fallback: Agar tarix bo'sh bo'lsa
+        context['balance_chart_data'] = chart_data or [{"time": timezone.now().strftime("%Y-%m-%d"), "value": current_balance}]
 
-        context['balance_chart_data'] = chart_data
-        
-        # 3. AI Prediction Mantiqi (ULTIMA, PRO va PREMIUM uchun)
-        user_plan = "FREE"
-        if hasattr(user, 'subscription') and user.subscription:
-            # Obuna nomini katta harflarda olamiz
-            user_plan = str(user.subscription.badge_text).upper()
+        # 3. AI Prediction (Faqat FREE bo'lmaganlar uchun)
+        badge = getattr(user.subscription, 'badge_text', 'FREE').upper() if hasattr(user, 'subscription') else 'FREE'
 
-        if user_plan in ['ULTIMA', 'PRO', 'PREMIUM']:
-            # Oxirgi 7 kundagi umumiy daromad
+        if badge != "FREE":
+            # Oxirgi 7 kunlik daromadni bitta so'rovda hisoblaymiz
             last_week = timezone.now() - timedelta(days=7)
-            weekly_income = BalanceHistory.objects.filter(
-                user=user, 
-                transaction_type='INCOME',
-                created_at__gte=last_week
+            weekly_sum = BalanceHistory.objects.filter(
+                user=user, transaction_type='INCOME', created_at__gte=last_week
             ).aggregate(total=Sum('amount'))['total'] or 0
             
-            # Kunlik o'rtacha daromad
-            daily_avg = float(weekly_income) / 7
-            # 30 kundan keyingi taxminiy balans
-            future_balance = float(user.balance) + (daily_avg * 30)
-            
+            future = current_balance + (float(weekly_sum) / 7 * 30)
             context['prediction'] = {
-                "future_balance": "{:,.0f}".format(future_balance).replace(',', ' '), # 1 250 000 ko'rinishida
-                "plan_name": user_plan
+                "future_balance": "{:,.0f}".format(future).replace(',', ' '),
+                "plan_name": badge
             }
         else:
-            context['prediction'] = None
+            context['prediction'] = None # HTMLda 'Obuna bo'ling' chiqishi uchun
 
         return context
-
+    
+    
 import json
 import os
 from django.http import JsonResponse
