@@ -26,13 +26,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             min-height: 100vh;
             background: radial-gradient(circle at top right, #1c1c1e, #0b0d11);
-            overflow-x: hidden;
         }
 
         .ios-glass {
             background: var(--glass);
             backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--border);
             border-radius: 24px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -72,14 +70,9 @@
         }
 
         .ai-icon { animation: pulse-ai 2s infinite ease-in-out; }
-
         @keyframes pulse-ai {
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px var(--gold); }
-        }
-
-        @media (max-width: 768px) {
-            .ios-glass { border-radius: 20px; padding: 1.25rem !important; }
         }
     </style>
 </head>
@@ -87,12 +80,12 @@
 <body>
 
     <div class="container py-4 py-lg-5">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
                 <h2 class="fw-bold mb-0">Dashboard</h2>
-                <p class="opacity-50 small mb-0">Xush kelibsiz, {{ request.user.first_name }}!</p>
+                <p class="opacity-50 small mb-0">{{ request.user.first_name }} uchun shaxsiy kabinet</p>
             </div>
-            <div class="ios-glass p-2 d-flex align-items-center px-3">
+            <div class="ios-glass p-2 px-3 d-flex align-items-center">
                 <i class="fas fa-wallet text-warning me-2"></i>
                 <span class="fw-bold">{{ request.user.balance }} <small class="opacity-50">UZS</small></span>
             </div>
@@ -101,7 +94,7 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 <div class="ios-glass p-4 mb-4 balance-card">
-                    <span class="ios-label">Joriy Balans</span>
+                    <span class="ios-label">Hozirgi Hisobingiz</span>
                     <div class="d-flex align-items-baseline gap-2 mt-2">
                         <h1 class="display-6 fw-bold mb-0" style="color: var(--gold);">{{ request.user.balance }}</h1>
                         <span class="h5 opacity-50 mb-0">UZS</span>
@@ -109,14 +102,14 @@
                 </div>
 
                 <div class="ios-glass p-4">
-                    <h6 class="fw-bold mb-4">So'nggi harakatlar (User Activities)</h6>
+                    <h6 class="fw-bold mb-4"><i class="fas fa-history me-2 opacity-50"></i>Harakatlar tarixi</h6>
                     {% for act in user_activities %}
                     <div class="activity-item p-3 mb-2 d-flex align-items-center">
                         <div class="me-3 p-2 rounded-3 bg-opacity-10 
                             {% if act.status == 'qabul qilindi' %}bg-success text-success
                             {% elif act.status == 'kutilmoqda' %}bg-warning text-warning
                             {% else %}bg-danger text-danger{% endif %}">
-                            <i class="fas {% if act.video_file_id %}fa-play-circle{% else %}fa-check-double{% endif %}"></i>
+                            <i class="fas {% if act.video_file_id %}fa-video{% else %}fa-check-circle{% endif %}"></i>
                         </div>
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between">
@@ -128,16 +121,14 @@
                                     {% if act.status == 'qabul qilindi' %}bg-success text-dark
                                     {% elif act.status == 'kutilmoqda' %}bg-warning text-dark
                                     {% else %}bg-danger text-white{% endif %}">
-                                    {{ act.status }}
+                                    {{ act.status|title }}
                                 </span>
                                 <span class="opacity-25" style="font-size: 9px;">{{ act.created_at|timesince }} oldin</span>
                             </div>
                         </div>
                     </div>
                     {% empty %}
-                    <div class="text-center opacity-25 py-4">
-                        <p class="small">Hozircha harakatlar yo'q</p>
-                    </div>
+                    <p class="text-center opacity-25 py-4 small">Harakatlar mavjud emas</p>
                     {% endfor %}
                 </div>
             </div>
@@ -145,43 +136,30 @@
             <div class="col-lg-8">
                 
                 {% if prediction %}
-                <div class="ios-glass p-3 mb-4 border-warning border-opacity-25" 
-                     style="background: linear-gradient(90deg, rgba(255,215,0,0.08) 0%, transparent 100%);">
+                <div class="ios-glass p-4 mb-4 border-warning border-opacity-25" 
+                     style="background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%);">
                     <div class="d-flex align-items-center">
-                        <div class="ai-icon me-3">
-                            <i class="fas fa-brain text-warning h4 mb-0"></i>
+                        <div class="ai-icon me-4">
+                            <i class="fas fa-brain text-warning h2 mb-0"></i>
                         </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1 fw-bold text-white d-flex align-items-center" style="font-size: 14px;">
-                                AI Bashorati
-                                <span class="badge bg-warning text-dark ms-2" style="font-size: 8px;">{{ prediction.plan_name }}</span>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-white">
+                                AI Bashorati <span class="badge bg-warning text-dark ms-2">{{ prediction.plan_name }}</span>
                             </h6>
-                            <p class="small mb-0 opacity-75" style="font-size: 12px;">
-                                Sizning daromadingiz asosida 30 kundan keyingi bashorat: <span class="text-success fw-bold">{{ prediction.future_balance }} UZS</span>
+                            <p class="mb-0 opacity-75">
+                                Sizning faolligingiz asosida 30 kundan keyingi taxminiy balans: 
+                                <span class="text-success fw-bold h5 ms-1">{{ prediction.future_balance }} UZS</span>
                             </p>
                         </div>
-                    </div>
-                </div>
-                {% else %}
-                <div class="ios-glass p-3 mb-4 border-secondary border-opacity-25 opacity-75">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-lock me-3 text-secondary"></i>
-                        <p class="small mb-0">
-                            AI orqali kelajakni bashorat qilish uchun 
-                            <a href="#" class="text-warning text-decoration-none fw-bold">PRO, ULTIMA yoki GO</a> rejasiga o'ting.
-                        </p>
                     </div>
                 </div>
                 {% endif %}
 
                 <div class="ios-glass p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h5 class="fw-bold mb-0 text-white">Balans tarixi (7 tranzaksiya)</h5>
-                            <span class="ios-label">O'zgarishlar dinamikasi</span>
-                        </div>
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-0">Balans O'zgarishi</h5>
+                        <span class="ios-label">Oxirgi 7 tranzaksiya dinamikasi</span>
                     </div>
-
                     <div id="tradingChart" style="height: 400px; width: 100%;"></div>
                 </div>
             </div>
@@ -205,7 +183,7 @@
                 layout: {
                     background: { type: 'solid', color: 'transparent' },
                     textColor: '#848e9c',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+                    fontFamily: '-apple-system, system-ui, sans-serif',
                 },
                 grid: {
                     vertLines: { visible: false },
@@ -225,12 +203,11 @@
             series.setData(rawData);
             chart.timeScale().fitContent();
 
-            // Ekran o'zgarganda grafik o'lchamini moslash
-            const resizeObserver = new ResizeObserver(entries => {
-                if (entries.length === 0 || !entries[0].contentRect) return;
-                chart.applyOptions({ width: entries[0].contentRect.width });
-            });
-            resizeObserver.observe(container);
+            new ResizeObserver(entries => {
+                if (entries.length > 0) {
+                    chart.applyOptions({ width: entries[0].contentRect.width });
+                }
+            }).observe(container);
         });
     </script>
 </body>
