@@ -76,7 +76,7 @@ class UserLoginView(FormView):
 class ProfileSettingsView(LoginRequiredMixin, UpdateView):
     model = Users
     form_class = ProfileSettingsForm
-    template_name = 'settings.html' 
+    template_name = 'settings/account.html' 
     success_url = reverse_lazy('profile_settings') 
 
     def get_object(self, queryset=None):
