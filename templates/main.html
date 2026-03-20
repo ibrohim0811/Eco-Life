@@ -588,7 +588,7 @@
                                 {{ request.user.subscription.plan }}
                             </div>
                         </div>
-                        <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=FFD700&color=000&bold=true"
+                        <img src="{{ request.user.image.url }}"
                             class="rounded-circle border border-warning shadow" width="48">
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end gold-glass border-0 shadow-lg mt-3 p-2">
