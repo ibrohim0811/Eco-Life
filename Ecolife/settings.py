@@ -8,18 +8,15 @@ load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-# True
+
 
 
 ALLOWED_HOSTS = ['eco-life.up.railway.app']
 # host.strip() for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -75,7 +72,6 @@ WSGI_APPLICATION = "Ecolife.wsgi.application"
 import os
 import dj_database_url
 
-# Agar DATABASE_URL bo'lsa ulanadi, bo'lmasa SQLite (build uchun vaqtinchalik) ishlatadi
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
@@ -204,35 +200,4 @@ import logging
 # Celery loglari uchun alohida fayl
 CELERY_LOG_FILE = os.path.join(BASE_DIR, 'celery_worker.log')
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'celery_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': CELERY_LOG_FILE,
-        },
-    },
-    'loggers': {
-        'celery': {
-            'handlers': ['celery_file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG', # Hammasini ko'rish uchun
-    },
-}

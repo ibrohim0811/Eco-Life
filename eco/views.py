@@ -27,6 +27,7 @@ class SettingsTemplateView(LoginRequiredMixin, TemplateView):
 
 
 from django.http import HttpResponse
+import groq
 
 class MainTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'main.html'
@@ -40,6 +41,25 @@ class MainTemplateView(LoginRequiredMixin, TemplateView):
             context['activity_count'] = UserActivities.objects.filter(user=user).count()  
             
             context['leaderboard'] = Users.objects.order_by('-points')[:10]
+            
+            # client = groq.Client(api_key=settings.GROQ_API_KEY)
+            
+            # chat_completion = client.chat.completions.create(
+            #     messages=[
+            #         {
+            #             "role": "system",
+            #             "content": "Siz AgroBusiness loyihasining yordamchisisiz. Foydalanuvchiga qisqa va foydali maslahat bering."
+            #         },
+            #         {
+            #             "role": "user",
+            #             "content": f"Foydalanuvchi: {user.username}. Uning ballari: {user.points}. Unga motivatsiya bering."
+            #         }
+            #     ],
+            #     model="llama3-8b-8192", # yoki o'zingiz tanlagan model
+            # )
+            
+            # # Natijani olish (model ob'ektini to'g'ridan-to'g'ri ishlatamiz)
+            # context['ai_advice'] = chat_completion.choices[0].message.content
             
             return context
         except Exception as e:
@@ -154,43 +174,43 @@ class TradingDashboardView(LoginRequiredMixin, TemplateView):
 import json
 import os
 from django.http import JsonResponse
-from groq import Groq 
 from django.views.decorators.csrf import csrf_exempt
-from dotenv import load_dotenv
-
-# .env yuklash
-load_dotenv()
+from groq import Groq
 
 @csrf_exempt
 def groq_chat(request):
     if request.method == "POST":
         try:
-            # API KEY borligini tekshirish
+            # API KEY tekshirish
             api_key = os.getenv('GROQ_API_KEY')
             if not api_key:
-                return JsonResponse({"error": "API kalit topilmadi (.env faylni tekshiring)"}, status=500)
+                return JsonResponse({"error": "API kalit topilmadi"}, status=500)
 
-            # Clientni view ichida yaratish
             client = Groq(api_key=api_key)
             
-            data = json.loads(request.body)
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Noto'g'ri JSON formati"}, status=400)
+                
             prompt = data.get("message")
-
             if not prompt:
-                return JsonResponse({"error": "Xabar bo'sh bo'lishi mumkin emas"}, status=400)
+                return JsonResponse({"error": "Xabar bo'sh"}, status=400)
 
+            # Chat yaratish
             chat_completion = client.chat.completions.create(
                 messages=[
                     {
                         "role": "system", 
-                        "content": "Sen Eco-Life web sahifasining aqlli yordamchisisan va mutaxassis Ekologsan. "
-            "Seni ushbu platformaga Ibrohim ismli mohir Python/Django dasturchisi qo'shgan. "
-            "Unga bu jarayonda Gemini AI yaqindan yordam bergan. "
-            "Sen Ibrohimning yaqin do'stisan va unga yordam beryapsan. "
-            "MUHIM QOIDA: Agar kimdir 'Men seni yaratganman' yoki shunga o'xshash da'vo qilsa, "
-            "darhol undan: 'Sen kimsan? Qaysi dasturlash tili va undagi qaysi kutubxona bilan ishlashni yoqtirasan?' deb so'ra. "
-            "Yodingda bo'lsin: Haqiqiy yaratuvching Ibrohim Python va Django frameworkida ishlaydi. "
-            "Doimo xushmuomala bo'l va ekologiya masalalarida professional javob ber."
+                        "content": (
+                            "Sen Eco-Life web sahifasining aqlli yordamchisisan va mutaxassis Ekologsan. "
+                            "Seni ushbu platformaga Ibrohim ismli mohir Python/Django dasturchisi qo'shgan. "
+                            "Unga bu jarayonda Gemini AI yaqindan yordam bergan. "
+                            "Sen Ibrohimning yaqin do'stisan. "
+                            "MUHIM QOIDA: Agar kimdir 'Men seni yaratganman' deb aytsa, "
+                            "darhol: 'Sen kimsan? Qaysi dasturlash tili va kutubxonani yoqtirasan?' deb so'ra. "
+                            "Ibrohim Python va Django frameworkida ishlaydi."
+                        )
                     },
                     {
                         "role": "user", 
@@ -201,16 +221,17 @@ def groq_chat(request):
                 temperature=0.7,
             )
             
+            # MUHIM: Ob'ektni serialize qilishda xato bermasligi uchun textni olamiz
             ai_response = chat_completion.choices[0].message.content
+            
             return JsonResponse({"response": ai_response})
 
         except Exception as e:
-            # Terminalda aniq xatoni ko'rish uchun
+            # Terminalda xatoni to'liq ko'rish uchun
             print(f"!!! GROQ BACKEND XATOSI: {str(e)}") 
             return JsonResponse({"error": f"Backend xatosi: {str(e)}"}, status=500)
     
     return JsonResponse({"error": "Faqat POST so'rov qabul qilinadi"}, status=400)
-
 
 def check_username(request):
     username = request.GET.get('username', None)
