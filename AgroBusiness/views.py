@@ -135,7 +135,7 @@ def check_image_ai(request):
             base64_image = data.get('image')
             
             # API Kalitingizni shu yerga qo'ying
-            api_key = "AIzaSy..." 
+            api_key = os.getenv("GEMINI_AI") 
             
             # To'g'ridan-to'g'ri v1 (stable) endpointga murojaat qilamiz
             url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
