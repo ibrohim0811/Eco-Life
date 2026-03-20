@@ -178,79 +178,104 @@
 </div>
 
 <script>
+    // 1. Elementlarni tanlab olamiz
+    const imageInput = document.getElementById('imageInput');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const aiStatusBox = document.getElementById('aiStatusBox');
+    const aiStatusText = document.getElementById('aiStatusText');
+    const submitBtn = document.getElementById('submitBtn');
+    const nameInput = document.getElementById('id_name');
+    const aboutInput = document.getElementById('id_about');
+
+    console.log("🚀 Skript yuklandi. Elementlar bog'landi.");
+
     imageInput.addEventListener('change', async function() {
-    previewContainer.innerHTML = '';
-    const files = Array.from(this.files);
-    if (files.length === 0) return;
-
-    // Visual Preview (O'z holicha qoldi)
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const div = document.createElement('div');
-            div.className = 'preview-item';
-            div.innerHTML = `<img src="${e.target.result}">`;
-            previewContainer.appendChild(div);
-        };
-        reader.readAsDataURL(file);
-    });
-
-    const mainFile = files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(mainFile);
-    reader.onload = async () => {
-        const base64Image = reader.result.split(',')[1];
+        // Log 1: Fayl tanlanganda
+        console.log("📂 Fayl tanlash tugmasi bosildi. Tanlangan fayllar soni:", this.files.length);
         
-        // Log 1: Rasm tayyorligini tekshirish
-        console.log("Rasm base64 formatiga o'tkazildi. Uzunligi:", base64Image.length);
-        
-        aiStatusBox.style.display = 'block';
-        aiStatusBox.className = 'ai-status-box ai-checking';
-        aiStatusText.innerText = "Agro-AI rasmni skanerlamoqda...";
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Tahlil qilinmoqda...`;
-
-        try {
-            // Log 2: So'rov ketishidan oldin
-            console.log("Fetch so'rovi yuborilmoqda...");
-
-            const response = await fetch('{% url "check_img" %}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
-                body: JSON.stringify({ image: base64Image })
-            });
-
-            // Log 3: HTTP Status
-            console.log("Server javob berdi. Status:", response.status);
-
-            const data = await response.json();
-
-            // Log 4: Kelgan ma'lumotni to'liq ko'rish
-            console.log("Serverdan kelgan DATA:", data);
-
-            if (data && data.is_valid) {
-                aiStatusBox.className = 'ai-status-box ai-success';
-                aiStatusText.innerText = "✅ Tasdiqlandi: " + data.description;
-                nameInput.value = data.description; 
-                aboutInput.value = "AI Tahlili: " + data.reason;
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> MAHSULOTNI QO'SHISH`;
-            } else {
-                // Log 5: Agar is_valid false bo'lsa
-                console.log("AI tasdiqlamadi yoki data noto'g'ri:", data.reason);
-                aiStatusBox.className = 'ai-status-box ai-error';
-                aiStatusText.innerText = "❌ Xato: " + (data ? data.reason : "Noma'lum xato");
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = `<i class="fas fa-times-circle"></i> RAD ETILDI`;
-            }
-        } catch (error) {
-            console.error("Catch ichidagi xatolik:", error);
-            aiStatusText.innerText = "Aloqa xatosi. Qayta urinib ko'ring.";
-            submitBtn.disabled = false;
-            submitBtn.innerText = "QO'SHISH (AI-SIZ)";
+        previewContainer.innerHTML = '';
+        const files = Array.from(this.files);
+        if (files.length === 0) {
+            console.warn("⚠️ Hech qanday fayl tanlanmadi.");
+            return;
         }
-    };
-});
+
+        // Visual Preview qismi
+        files.forEach((file, index) => {
+            console.log(`🖼 Rasm #${index + 1} tayyorlanmoqda:`, file.name);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `<img src="${e.target.result}">`;
+                previewContainer.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        const mainFile = files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(mainFile);
+        reader.onload = async () => {
+            // Log 2: Base64 tayyor bo'lganda
+            const base64Image = reader.result.split(',')[1];
+            console.log("🛠 Rasm Base64 formatiga o'girildi. Hajmi:", (base64Image.length / 1024).toFixed(2), "KB");
+            
+            aiStatusBox.style.display = 'block';
+            aiStatusBox.className = 'ai-status-box ai-checking';
+            aiStatusText.innerText = "Agro-AI rasmni skanerlamoqda...";
+            submitBtn.disabled = true;
+
+            try {
+                // Log 3: Fetch yuborilishidan oldin
+                console.log("📡 Django serverga (AI-check) so'rov yuborilmoqda...");
+                
+                const response = await fetch('{% url "check_img" %}', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRFToken': '{{ csrf_token }}' 
+                    },
+                    body: JSON.stringify({ image: base64Image })
+                });
+
+                // Log 4: HTTP Statusni tekshirish
+                console.log("📥 Serverdan javob keldi. HTTP Status:", response.status);
+
+                if (!response.ok) {
+                    console.error("❌ Server xatosi! Status:", response.status);
+                    throw new Error("Server aloqaga chiqmadi.");
+                }
+
+                const data = await response.json();
+                
+                // Log 5: Kelgan JSON ma'lumotni ko'rish
+                console.log("✅ AI qaytargan javob (Data):", data);
+
+                if (data && data.is_valid) {
+                    console.log("🌟 AI mahsulotni tasdiqladi!");
+                    aiStatusBox.className = 'ai-status-box ai-success';
+                    aiStatusText.innerText = "✅ Tasdiqlandi: " + data.description;
+                    nameInput.value = data.description; 
+                    aboutInput.value = "AI Tahlili: " + data.reason;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> MAHSULOTNI QO'SHISH`;
+                } else {
+                    console.error("🚫 AI mahsulotni rad etdi. Sabab:", data.reason);
+                    aiStatusBox.className = 'ai-status-box ai-error';
+                    aiStatusText.innerText = "❌ Xato: " + (data.reason || "Noma'lum");
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<i class="fas fa-times-circle"></i> RAD ETILDI`;
+                }
+            } catch (error) {
+                // Log 6: Umumiy xatolar (Network, JSON error va h.k)
+                console.error("🔴 Catch blokidagi xatolik:", error);
+                aiStatusText.innerText = "Aloqa xatosi: " + error.message;
+                submitBtn.disabled = false;
+                submitBtn.innerText = "QO'SHISH (AI-SIZ)";
+            }
+        };
+    });
 </script>
 
 </body>
