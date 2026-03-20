@@ -137,7 +137,7 @@ def check_image_ai(request):
             if not base64_image:
                 return JsonResponse({"is_valid": False, "reason": "Rasm yuborilmadi"})
 
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-1.5-pro')
             
             prompt = """
             Bu rasmda qishloq xo'jaligi mahsuloti (meva, sabzavot, poliz ekini va h.k.) bormi? 
