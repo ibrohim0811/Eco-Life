@@ -132,7 +132,7 @@ def check_image_ai(request):
         
         try:
             completion = client.chat.completions.create(
-                model="llama-3.2-11b-vision-instant",
+                model="llama-4-scout-17b-16e-instruct",
                 temperature=0.5, 
                 messages=[
                     {
