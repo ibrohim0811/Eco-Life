@@ -12,8 +12,7 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 
 ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")]
@@ -219,5 +218,3 @@ LOGGING = {
 }
 
 
-if not os.path.exists(str(MEDIA_ROOT)):
-    os.makedirs(str(MEDIA_ROOT), exist_ok=True)

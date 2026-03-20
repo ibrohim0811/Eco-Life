@@ -149,7 +149,8 @@
             <i class="fas fa-phone-alt me-2 small"></i> {{ request.user.phone }}
         </div>
 
-        <form action="#" method="POST">
+        <form action="{% url 'agro_otp' %}" method="POST">
+            {% csrf_token %}
             <input type="text" name="otp" maxlength="6" class="form-control otp-input mb-3" placeholder="000000" autocomplete="one-time-code">
             
             <button type="submit" class="action-btn">
