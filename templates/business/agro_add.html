@@ -178,72 +178,79 @@
 </div>
 
 <script>
-    const imageInput = document.getElementById('imageInput');
-    const previewContainer = document.getElementById('imagePreviewContainer');
-    const aiStatusBox = document.getElementById('aiStatusBox');
-    const aiStatusText = document.getElementById('aiStatusText');
-    const submitBtn = document.getElementById('submitBtn');
-    const nameInput = document.getElementById('id_name');
-    const aboutInput = document.getElementById('id_about');
-
     imageInput.addEventListener('change', async function() {
-        previewContainer.innerHTML = '';
-        const files = Array.from(this.files);
-        if (files.length === 0) return;
+    previewContainer.innerHTML = '';
+    const files = Array.from(this.files);
+    if (files.length === 0) return;
 
-        // Visual Preview
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const div = document.createElement('div');
-                div.className = 'preview-item';
-                div.innerHTML = `<img src="${e.target.result}">`;
-                previewContainer.appendChild(div);
-            };
-            reader.readAsDataURL(file);
-        });
-
-        const mainFile = files[0];
+    // Visual Preview (O'z holicha qoldi)
+    files.forEach(file => {
         const reader = new FileReader();
-        reader.readAsDataURL(mainFile);
-        reader.onload = async () => {
-            const base64Image = reader.result.split(',')[1];
-            
-            aiStatusBox.style.display = 'block';
-            aiStatusBox.className = 'ai-status-box ai-checking';
-            aiStatusText.innerText = "Agro-AI rasmni skanerlamoqda...";
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Tahlil qilinmoqda...`;
-
-            try {
-                const response = await fetch('{% url 'check_img' %}', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
-                    body: JSON.stringify({ image: base64Image })
-                });
-
-                const data = await response.json();
-
-                if (data.is_valid) {
-                    aiStatusBox.className = 'ai-status-box ai-success';
-                    aiStatusText.innerText = "✅ Tasdiqlandi: " + data.description;
-                    nameInput.value = data.description; 
-                    aboutInput.value = "AI Tahlili: " + data.reason;
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> MAHSULOTNI QO'SHISH`;
-                } else {
-                    aiStatusBox.className = 'ai-status-box ai-error';
-                    aiStatusText.innerText = "❌ Xato: " + data.reason;
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = `<i class="fas fa-times-circle"></i> RAD ETILDI`;
-                }
-            } catch (error) {
-                aiStatusText.innerText = "Aloqa xatosi. Qayta urinib ko'ring.";
-                submitBtn.disabled = false;
-                submitBtn.innerText = "QO'SHISH (AI-SIZ)";
-            }
+        reader.onload = (e) => {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `<img src="${e.target.result}">`;
+            previewContainer.appendChild(div);
         };
+        reader.readAsDataURL(file);
     });
+
+    const mainFile = files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(mainFile);
+    reader.onload = async () => {
+        const base64Image = reader.result.split(',')[1];
+        
+        // Log 1: Rasm tayyorligini tekshirish
+        console.log("Rasm base64 formatiga o'tkazildi. Uzunligi:", base64Image.length);
+        
+        aiStatusBox.style.display = 'block';
+        aiStatusBox.className = 'ai-status-box ai-checking';
+        aiStatusText.innerText = "Agro-AI rasmni skanerlamoqda...";
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Tahlil qilinmoqda...`;
+
+        try {
+            // Log 2: So'rov ketishidan oldin
+            console.log("Fetch so'rovi yuborilmoqda...");
+
+            const response = await fetch('{% url "check_img" %}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: JSON.stringify({ image: base64Image })
+            });
+
+            // Log 3: HTTP Status
+            console.log("Server javob berdi. Status:", response.status);
+
+            const data = await response.json();
+
+            // Log 4: Kelgan ma'lumotni to'liq ko'rish
+            console.log("Serverdan kelgan DATA:", data);
+
+            if (data && data.is_valid) {
+                aiStatusBox.className = 'ai-status-box ai-success';
+                aiStatusText.innerText = "✅ Tasdiqlandi: " + data.description;
+                nameInput.value = data.description; 
+                aboutInput.value = "AI Tahlili: " + data.reason;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> MAHSULOTNI QO'SHISH`;
+            } else {
+                // Log 5: Agar is_valid false bo'lsa
+                console.log("AI tasdiqlamadi yoki data noto'g'ri:", data.reason);
+                aiStatusBox.className = 'ai-status-box ai-error';
+                aiStatusText.innerText = "❌ Xato: " + (data ? data.reason : "Noma'lum xato");
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fas fa-times-circle"></i> RAD ETILDI`;
+            }
+        } catch (error) {
+            console.error("Catch ichidagi xatolik:", error);
+            aiStatusText.innerText = "Aloqa xatosi. Qayta urinib ko'ring.";
+            submitBtn.disabled = false;
+            submitBtn.innerText = "QO'SHISH (AI-SIZ)";
+        }
+    };
+});
 </script>
 
 </body>
