@@ -67,7 +67,7 @@ from django.db import transaction
 
 class Addproduct(LoginRequiredMixin, CreateView):
     model = Product
-    # 'images'ni fieldsdan olib tashladik, chunki u modelda yo'q
+    template_name = "business/agro_add.html"
     fields = ['name', 'count', 'price', 'about'] 
     template_name = 'your_template_name.html' # Template nomini to'g'ri ko'rsating
     success_url = reverse_lazy('agro_main')
