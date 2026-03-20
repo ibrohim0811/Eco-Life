@@ -31,7 +31,7 @@ def otp_verify_view(request):
             del request.session['otp_code']
             
             messages.success(request, "Tabriklaymiz, hisobingiz tasdiqlandi!")
-            return redirect('dashboard')
+            return redirect('agro_main')
         else:
             messages.error(request, "Xato kod kiritdingiz. Qaytadan urinib ko'ring.")
 
