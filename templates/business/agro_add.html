@@ -216,7 +216,7 @@
             submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Tahlil qilinmoqda...`;
 
             try {
-                const response = await fetch('{% url 'check-img' %}', {
+                const response = await fetch('{% url 'check_img' %}', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
                     body: JSON.stringify({ image: base64Image })
