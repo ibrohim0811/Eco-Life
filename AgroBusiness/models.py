@@ -24,7 +24,6 @@ class Product(BaseCreatedModel):
     is_active = models.BooleanField(default=True)
     about = models.TextField()
     count = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-    info = models.JSONField(default=dict, blank=True, null=True)
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="user_product", null=True, blank=True)
     
 
