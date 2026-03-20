@@ -70,17 +70,6 @@ WSGI_APPLICATION = "Ecolife.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
-}
-
 
 import os
 import dj_database_url
@@ -88,16 +77,26 @@ import dj_database_url
 # Agar DATABASE_URL bo'lsa ulanadi, bo'lmasa SQLite (build uchun vaqtinchalik) ishlatadi
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=False if 'localhost' in str(DATABASE_URL) else True
-    ) if DATABASE_URL else {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=0,
+            conn_health_checks=True, # Ulanish tirikligini tekshirish (Django 4.1+)
+        )
     }
-}
+    # Railway Postgres uchun SSL OPTIONS qismi
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'verify-full' if os.getenv('DB_SSL_VERIFY') else 'require',
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
