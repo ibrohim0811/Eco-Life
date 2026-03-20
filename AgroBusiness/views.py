@@ -69,7 +69,6 @@ class Addproduct(LoginRequiredMixin, CreateView):
     model = Product
     template_name = "business/agro_add.html"
     fields = ['name', 'count', 'price', 'about'] 
-    template_name = 'your_template_name.html' # Template nomini to'g'ri ko'rsating
     success_url = reverse_lazy('agro_main')
 
     def form_valid(self, form):
