@@ -21,7 +21,7 @@ class Product(BaseCreatedModel):
     slug = models.SlugField(editable=False)
     price = models.IntegerField()
     sale = models.IntegerField(default=0, validators=[MaxValueValidator(100), MinValueValidator(0)])
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     about = models.TextField()
     count = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     info = models.JSONField(default=dict, blank=True, null=True)
