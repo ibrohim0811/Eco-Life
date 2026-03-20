@@ -120,36 +120,53 @@ import os
 import json
 from django.http import JsonResponse
 from dotenv import load_dotenv
+import google.generativeai as genai
+from django.views.decorators.csrf import csrf_exempt
 
 load_dotenv()
 
+genai.configure(api_key=os.getenv('GEMINI_AI'))
+
+@csrf_exempt
 def check_image_ai(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        base64_image = data.get('image')
-        
-        client = groq.Groq(api_key=os.getenv("GROQ_API_KEY"))
-        
         try:
-            completion = client.chat.completions.create(
-                model="llama-4-scout-17b-16e-instruct",
-                temperature=0.5, 
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": "Bu rasmda qishloq xo'jaligi mahsuloti bormi? Faqat JSON formatda javob ber: {'is_valid': true/false, 'description': 'nomi', 'reason': 'sababi'}"},
-                            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
-                        ]
-                    }
-                ],
-                response_format={"type": "json_object"}
-            )
+            data = json.loads(request.body)
+            base64_image = data.get('image')
+
+            if not base64_image:
+                return JsonResponse({"is_valid": False, "reason": "Rasm yuborilmadi"})
+
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
-            ai_res = json.loads(completion.choices[0].message.content)
+            prompt = """
+            Bu rasmda qishloq xo'jaligi mahsuloti (meva, sabzavot, poliz ekini va h.k.) bormi? 
+            Faqat quyidagi JSON formatda javob ber, boshqa hech narsa yozma: 
+            {"is_valid": true/false, "description": "mahsulot nomi", "reason": "qisqa izoh"}
+            """
+
+            response = model.generate_content([
+                prompt,
+                {"mime_type": "image/jpeg", "data": base64_image}
+            ])
+
+            response_text = response.text.strip()
+            if "```json" in response_text:
+                response_text = response_text.split("```json")[1].split("```")[0].strip()
+            elif "```" in response_text:
+                response_text = response_text.split("```")[1].split("```")[0].strip()
+
+            ai_res = json.loads(response_text)
             return JsonResponse(ai_res)
+
         except Exception as e:
-            return JsonResponse({"is_valid": True, "description": "Xatolik bo'ldi", "reason": f"Tizimda xatolik: {str(e)}"}) 
-        
+            print(f"Gemini Error: {str(e)}") 
+            return JsonResponse({
+                "is_valid": False, 
+                "description": "Xatolik", 
+                "reason": f"AI tahlilida xato: {str(e)}"
+            })
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)    
     
     
