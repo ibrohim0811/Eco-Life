@@ -115,17 +115,11 @@ class Addproduct(LoginRequiredMixin, CreateView):
             form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
             return self.form_invalid(form)
 
+import json
 import requests
 import os
-import json
 from django.http import JsonResponse
-from dotenv import load_dotenv
-import google.generativeai as genai
 from django.views.decorators.csrf import csrf_exempt
-
-load_dotenv()
-
-genai.configure(api_key=os.getenv('GEMINI_AI'))
 
 @csrf_exempt
 def check_image_ai(request):
@@ -133,49 +127,49 @@ def check_image_ai(request):
         try:
             data = json.loads(request.body)
             base64_image = data.get('image')
-            
             api_key = os.getenv("GEMINI_AI") 
+
+            # 1-QADAM: Sening kaliting uchun ruxsat berilgan modellarni olish
+            list_url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+            models_resp = requests.get(list_url).json()
             
-            # DIQQAT: Agar v1 xato bersa, v1beta deb yozish muammoni hal qiladi
-            # Model nomini ham aniqroq ko'rsatamiz
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            # Rasm tahlil qila oladigan modelni topamiz
+            target_model = None
+            if "models" in models_resp:
+                for m in models_resp["models"]:
+                    # generateContent funksiyasi bor modelni qidiramiz
+                    if "generateContent" in m["supportedGenerationMethods"]:
+                        target_model = m["name"] # Masalan: "models/gemini-1.5-flash-latest"
+                        break
+            
+            if not target_model:
+                target_model = "models/gemini-1.5-flash" # Default variant
+
+            # 2-QADAM: Topilgan model bilan tahlil qilish
+            url = f"https://generativelanguage.googleapis.com/v1beta/{target_model}:generateContent?key={api_key}"
             
             payload = {
                 "contents": [{
                     "parts": [
-                        {"text": "Bu rasmda qishloq xo'jaligi mahsuloti bormi? Faqat JSON formatda javob ber: {'is_valid': true/false, 'description': 'nomi', 'reason': 'sababi'}"},
-                        {
-                            "inline_data": {
-                                "mime_type": "image/jpeg",
-                                "data": base64_image
-                            }
-                        }
+                        {"text": "Bu rasmda qishloq xo'jaligi mahsuloti bormi? Faqat JSON: {'is_valid': bool, 'description': str, 'reason': str}"},
+                        {"inline_data": {"mime_type": "image/jpeg", "data": base64_image}}
                     ]
                 }]
             }
 
-            headers = {'Content-Type': 'application/json'}
-            response = requests.post(url, headers=headers, json=payload)
+            response = requests.post(url, json=payload)
             res_json = response.json()
 
-            # Agar Google xato qaytarsa (masalan 404 yoki 400)
             if "error" in res_json:
-                # Agar 1.5-flash topilmasa, eskiroq modelni sinab ko'ramiz
-                error_msg = res_json["error"]["message"]
-                return JsonResponse({"is_valid": False, "reason": f"Google xatosi: {error_msg}"})
+                return JsonResponse({"is_valid": False, "reason": f"Model: {target_model}. Xato: {res_json['error']['message']}"})
 
-            # Javobni olish
             ai_text = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
             
             # JSONni tozalash
-            if "```json" in ai_text:
-                ai_text = ai_text.split("```json")[1].split("```")[0].strip()
-            elif "```" in ai_text:
-                ai_text = ai_text.split("```")[1].split("```")[0].strip()
+            if "```" in ai_text:
+                ai_text = ai_text.split("```")[1].replace("json", "").strip()
 
             return JsonResponse(json.loads(ai_text))
 
         except Exception as e:
-            return JsonResponse({"is_valid": False, "reason": f"Kodda xatolik: {str(e)}"})
-
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+            return JsonResponse({"is_valid": False, "reason": f"Tizim xatosi: {str(e)}"})
