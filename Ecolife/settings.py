@@ -12,7 +12,8 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = False
+# True
 
 
 ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")]
@@ -83,7 +84,7 @@ if DATABASE_URL:
         'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=0,
-            conn_health_checks=True, # Ulanish tirikligini tekshirish (Django 4.1+)
+            conn_health_checks=True, 
         )
     }
     # Railway Postgres uchun SSL OPTIONS qismi
