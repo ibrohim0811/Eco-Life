@@ -1,13 +1,3 @@
-
-from django.contrib.auth import get_user_model
-User = get_user_model()
-try:
-    if not User.objects.filter(username='ibrohim').exists():
-        User.objects.create_superuser('ibrohim', 'admin@example.com', 'ibrohim0811')
-        print("Superuser muvaffaqiyatli yaratildi!")
-except Exception as e:
-    print(f"Xatolik: {e}")
-
 from django.contrib import admin
 from django.urls import path, re_path
 from django.conf import settings
