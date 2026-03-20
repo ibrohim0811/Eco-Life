@@ -148,7 +148,7 @@ def check_image_ai(request):
             ai_res = json.loads(completion.choices[0].message.content)
             return JsonResponse(ai_res)
         except Exception as e:
-            return JsonResponse({"is_valid": True, "description": "Xatolik bo'ldi"}) 
+            return JsonResponse({"is_valid": True, "description": "Xatolik bo'ldi", "reason": f"Tizimda xatolik: {str(e)}"}) 
         
     
     
