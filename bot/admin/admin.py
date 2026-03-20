@@ -59,7 +59,7 @@ def get_all_tg_ids():
     try:
         conn = psycopg2.connect(**DB_PARAMS)
         cur = conn.cursor()
-        cur.execute("SELECT tg_id FROM accounts_users IS NOT NULL")
+        cur.execute("SELECT tg_id FROM accounts_users WHERE tg_id IS NOT NULL")
         ids = [row[0] for row in cur.fetchall()]
         cur.close()
         conn.close()
@@ -106,36 +106,27 @@ async def handle_broadcast_content(message: types.Message, state: FSMContext):
     kind = data.get("broadcast_kind")
     
     content = None
-    caption = message.caption or ""
+    caption = message.caption or message.text or "" 
 
     if kind == "text":
-        if message.text: content = message.text
-        else: return await message.answer("❌ Matn yuboring!")
+        content = message.text
+    elif kind == "photo" and message.photo:
+        content = message.photo[-1].file_id
+    elif kind == "video" and message.video:
+        content = message.video.file_id
+    elif kind == "animation" and message.animation:
+        content = message.animation.file_id
+    
+    if not content:
+        return await message.answer(f"❌ Iltimos, {kind} yuboring!")
 
-    elif kind == "photo":
-        if message.photo: content = message.photo[-1].file_id
-        else: return await message.answer("❌ Rasm yuboring!")
-
-    elif kind == "video":
-        if message.video: content = message.video.file_id
-        # Ba'zan foydalanuvchilar videoni ham GIF deb o'ylashadi, shuni tekshiramiz
-        elif message.animation: content = message.animation.file_id 
-        else: return await message.answer("❌ Video yuboring!")
-
-    # GIF (Animation) uchun maxsus qism
-    elif kind == "animation" or (message.animation and not content):
-        if message.animation:
-            content = message.animation.file_id
-            kind = "animation" # Kindni aniqlashtirib olamiz
-        else:
-            return await message.answer("❌ GIF (animatsiya) yuboring!")
-
-    if content:
-        run_broadcast_task.delay(kind, content, caption)
-        await state.clear()
-        await message.answer("🚀 GIF/Video tarqatish navbatga qo'shildi!")
-
-# --- PDF LOGS (UTF-8 bilan) ---
+    
+    run_broadcast_task.delay(kind, content, caption)
+    
+    await state.clear()
+    await message.answer(f"🚀 {kind.capitalize()} tarqatish navbatga qo'shildi!")
+    
+    
 def save_terminal_to_pdf():
     if not terminal_logs: return None
     pdf = FPDF()
