@@ -8,7 +8,7 @@ from .forms import UserLoginForm
 from accounts.models import Users, UserActivities, BalanceHistory
 from .mixins import NotLoginRequiredMixin
 from django.conf import settings
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from .forms import ProfileSettingsForm
 from django.db.models import Avg, Sum
@@ -26,19 +26,24 @@ class SettingsTemplateView(LoginRequiredMixin, TemplateView):
 
 
 
+from django.http import HttpResponse
+
 class MainTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'main.html'
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        
-        context['banner'] = True
-        context['activity_count'] = UserActivities.objects.filter(user=self.request.user).count()  
-        
-        context['leaderboard'] = Users.objects.order_by('-points')[:10]
-        
-        return context
+        try:
+            context = super().get_context_data(**kwargs)
+            user = self.request.user
+            
+            context['banner'] = True
+            context['activity_count'] = UserActivities.objects.filter(user=user).count()  
+            
+            context['leaderboard'] = Users.objects.order_by('-points')[:10]
+            
+            return context
+        except Exception as e:
+            return HttpResponse(f"Xatolik yuz berdi: {str(e)}", status=500)
     
     
 class UserLoginView(FormView):
@@ -74,7 +79,8 @@ class UserLoginView(FormView):
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
 
         messages.success(self.request, "Xush kelibsiz ✅")
-        return redirect(self.success_url)
+        return redirect(reverse("main"))
+
     
 class ProfileSettingsView(LoginRequiredMixin, UpdateView):
     model = Users
