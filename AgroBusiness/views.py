@@ -6,6 +6,7 @@ from accounts.tasks import send_sms_task
 from django.views.generic import TemplateView, ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, ProductImage
+from django.urls import reverse_lazy
 
 @login_required
 def otp_verify_view(request):
@@ -62,51 +63,58 @@ class ProductListView(LoginRequiredMixin, ListView):
     
     
 from django.utils import timezone
+from django.db import transaction
 
 class Addproduct(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ['name', 'count', 'price', 'images', 'about']
-    success_url = 'agro_main'
-    
+    # 'images'ni fieldsdan olib tashladik, chunki u modelda yo'q
+    fields = ['name', 'count', 'price', 'about'] 
+    template_name = 'your_template_name.html' # Template nomini to'g'ri ko'rsating
+    success_url = reverse_lazy('agro_main')
+
     def form_valid(self, form):
+        user = self.request.user
+        
+        # 1. Obuna va Limitni tekshirish (Xavfsiz usulda)
+        try:
+            sub_text = user.subscription.badge_text
+        except AttributeError:
+            messages.error(self.request, "Sizda faol obuna topilmadi!")
+            return redirect('agro_main')
+
         bugun = timezone.now().date()
+        user_limit = Product.objects.filter(user=user, created_at__date=bugun).count()
         
-        user_limit = Product.objects.filter(user=self.request.user, created_at__date=bugun).count()
-        
-        if self.request.user.subscription.badge_text == "FREE" and user_limit >= 1:
-            messages.error(self.request, "Bugungi limitingiz tugadi !")
+        limit_map = {"FREE": 1, "GO": 3, "PRO": 5, "ULTIMA": 7}
+        current_max = limit_map.get(sub_text, 0)
+
+        if user_limit >= current_max:
+            messages.error(self.request, f"Bugungi limitingiz ({current_max} ta) tugadi!")
             return redirect('agro_main')
-        elif self.request.user.subscription.badge_text == "GO" and user_limit >= 3:
-            messages.error(self.request, "Bugungi limitingiz tugadi !")
-            return redirect('agro_main')
-        elif self.request.user.subscription.badge_text == "PRO" and user_limit >= 5:
-            messages.error(self.request, "Bugungi limitingiz tugadi !")
-            return redirect('agro_main')
-        elif self.request.user.subscription.badge_text == "ULTIMA" and user_limit >= 7:
-            messages.error(self.request, "Bugungi limitingiz tugadi !")
-            return redirect('agro_main')
-            
-        
-        
-        product = form.save(commit=False)
-        name = form.cleaned_data.get('name')
-        count = form.cleaned_data.get('count')
-        price = form.cleaned_data.get('price')
-        images = self.request.FILES.getlist('images')
-        about = form.cleaned_data.get('about')
-        
-        form.instance.user = self.request.user
-        
-        if price > 10000000:
+
+        # 2. Narxni tekshirish
+        if form.cleaned_data.get('price') > 10000000:
             form.add_error('price', "Narx haddan tashqari baland!")
             return self.form_invalid(form)
-        
-        for i in images:
-            ProductImage.objects.create(product=product, image=i)
-        
-        return super().form_valid(form)
-    
-    
+
+        # 3. Tranzaksiya bilan saqlash (Agar rasm yuklanmasa, mahsulot ham saqlanmaydi)
+        try:
+            with transaction.atomic():
+                form.instance.user = user
+                # Avval mahsulotni bazaga saqlaymiz (ID olish uchun)
+                self.object = form.save() 
+                
+                # Endi rasmlarni saqlaymiz
+                images = self.request.FILES.getlist('images')
+                if images:
+                    for img in images:
+                        ProductImage.objects.create(product=self.object, image=img)
+                
+                messages.success(self.request, "Mahsulot muvaffaqiyatli qo'shildi!")
+                return redirect(self.get_success_url())
+        except Exception as e:
+            form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
+            return self.form_invalid(form)
 
 import groq
 import os
