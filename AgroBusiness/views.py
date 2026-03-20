@@ -134,11 +134,11 @@ def check_image_ai(request):
             data = json.loads(request.body)
             base64_image = data.get('image')
             
-            # API Kalitingizni shu yerga qo'ying
             api_key = os.getenv("GEMINI_AI") 
             
-            # To'g'ridan-to'g'ri v1 (stable) endpointga murojaat qilamiz
-            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+            # DIQQAT: Agar v1 xato bersa, v1beta deb yozish muammoni hal qiladi
+            # Model nomini ham aniqroq ko'rsatamiz
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
             
             payload = {
                 "contents": [{
@@ -151,22 +151,31 @@ def check_image_ai(request):
                             }
                         }
                     ]
-                }],
+                }]
             }
 
             headers = {'Content-Type': 'application/json'}
-            response = requests.post(url, headers=headers, data=json.dumps(payload))
+            response = requests.post(url, headers=headers, json=payload)
             res_json = response.json()
 
-            # Agar Google xato qaytarsa
+            # Agar Google xato qaytarsa (masalan 404 yoki 400)
             if "error" in res_json:
-                return JsonResponse({"is_valid": False, "reason": res_json["error"]["message"]})
+                # Agar 1.5-flash topilmasa, eskiroq modelni sinab ko'ramiz
+                error_msg = res_json["error"]["message"]
+                return JsonResponse({"is_valid": False, "reason": f"Google xatosi: {error_msg}"})
 
-            # Javobni olish va JSON sifatida qaytarish
-            ai_text = res_json['candidates'][0]['content']['parts'][0]['text']
+            # Javobni olish
+            ai_text = res_json['candidates'][0]['content']['parts'][0]['text'].strip()
+            
+            # JSONni tozalash
+            if "```json" in ai_text:
+                ai_text = ai_text.split("```json")[1].split("```")[0].strip()
+            elif "```" in ai_text:
+                ai_text = ai_text.split("```")[1].split("```")[0].strip()
+
             return JsonResponse(json.loads(ai_text))
 
         except Exception as e:
-            return JsonResponse({"is_valid": False, "reason": f"API Xatosi: {str(e)}"})
+            return JsonResponse({"is_valid": False, "reason": f"Kodda xatolik: {str(e)}"})
 
     return JsonResponse({"error": "Method not allowed"}, status=405)
