@@ -115,7 +115,7 @@ class Addproduct(LoginRequiredMixin, CreateView):
             form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
             return self.form_invalid(form)
 
-import groq
+import requests
 import os
 import json
 from django.http import JsonResponse
@@ -133,40 +133,43 @@ def check_image_ai(request):
         try:
             data = json.loads(request.body)
             base64_image = data.get('image')
-
-            if not base64_image:
-                return JsonResponse({"is_valid": False, "reason": "Rasm yuborilmadi"})
-
-            model = genai.GenerativeModel('gemini-1.5-pro')
             
-            prompt = """
-            Bu rasmda qishloq xo'jaligi mahsuloti (meva, sabzavot, poliz ekini va h.k.) bormi? 
-            Faqat quyidagi JSON formatda javob ber, boshqa hech narsa yozma: 
-            {"is_valid": true/false, "description": "mahsulot nomi", "reason": "qisqa izoh"}
-            """
+            # API Kalitingizni shu yerga qo'ying
+            api_key = "AIzaSy..." 
+            
+            # To'g'ridan-to'g'ri v1 (stable) endpointga murojaat qilamiz
+            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+            
+            payload = {
+                "contents": [{
+                    "parts": [
+                        {"text": "Bu rasmda qishloq xo'jaligi mahsuloti bormi? Faqat JSON formatda javob ber: {'is_valid': true/false, 'description': 'nomi', 'reason': 'sababi'}"},
+                        {
+                            "inline_data": {
+                                "mime_type": "image/jpeg",
+                                "data": base64_image
+                            }
+                        }
+                    ]
+                }],
+                "generationConfig": {
+                    "response_mime_type": "application/json",
+                }
+            }
 
-            response = model.generate_content([
-                prompt,
-                {"mime_type": "image/jpeg", "data": base64_image}
-            ])
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(url, headers=headers, data=json.dumps(payload))
+            res_json = response.json()
 
-            response_text = response.text.strip()
-            if "```json" in response_text:
-                response_text = response_text.split("```json")[1].split("```")[0].strip()
-            elif "```" in response_text:
-                response_text = response_text.split("```")[1].split("```")[0].strip()
+            # Agar Google xato qaytarsa
+            if "error" in res_json:
+                return JsonResponse({"is_valid": False, "reason": res_json["error"]["message"]})
 
-            ai_res = json.loads(response_text)
-            return JsonResponse(ai_res)
+            # Javobni olish va JSON sifatida qaytarish
+            ai_text = res_json['candidates'][0]['content']['parts'][0]['text']
+            return JsonResponse(json.loads(ai_text))
 
         except Exception as e:
-            print(f"Gemini Error: {str(e)}") 
-            return JsonResponse({
-                "is_valid": False, 
-                "description": "Xatolik", 
-                "reason": f"AI tahlilida xato: {str(e)}"
-            })
+            return JsonResponse({"is_valid": False, "reason": f"API Xatosi: {str(e)}"})
 
-    return JsonResponse({"error": "Method not allowed"}, status=405)    
-    
-    
+    return JsonResponse({"error": "Method not allowed"}, status=405)
