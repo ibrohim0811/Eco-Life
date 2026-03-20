@@ -1,11 +1,294 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Agro Biznes | Dark Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Dark Theme Ranglar Palitrasi */
+        :root {
+            --bg-color: #0f172a;       /* To'q ko'k-qora */
+            --card-bg: #1e293b;       /* Karta foni */
+            --nav-bg: #1e293b;        /* Navbar foni */
+            --accent-green: #22c55e;   /* Yorqin yashil */
+            --text-main: #f8fafc;     /* Asosiy matn */
+            --text-muted: #94a3b8;    /* Yordamchi matn */
+            --border-color: #334155;  /* Borderlar */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 80px;
+        }
+
+        /* Navigatsiya */
+        nav {
+            background-color: var(--nav-bg);
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .searchbar {
+            background: #334155;
+            padding: 8px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .searchbar:focus-within {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+        }
+
+        .searchbar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 40px 5%;
+        }
+
+        /* Mahsulot kartasi */
+        .product_box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product_box:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-green);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--accent-green);
+            color: #000;
+            padding: 4px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        .img-box {
+            width: 100%;
+            height: 220px;
+            background: #2d3748;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .product_box:hover .img-box img {
+            transform: scale(1.1);
+        }
+
+        .product_txt {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .product_txt h2 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .price-new {
+            color: var(--accent-green);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .count-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Bog'lanish tugmasi */
+        .call-btn {
+            width: 100%;
+            padding: 12px;
+            background: #334155;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .call-btn:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        /* Fixed Add Button */
+        .add-btn-fixed {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-green);
+            color: #000;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.4);
+            transition: 0.4s;
+            border: none;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
+        .add-btn-fixed:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 50px 0;
+        }
+
+        .pagination a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .pagination a.active, .pagination a:hover {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+
+        @media (max-width: 600px) {
+            .container { grid-template-columns: 1fr; }
+            .add-btn-fixed { bottom: 20px; left: 20px; width: 55px; height: 55px; }
+        }
+    </style>
 </head>
 <body>
-    
+
+    <nav>
+        <form action="" method="GET">
+            <div class="searchbar">
+                <span>🔎</span>
+                <input type="text" name="search" placeholder="Mahsulotlarni qidirish...">
+            </div>
+        </form>
+    </nav>
+
+    <div class="container">
+        {% for i in product %}
+        <div class="product_box">
+            {% if i.is_new %}
+            <span class="badge-new">Yangi</span>
+            {% endif %}
+            
+            <div class="img-box">
+                <img src="{{ i.image.url }}" alt="{{ i.name }}">
+            </div>
+
+            <div class="product_txt">
+                <h2>{{ i.name }}</h2>
+                
+                {% if i.sale %}
+                    <div class="price-old">{{ i.price }}</div>
+                    <div class="price-new">{{ i.sale_seller }}</div>
+                {% else %}
+                    <div class="price-new">{{ i.price }}</div>
+                {% endif %}
+                
+                <p class="count-info">📦 Omborda: {{ i.count }} dona</p>
+            </div>
+
+            <a href="tel:{{request.user.phone}}" style="text-decoration: none;">
+                <button class="call-btn">📞 Bog'lanish</button>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <a href="#">&laquo;</a>
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">&raquo;</a>
+    </div>
+
+    <a href="{% url 'agro_add' %}">
+        <button class="add-btn-fixed" title="Yangi qo'shish">+</button>
+    </a>
+
 </body>
 </html>
