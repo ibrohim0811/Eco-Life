@@ -152,9 +152,6 @@ def check_image_ai(request):
                         }
                     ]
                 }],
-                "generationConfig": {
-                    "response_mime_type": "application/json",
-                }
             }
 
             headers = {'Content-Type': 'application/json'}
