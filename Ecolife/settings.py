@@ -10,7 +10,7 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 
 
@@ -193,6 +193,15 @@ SECURE_HSTS_PRELOAD = True
 
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'team.ecolife.offical@gmail.com'
+EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")  # Bo'shliqlarsiz yozing
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 import logging
