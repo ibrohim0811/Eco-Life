@@ -305,7 +305,8 @@
 
     <div class="container">
         {% for i in product %}
-        <div class="product_box">
+        <a style="text-decoration: none;" href="{% url 'detail' i.slug %}">
+            <div class="product_box">
             {% if i.is_new %}
             <span class="badge-new">Yangi</span>
             {% endif %}
@@ -331,6 +332,7 @@
                 <button class="call-btn">📞 Bog'lanish</button>
             </a>
         </div>
+        </a>
         {% endfor %}
     </div>
 
@@ -342,7 +344,7 @@
         <a href="#">&raquo;</a>
     </div>
 
-    <a href="{% url 'agro_add' %}">
+    <a href="{% url 'agroadd' %}">
         <button class="add-btn-fixed" title="Yangi qo'shish">+</button>
     </a>
 

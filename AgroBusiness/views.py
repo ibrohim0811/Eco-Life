@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from accounts.tasks import send_sms_task  
-from django.views.generic import TemplateView, ListView, CreateView
+from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, ProductImage
 from django.urls import reverse_lazy
@@ -70,55 +70,6 @@ class ProductListView(LoginRequiredMixin, ListView):
 from django.utils import timezone
 from django.db import transaction
 
-# class Addproduct(LoginRequiredMixin, CreateView):
-#     model = Product
-#     template_name = "business/agro_add.html"
-#     fields = ['name', 'count', 'price', 'about'] 
-#     success_url = reverse_lazy('agro_main')
-
-#     def form_valid(self, form):
-#         user = self.request.user
-        
-#         try:
-#             sub_text = user.subscription.badge_text
-#         except AttributeError:
-#             messages.error(self.request, "Sizda faol obuna topilmadi!")
-#             return redirect('agro_main')
-
-#         bugun = timezone.now().date()
-#         user_limit = Product.objects.filter(user=user, created_at__date=bugun).count()
-        
-#         limit_map = {"FREE": 1, "GO": 3, "PRO": 5, "ULTIMA": 7}
-#         current_max = limit_map.get(sub_text, 0)
-
-#         if user_limit >= current_max:
-#             messages.error(self.request, f"Bugungi limitingiz ({current_max} ta) tugadi!")
-#             return redirect('agro_main')
-
-#         # 2. Narxni tekshirish
-#         if form.cleaned_data.get('price') > 10000000:
-#             form.add_error('price', "Narx haddan tashqari baland!")
-#             return self.form_invalid(form)
-
-#         # 3. Tranzaksiya bilan saqlash (Agar rasm yuklanmasa, mahsulot ham saqlanmaydi)
-#         try:
-#             with transaction.atomic():
-#                 form.instance.user = user
-#                 # Avval mahsulotni bazaga saqlaymiz (ID olish uchun)
-#                 self.object = form.save() 
-                
-#                 # Endi rasmlarni saqlaymiz
-#                 images = self.request.FILES.getlist('images')
-#                 if images:
-#                     for img in images:
-#                         ProductImage.objects.create(product=self.object, image=img)
-                
-#                 messages.success(self.request, "Mahsulot muvaffaqiyatli qo'shildi!")
-#                 return redirect(self.get_success_url())
-#         except Exception as e:
-#             form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
-#             return self.form_invalid(form)
-
 class AddProduct(LoginRequiredMixin, TemplateView):
     template_name = "business/agro_add.html"
 
@@ -171,10 +122,14 @@ def save_product(request):
                         )
         except Exception as e:
             print(f"debug: {e}")
-    return redirect("agroadd")
+    return redirect("agro_main")
                     
                 
-                
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    model = Product
+    template_name = "business/agro_detail.html"
+    slug_field = "slug"  
+    context_object_name = "product"           
                 
                 
 

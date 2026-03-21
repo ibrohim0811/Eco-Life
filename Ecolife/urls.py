@@ -9,7 +9,7 @@ from eco.views import (
     custom_bad_request, check_notifications, groq_chat, SettingsTemplateView, check_username, ProfileSettingsView,
     TradingDashboardView
 )
-from AgroBusiness.views import ProductListView, otp_verify_view, check_image_ai, save_product, AddProduct
+from AgroBusiness.views import ProductListView, otp_verify_view, check_image_ai, save_product, AddProduct, ProductDetailView
 
 urlpatterns = [
     path("only-ibrohim-can-enter/", admin.site.urls),
@@ -25,6 +25,7 @@ urlpatterns = [
     path('profile-dashboard/', TradingDashboardView.as_view(), name='dashboard'),
     path('agro-biznes/', ProductListView.as_view(), name='agro_main'),
     path('agro-add/', AddProduct.as_view(), name='agroadd'),
+    path('product/<slug:slug>', ProductDetailView.as_view(), name='detail'),
     path('agro-add-product/', save_product, name='agro_add'),
     path('agro-otp/', otp_verify_view, name='agro_otp'),
     path('check-image/', check_image_ai, name='check_img'),
