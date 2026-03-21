@@ -123,7 +123,7 @@ def save_product(request):
         data = request.POST
         
         user = request.user
-        sub_text = user.seubscription.badge_text
+        sub_text = user.subscription.badge_text
         bugun = timezone.now().date()
         user_limit = Product.objects.filter(user=user, created_at__date=bugun).count()
         
