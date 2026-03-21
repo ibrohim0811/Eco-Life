@@ -66,55 +66,111 @@ class ProductListView(LoginRequiredMixin, ListView):
 from django.utils import timezone
 from django.db import transaction
 
-class Addproduct(LoginRequiredMixin, CreateView):
-    model = Product
-    template_name = "business/agro_add.html"
-    fields = ['name', 'count', 'price', 'about'] 
-    success_url = reverse_lazy('agro_main')
+# class Addproduct(LoginRequiredMixin, CreateView):
+#     model = Product
+#     template_name = "business/agro_add.html"
+#     fields = ['name', 'count', 'price', 'about'] 
+#     success_url = reverse_lazy('agro_main')
 
-    def form_valid(self, form):
-        user = self.request.user
+#     def form_valid(self, form):
+#         user = self.request.user
         
-        # 1. Obuna va Limitni tekshirish (Xavfsiz usulda)
-        try:
-            sub_text = user.subscription.badge_text
-        except AttributeError:
-            messages.error(self.request, "Sizda faol obuna topilmadi!")
-            return redirect('agro_main')
+#         try:
+#             sub_text = user.subscription.badge_text
+#         except AttributeError:
+#             messages.error(self.request, "Sizda faol obuna topilmadi!")
+#             return redirect('agro_main')
 
+#         bugun = timezone.now().date()
+#         user_limit = Product.objects.filter(user=user, created_at__date=bugun).count()
+        
+#         limit_map = {"FREE": 1, "GO": 3, "PRO": 5, "ULTIMA": 7}
+#         current_max = limit_map.get(sub_text, 0)
+
+#         if user_limit >= current_max:
+#             messages.error(self.request, f"Bugungi limitingiz ({current_max} ta) tugadi!")
+#             return redirect('agro_main')
+
+#         # 2. Narxni tekshirish
+#         if form.cleaned_data.get('price') > 10000000:
+#             form.add_error('price', "Narx haddan tashqari baland!")
+#             return self.form_invalid(form)
+
+#         # 3. Tranzaksiya bilan saqlash (Agar rasm yuklanmasa, mahsulot ham saqlanmaydi)
+#         try:
+#             with transaction.atomic():
+#                 form.instance.user = user
+#                 # Avval mahsulotni bazaga saqlaymiz (ID olish uchun)
+#                 self.object = form.save() 
+                
+#                 # Endi rasmlarni saqlaymiz
+#                 images = self.request.FILES.getlist('images')
+#                 if images:
+#                     for img in images:
+#                         ProductImage.objects.create(product=self.object, image=img)
+                
+#                 messages.success(self.request, "Mahsulot muvaffaqiyatli qo'shildi!")
+#                 return redirect(self.get_success_url())
+#         except Exception as e:
+#             form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
+#             return self.form_invalid(form)
+
+
+def save_product(request):
+    if request.method == "POST":
+        data = request.POST
+        
+        user = request.user
+        sub_text = user.seubscription.badge_text
         bugun = timezone.now().date()
         user_limit = Product.objects.filter(user=user, created_at__date=bugun).count()
         
-        limit_map = {"FREE": 1, "GO": 3, "PRO": 5, "ULTIMA": 7}
-        current_max = limit_map.get(sub_text, 0)
-
-        if user_limit >= current_max:
-            messages.error(self.request, f"Bugungi limitingiz ({current_max} ta) tugadi!")
-            return redirect('agro_main')
-
-        # 2. Narxni tekshirish
-        if form.cleaned_data.get('price') > 10000000:
-            form.add_error('price', "Narx haddan tashqari baland!")
-            return self.form_invalid(form)
-
-        # 3. Tranzaksiya bilan saqlash (Agar rasm yuklanmasa, mahsulot ham saqlanmaydi)
+        if sub_text == "FREE" and user_limit >= 1:
+            messages.error(request, "Limitingiz tugadi!")
+            return redirect("agro_main")
+        elif sub_text == "GO" and user_limit >= 3:
+            messages.error(request, "Limitingiz tugadi!")
+            return redirect("agro_main")
+        elif sub_text == "PRO" and user_limit >= 5:
+            messages.error(request, "Limitingiz tugadi!")
+            return redirect("agro_main")
+        elif sub_text == "ULTIMA" and user_limit >= 7:
+            messages.error(request, "Limitingiz tugadi!")
+            return redirect("agro_main")
+        
+        
         try:
             with transaction.atomic():
-                form.instance.user = user
-                # Avval mahsulotni bazaga saqlaymiz (ID olish uchun)
-                self.object = form.save() 
+                name = data.get("name")
+                count = data.get("count")
+                price = data.get("price")
+                about = data.get("about")
                 
-                # Endi rasmlarni saqlaymiz
-                images = self.request.FILES.getlist('images')
-                if images:
-                    for img in images:
-                        ProductImage.objects.create(product=self.object, image=img)
-                
-                messages.success(self.request, "Mahsulot muvaffaqiyatli qo'shildi!")
-                return redirect(self.get_success_url())
+                if name and price:
+                    images = request.FILES.getlist('images')
+                    
+                    product = Product.objects.create(
+                        name=name,
+                        count=count,
+                        price=price,
+                        about=about,
+                        user=request.user
+                    )
+                    
+                    
+                    for i in images:
+                        ProductImage.objects.create(
+                            image=i,
+                            product=product
+                        )
         except Exception as e:
-            form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
-            return self.form_invalid(form)
+            print(f"debug: {e}")
+                    
+                
+                
+                
+                
+
 
 import json
 import requests
