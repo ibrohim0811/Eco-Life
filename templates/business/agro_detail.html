@@ -183,8 +183,7 @@
 
             <div class="price-tag">
                 {% if product.sale %}
-                <span style="text-decoration: line-through; color: var(--text-muted); font-size: 1.2rem;">{{
-                    product.price }}</span><br>
+                <span style="text-decoration: line-through; color: var(--text-muted); font-size: 1.2rem;">{{ product.price }}</span><br>
                 {{ product.sale_seller }} so'm
                 {% else %}
                 {{ product.price }} so'm
