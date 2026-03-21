@@ -83,7 +83,7 @@ if DATABASE_URL:
             conn_health_checks=True, 
         )
     }
-    # Railway Postgres uchun SSL OPTIONS qismi
+    
     DATABASES['default']['OPTIONS'] = {
         'sslmode': 'verify-full' if os.getenv('DB_SSL_VERIFY') else 'require',
     }
