@@ -12,5 +12,4 @@ class UsersAdmin(admin.ModelAdmin):
     
 admin.site.register(UserActivities)
 admin.site.register(Subscription)
-admin.site.register(Banner)
 admin.site.register(BalanceHistory)
