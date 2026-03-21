@@ -56,10 +56,14 @@ class ProductListView(LoginRequiredMixin, ListView):
             
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['search_query'] = self.request.GET.get('search', '')
-        return context
+    def get_queryset(self):
+        queryset = Product.objects.filter(is_active=True).order_by('-created_at')
+        
+        search = self.request.GET.get('search', '').strip()
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+            
+        return queryset
         
     
     
