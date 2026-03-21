@@ -42,24 +42,24 @@ def otp_verify_view(request):
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = "business/agro_main.html"
+    context_object_name = 'product'  # HTML-dagi {% for i in product %} uchun
     paginate_by = 12
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product'] = Product.objects.filter(is_active=True).order_by('-created_at').all()
-        context['search_query'] = self.request.GET.get('search', '')
-        return context
-    
     def get_queryset(self):
+        # 1. Boshlang'ich queryset va rasmlarni optimallash
+        queryset = super().get_queryset().filter(is_active=True).prefetch_related('product_image').order_by('-created_at')
         
-        queryset = super().get_queryset().prefetch_related('product_image')
-        
-        data = super().get_queryset()
+        # 2. Qidiruvni tekshirish
         search = self.request.GET.get('search', '').strip()
         if search:
-            data = Product.objects.filter(name__icontains=search)
-            return data
+            queryset = queryset.filter(name__icontains=search)
+            
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        return context
         
     
     
@@ -167,7 +167,7 @@ def save_product(request):
                         )
         except Exception as e:
             print(f"debug: {e}")
-    return redirect("agroadd")
+    return redirect("agro_main")
                     
                 
                 
