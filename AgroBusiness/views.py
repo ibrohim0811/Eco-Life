@@ -129,7 +129,15 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "business/agro_detail.html"
     slug_field = "slug"  
-    context_object_name = "product"           
+    context_object_name = "product"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+    
+        other_products = Product.objects.filter(is_active=True).exclude(id=self.object.id).order_by('?')[:8]
+        
+        context['other_products'] = other_products
+        return context           
                 
                 
 
