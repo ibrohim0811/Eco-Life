@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import UserActivities, Users, Subscription, BalanceHistory, Banner
+from .models import UserActivities, Users, Subscription, BalanceHistory
 
 
 
