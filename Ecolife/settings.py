@@ -79,7 +79,7 @@ if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
-            conn_max_age=0,
+            conn_max_age=60,
             conn_health_checks=True, 
         )
     }
@@ -150,8 +150,8 @@ CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
 
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 3600 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 18000 
 SESSION_SAVE_EVERY_REQUEST = True
 
 from celery.schedules import crontab
