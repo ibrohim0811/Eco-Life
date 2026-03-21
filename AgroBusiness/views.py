@@ -115,6 +115,8 @@ from django.db import transaction
 #             form.add_error(None, f"Xatolik yuz berdi: {str(e)}")
 #             return self.form_invalid(form)
 
+class AddProduct(LoginRequiredMixin, TemplateView):
+    template_name = "business/agro_add.html"
 
 def save_product(request):
     if request.method == "POST":
@@ -165,7 +167,7 @@ def save_product(request):
                         )
         except Exception as e:
             print(f"debug: {e}")
-    return redirect("agro_main")
+    return redirect("agroadd")
                     
                 
                 
