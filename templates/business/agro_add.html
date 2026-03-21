@@ -133,7 +133,7 @@
             <i class="fas fa-robot me-2"></i> <span id="aiStatusText">Tahlil qilinmoqda...</span>
         </div>
 
-        <form method="POST" enctype="multipart/form-data" id="productForm">
+        <form action="{% url 'agro_add' %}" method="POST" enctype="multipart/form-data" id="productForm">
             {% csrf_token %}
             
             <label class="form-label">Rasmlar (AI tekshiradi)</label>
