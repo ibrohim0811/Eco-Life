@@ -47,19 +47,20 @@ class ProductListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product'] = Product.objects.filter(is_active=True).order_by('-created_at').all()
-
+        context['search_query'] = self.request.GET.get('search', '')
         return context
     
     def get_queryset(self):
         
+        queryset = super().get_queryset().prefetch_related('product_image')
+        
         data = super().get_queryset()
-        search = self.request.GET.get('search')
-        if search is None:
-            products = Product.objects.all()
-            return products 
-        else:
+        search = self.request.GET.get('search', '').strip()
+        if search:
             data = Product.objects.filter(name__icontains=search)
             return data
+        return queryset
+        
     
     
 from django.utils import timezone
