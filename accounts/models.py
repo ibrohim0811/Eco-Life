@@ -189,20 +189,7 @@ class Subscription(models.Model):
         return self.user.username
     
     
-class Banner(BaseCreatedModel):
-    title = models.CharField(max_length=120, blank=True)
-    image = models.ImageField(upload_to="banners/")
-    link_url = models.CharField(max_length=255, blank=True)  
-    is_active = models.BooleanField(default=True)
-    order = models.PositiveIntegerField(default=0) 
 
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["order", "-created_at"]
-        
-    def __str__(self):
-        return self.title
         
 
 

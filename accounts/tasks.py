@@ -1,13 +1,24 @@
+import sys
+import os
+import django
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ecolife.settings")
+django.setup()
+
+
 import asyncio
 import psycopg2
 from pathlib import Path
 from celery import Celery, shared_task
 from aiogram import Bot
-import os
 from dotenv import load_dotenv
 from django.utils import timezone
 from datetime import timedelta
 from accounts.models import Subscription
+from accounts.models import Users
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 env_path = BASE_DIR / '.env'
@@ -29,17 +40,8 @@ DB_PARAMS = {
 app = Celery('ecosys', broker=REDIS_URL)
 
 def get_all_tg_ids():
-    try:
-        conn = psycopg2.connect(**DB_PARAMS)
-        cur = conn.cursor()
-        cur.execute("SELECT tg_id FROM accounts_users WHERE tg_id IS NOT NULL")
-        ids = [row[0] for row in cur.fetchall()]
-        cur.close()
-        conn.close()
-        return ids
-    except Exception as e:
-        print(f"DB Error: {e}")
-        return []
+    user_ids = Users.objects.filter(tg_id__isnull=False).values_list('tg_id', flat=True)
+    return list(user_ids)
 
 
 @app.task(name='run_broadcast_task')
