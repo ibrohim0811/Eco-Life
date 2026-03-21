@@ -41,7 +41,7 @@ class TerminalLogger:
     def write(self, message):
         self.stream.write(message)
         if message.strip():
-            timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+            timestamp = datetime.now().strftime("%H:%M:%S")
             # Loglarni limitda ushlab turamiz (oxirgi 500 ta)
             if len(terminal_logs) > 500: terminal_logs.pop(0)
             terminal_logs.append(f"[{timestamp}] {message.strip()}")
@@ -145,7 +145,7 @@ def save_terminal_to_pdf():
         pdf.multi_cell(0, 5, txt=f"> {line}")
     
     os.makedirs("logs", exist_ok=True)
-    path = f"logs/log_{datetime.datetime.now().strftime('%H%M%S')}.pdf"
+    path = f"logs/log_{datetime.now().strftime('%H%M%S')}.pdf"
     pdf.output(path)
     return path
 
