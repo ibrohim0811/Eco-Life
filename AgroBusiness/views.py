@@ -165,6 +165,7 @@ def save_product(request):
                         )
         except Exception as e:
             print(f"debug: {e}")
+    return redirect("agro_main")
                     
                 
                 
